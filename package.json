@@ -6,7 +6,8 @@
    "module": "lib/qqq-frontend-core.esm.js",
    "scripts": {
       "build": "rollup -c",
-      "test": "jest"
+      "test": "jest",
+      "delete-modules": "rm -rf node_modules; rm package-lock.json"
    },
    "keywords": [],
    "files": [
