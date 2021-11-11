@@ -2,25 +2,12 @@
  * Copyright © 2021. Kingsrook LLC <contact@kingsrook.com>.  All Rights Reserved.
  */
 
-import {add, mul} from "../src/qqq-frontend-core";
+// import {add, mul} from "../src/qqq-frontend-core";
 
-describe("test add function", () =>
+describe("Top level test", () =>
 {
-   it("should return 15 for add(10,5)", () =>
+   it("kinda just is here", () =>
    {
-      expect(add(10, 5)).toBe(15);
-   });
-
-   it("should return 5 for add(2,3)", () =>
-   {
-      expect(add(2, 3)).toBe(5);
-   });
-});
-
-describe("test mul function", () =>
-{
-   it("should return 15 for mul(3,5)", () =>
-   {
-      expect(mul(3, 5)).toBe(15);
+      expect(true).toBeTruthy()
    });
 });

@@ -9,6 +9,6 @@ It is not tied to any particular javascript frontend library/framework, nor is i
 3. run target `test` to run the jest test suite 
 
 ## Testing
-The Jest Target Profiles should be working, allowing you to open a testing file and run or dedug any of the tests directly.  
+The Jest Target Profiles should be working, allowing you to open a testing file and run or debug any of the tests directly.  
 
 This system should also allow you to track coverage and engage with the coverage tools in real-time
