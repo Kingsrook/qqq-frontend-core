@@ -19,9 +19,9 @@ export function mul(x: number, y: number): number
 }
 */
 
-module.exports = [
+module.exports = {
    QController,
    QTableMetaData,
    QFieldMetaData,
    QFieldType
-];
+};
