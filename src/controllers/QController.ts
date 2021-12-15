@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2021-2021. Kingsrook LLC <contact@kingsrook.com>.  All Rights Reserved.
+ */
+
 // export default (a: number, b: number): number => a + b;
 
 import {QTableMetaData} from '../model/metaData/QTableMetaData';
