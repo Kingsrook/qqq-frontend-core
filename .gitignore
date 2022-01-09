@@ -2,3 +2,6 @@ node_modules
 coverage
 lib
 
+.idea/aws.xml
+.idea/misc.xml
+.idea/runConfigurations.xml
