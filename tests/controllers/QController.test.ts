@@ -9,9 +9,9 @@ describe('q controller test', () =>
 {
    it('should return meta data', async () =>
    {
-      const qController = new QController('http://localhost:8000');
-      const metaData: Map<string, QTableMetaData> = await qController.loadMetaData();
-      console.log('@dk label: ' + metaData?.get("person")?.label);
+      // const qController = new QController('http://localhost:8000');
+      // const metaData: Map<string, QTableMetaData> = await qController.loadMetaData();
+      // console.log('@dk label: ' + metaData?.get("person")?.label);
       // expect(metaData?.get("person")?.label).toBe("Person");
    });
 
