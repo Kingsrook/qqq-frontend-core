@@ -32,19 +32,40 @@ export class QController
       return await new Promise((resolve, reject) =>
       {
          axios.get(this.baseUrl + "/metaData")
+             .then((response: AxiosResponse) =>
+             {
+                console.log(response);
+
+                // const table = new QTableMetaData('episode');
+
+                const tables = new Map();
+                for (const tableName in response.data.tables)
+                {
+                   tables.set(tableName, response.data.tables[tableName]);
+                }
+
+                resolve(tables);
+             })
+             .catch((error: AxiosError) =>
+             {
+                console.log(error);
+                reject(error.message);
+             })
+      });
+   }
+
+   /*******************************************************************************
+    **
+    *******************************************************************************/
+   async loadTableMetaData(tableName: String): Promise<QTableMetaData>
+   {
+      return await new Promise((resolve, reject) =>
+      {
+         axios.get(this.baseUrl + "/metaData/" + tableName)
             .then((response: AxiosResponse) =>
             {
                console.log(response);
-
-               // const table = new QTableMetaData('episode');
-
-               const tables = new Map();
-               for (const tableName in response.data.tables)
-               {
-                  tables.set(tableName, response.data.tables[tableName]);
-               }
-
-               resolve(tables);
+               resolve(response.data.table);
             })
             .catch((error: AxiosError) =>
             {
@@ -52,19 +73,5 @@ export class QController
                reject(error.message);
             })
       });
-
-      /*
-      fetch(this.baseUrl + '/metaData')
-         .then((response) => response.json())
-         .then((data) =>
-         {
-            console.log('Success:', data);
-            return data;
-         })
-         .catch((error) =>
-         {
-            console.error('Error:', error);
-         });
-      */
    }
 }
