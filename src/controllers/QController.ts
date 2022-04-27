@@ -74,4 +74,26 @@ export class QController
             })
       });
    }
+
+
+   /*******************************************************************************
+    **
+    *******************************************************************************/
+   async query(tableName: String): Promise<QTableMetaData>
+   {
+      return await new Promise((resolve, reject) =>
+      {
+         axios.get(this.baseUrl + "/data/" + tableName)
+             .then((response: AxiosResponse) =>
+             {
+                console.log(response);
+                resolve(response.data); //queryResult
+             })
+             .catch((error: AxiosError) =>
+             {
+                console.log(error);
+                reject(error.message);
+             })
+      });
+   }
 }
