@@ -19,21 +19,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QFieldMetaData} from "./QFieldMetaData";
+import { QFieldMetaData } from "./QFieldMetaData";
 
 /*******************************************************************************
  **
  *******************************************************************************/
-export class QTableMetaData
-{
-   name: string;
-   label: string;
-   fields: Map<string, QFieldMetaData>;
+export class QTableMetaData {
+  name: string;
+  label: string;
+  primaryKeyField: string;
+  fields: Map<string, QFieldMetaData>;
 
-   constructor(name: string)
-   {
-      this.name = name;
-      this.label = name.substring(0, 1).toUpperCase() + name.substring(1);
-      this.fields = new Map<string, QFieldMetaData>();
-   }
+  constructor(name: string) {
+    this.name = name;
+    this.label = name.substring(0, 1).toUpperCase() + name.substring(1);
+    this.fields = new Map<string, QFieldMetaData>();
+    this.primaryKeyField = "";
+  }
 }

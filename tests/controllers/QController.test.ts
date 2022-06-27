@@ -19,40 +19,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QController} from "../../src/controllers/QController";
-import {QTableMetaData} from "../../src/model/metaData/QTableMetaData";
+import { QController } from "../../src/controllers/QController";
+import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
+import { QTableRecord } from "../../src/model/metaData/QTableRecord";
 
-describe('q controller test', () =>
-{
-   it('should return meta data', async () =>
-   {
-       const qController = new QController('http://localhost:8000');
-       const metaData: Map<string, QTableMetaData> = await qController.loadMetaData();
-       console.log('@dk label: ' + metaData?.get("person")?.label);
-       expect(metaData?.get("person")?.label).toBe("Person");
-   });
+describe("q controller test", () => {
+  it("should return meta data", async () => {
+    const qController = new QController("http://localhost:8000");
+    const metaData: Map<string, QTableMetaData> =
+      await qController.loadMetaData();
+    console.log("@dk label: " + metaData?.get("person")?.label);
+    expect(metaData?.get("person")?.label).toBe("Person");
+  });
 
-   it('should return an error with a bad base url meta data', async () =>
-   {
-       const qController = new QController('http://localhost.not:8000');
-       try
-       {
-          await qController.loadMetaData();
-          fail();
-       }
-       catch(e)
-       {
-         expect(e).toBeDefined();
-       }
-   });
+  it("should return an error with a bad base url meta data", async () => {
+    const qController = new QController("http://localhost.not:8000");
+    try {
+      await qController.loadMetaData();
+      fail();
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
 
-   it('should return table meta data', async () =>
-   {
-      const qController = new QController('http://localhost:8000');
-      const tableMetaData: QTableMetaData = await qController.loadTableMetaData("carrier");
-      console.log('@dk label: ' + tableMetaData?.label);
-      console.log('@dk fields: ' + tableMetaData?.fields);
-      expect(tableMetaData?.label).toBe("Carrier");
-   });
+  it("should return table meta data", async () => {
+    const qController = new QController("http://localhost:8000");
+    const tableMetaData: QTableMetaData = await qController.loadTableMetaData(
+      "carrier"
+    );
+    console.log("@dk label: " + tableMetaData?.label);
+    console.log("@dk fields: " + tableMetaData?.fields);
+    expect(tableMetaData?.label).toBe("Carrier");
+  });
 
-})
+  it("should return record data from a query", async () => {
+    const qController = new QController("http://localhost:8000");
+    const records: QTableRecord[] = await qController.query("person");
+    console.log("@tc label: " + records.length);
+    expect(records.length).toBe(5);
+  });
+});
