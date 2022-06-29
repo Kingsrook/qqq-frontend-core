@@ -54,7 +54,7 @@ describe("q controller test", () => {
 
   it("should return record data from a query", async () => {
     const qController = new QController("http://localhost:8000");
-    const records: QTableRecord[] = await qController.query("person");
+    const records: QTableRecord[] = await qController.query("person", 100);
     console.log("@tc label: " + records.length);
     expect(records.length).toBe(5);
   });

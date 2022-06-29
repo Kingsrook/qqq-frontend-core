@@ -105,10 +105,33 @@ export class QController {
   /*******************************************************************************
    **
    *******************************************************************************/
-  async query(tableName: String): Promise<QTableRecord[]> {
+  async query(tableName: String, limit: number): Promise<QTableRecord[]> {
+    let queryURL = this.baseUrl + "/data/" + tableName + "?1=1";
+    if (limit != null) {
+      queryURL += "&limit=" + limit;
+    }
+
     return await new Promise((resolve, reject) => {
       axios
-        .get(this.baseUrl + "/data/" + tableName)
+        .get(queryURL)
+        .then((response: AxiosResponse) => {
+          console.log(response);
+          resolve(response.data.records); //queryResult
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+          reject(error.message);
+        });
+    });
+  }
+
+  /*******************************************************************************
+   **
+   *******************************************************************************/
+  async delete(tableName: String, id: any): Promise<QTableRecord[]> {
+    return await new Promise((resolve, reject) => {
+      axios
+        .delete(this.baseUrl + "/data/" + tableName + "/" + id)
         .then((response: AxiosResponse) => {
           console.log(response);
           resolve(response.data.records); //queryResult
