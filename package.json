@@ -5,14 +5,13 @@
    "main": "qqq-frontend-core.js",
    "module": "lib/qqq-frontend-core.esm.js",
    "scripts": {
-      "npm-build": "npm run build",
-      "NOT_build": "rollup -c",
       "delete-modules": "rm -rf node_modules; rm package-lock.json",
+      "npm-build": "npm run build",
       "npm-install": "npm install",
+      "prepublishOnly": "tsc -p ./ --outDir lib/",
       "test": "jest",
       "yalc-push": "yalc push --private",
-      "yalc-watch": "yalc-watch",
-      "prepublishOnly": "tsc -p ./ --outDir lib/"
+      "yalc-watch": "yalc-watch"
    },
    "dependencies": {
       "axios": "0.24.0"
@@ -34,8 +33,6 @@
    "devDependencies": {
       "@types/jest": "^27.0.2",
       "jest": "^27.3.1",
-      "rollup": "2.75.7",
-      "rollup-plugin-typescript2": "0.32.1",
       "ts-jest": "^27.0.7",
       "typescript": "^4.4.4"
    }
