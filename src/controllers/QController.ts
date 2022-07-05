@@ -24,6 +24,7 @@
 import {QTableMetaData} from "../model/metaData/QTableMetaData";
 import {QRecord} from "../model/QRecord";
 import {AxiosError, AxiosResponse} from "axios";
+import {QInstance} from "../model/metaData/QInstance";
 
 const axios = require("axios").default;
 
@@ -50,14 +51,10 @@ export class QController {
     /*******************************************************************************
      ** Fetch the top-level meta data for a qqq instance.
      *******************************************************************************/
-    async loadMetaData(): Promise<Map<string, QTableMetaData>> {
+    async loadMetaData(): Promise<QInstance> {
         return this.axiosInstance.get(`/metaData/`)
             .then((response: AxiosResponse) => {
-                const tables = new Map();
-                for (const tableName in response.data.tables) {
-                    tables.set(tableName, new QTableMetaData(response.data.tables[tableName]));
-                }
-                return (tables);
+                return (new QInstance(response.data));
             })
             .catch(throwError);
     }
@@ -68,7 +65,9 @@ export class QController {
      *******************************************************************************/
     async loadTableMetaData(tableName: string): Promise<QTableMetaData> {
         return this.axiosInstance.get(`/metaData/${tableName}`)
-            .then((response: AxiosResponse) => new QTableMetaData(response.data.table))
+            .then((response: AxiosResponse) => {
+                return (new QTableMetaData(response.data.table));
+            })
             .catch(throwError);
     }
 

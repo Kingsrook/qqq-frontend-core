@@ -20,11 +20,13 @@
  */
 
 import {QController} from "../../src/controllers/QController";
+import {QInstance} from "../../src/model/metaData/QInstance";
 import {QTableMetaData} from "../../src/model/metaData/QTableMetaData";
 import {QFieldMetaData} from "../../src/model/metaData/QFieldMetaData";
 import {QFieldType} from "../../src/model/metaData/QFieldType";
 import {QRecord} from "../../src/model/QRecord";
 import {AxiosError} from "axios";
+import {QProcessMetaData} from "../../src/model/metaData/QProcessMetaData";
 
 const baseURL = "http://localhost:8000";
 
@@ -32,14 +34,22 @@ describe("q controller test", () => {
 
     it("should return meta data", async () => {
         const qController = new QController(baseURL);
-        const metaData: Map<string, QTableMetaData> = await qController.loadMetaData();
-        expect(metaData).toBeInstanceOf(Map);
-        expect(metaData.size).toBeGreaterThan(1)
-        const personTable = metaData.get("person");
+        const metaData = await qController.loadMetaData();
+        expect(metaData).toBeInstanceOf(QInstance);
+
+        const tables = metaData.tables;
+        expect(tables?.size).toBeGreaterThan(1)
+        const personTable = tables?.get("person");
         expect(personTable).toBeInstanceOf(QTableMetaData);
-        expect(metaData?.get("person")?.label).toBe("Person");
+        expect(personTable?.label).toBe("Person");
         const fields = personTable?.fields;
         expect(fields).toBeUndefined(); // this meta data does not go down to the field level!
+
+        const processes = metaData.processes;
+        expect(processes?.size).toBeGreaterThan(0)
+        const greetProcess = processes?.get("greet");
+        expect(greetProcess).toBeInstanceOf(QProcessMetaData);
+        expect(greetProcess?.label).toBe("Greet People");
     });
 
     it("should return an error with a bad base url meta data", async () => {
