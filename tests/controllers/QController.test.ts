@@ -19,43 +19,91 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QController } from "../../src/controllers/QController";
-import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
-import { QTableRecord } from "../../src/model/metaData/QTableRecord";
+import {QController} from "../../src/controllers/QController";
+import {QTableMetaData} from "../../src/model/metaData/QTableMetaData";
+import {QFieldMetaData} from "../../src/model/metaData/QFieldMetaData";
+import {QFieldType} from "../../src/model/metaData/QFieldType";
+import {QRecord} from "../../src/model/QRecord";
+import {AxiosError} from "axios";
+
+const baseURL = "http://localhost:8000";
 
 describe("q controller test", () => {
-  it("should return meta data", async () => {
-    const qController = new QController("http://localhost:8000");
-    const metaData: Map<string, QTableMetaData> =
-      await qController.loadMetaData();
-    console.log("@dk label: " + metaData?.get("person")?.label);
-    expect(metaData?.get("person")?.label).toBe("Person");
-  });
 
-  it("should return an error with a bad base url meta data", async () => {
-    const qController = new QController("http://localhost.not:8000");
-    try {
-      await qController.loadMetaData();
-      fail();
-    } catch (e) {
-      expect(e).toBeDefined();
-    }
-  });
+    it("should return meta data", async () => {
+        const qController = new QController(baseURL);
+        const metaData: Map<string, QTableMetaData> = await qController.loadMetaData();
+        expect(metaData).toBeInstanceOf(Map);
+        expect(metaData.size).toBeGreaterThan(1)
+        const personTable = metaData.get("person");
+        expect(personTable).toBeInstanceOf(QTableMetaData);
+        expect(metaData?.get("person")?.label).toBe("Person");
+        const fields = personTable?.fields;
+        expect(fields).toBeUndefined(); // this meta data does not go down to the field level!
+    });
 
-  it("should return table meta data", async () => {
-    const qController = new QController("http://localhost:8000");
-    const tableMetaData: QTableMetaData = await qController.loadTableMetaData(
-      "carrier"
-    );
-    console.log("@dk label: " + tableMetaData?.label);
-    console.log("@dk fields: " + tableMetaData?.fields);
-    expect(tableMetaData?.label).toBe("Carrier");
-  });
+    it("should return an error with a bad base url meta data", async () => {
+        try {
+            const qController = new QController("http://notahost:123");
+            const metaData = await qController.loadMetaData();
+            expect(metaData).toBeNull()
+        } catch (error) {
+            expect(error).toBeInstanceOf(AxiosError)
+        }
+    });
 
-  it("should return record data from a query", async () => {
-    const qController = new QController("http://localhost:8000");
-    const records: QTableRecord[] = await qController.query("person", 100);
-    console.log("@tc label: " + records.length);
-    expect(records.length).toBe(5);
-  });
+    it("should return table meta data without promise", async () => {
+        const qController = new QController(baseURL);
+
+        const tableMetaData = await qController.loadTableMetaData("carrier");
+        expect(tableMetaData).toBeInstanceOf(QTableMetaData);
+        expect(tableMetaData.fields).toBeInstanceOf(Map)
+        expect(tableMetaData?.label).toBe("Carrier");
+
+        const nameField = tableMetaData?.fields?.get("name");
+        expect(nameField).toBeInstanceOf(QFieldMetaData);
+        expect(nameField?.name).toBe("name");
+        expect(nameField?.label).toBe("Name");
+        expect(nameField?.type).toBe(QFieldType.STRING);
+    });
+
+    it("should fail table meta data for bad table name without promise", async () => {
+        try {
+            const qController = new QController(baseURL);
+            const tableMetaData = await qController.loadTableMetaData("currier");
+            expect(tableMetaData).toBeNull()
+        } catch (error) {
+            expect(error).toBeInstanceOf(AxiosError)
+        }
+    });
+
+    it("should create a record", async () => {
+        const qController = new QController(baseURL);
+        let data = {firstName: "John", lastName: "Doe", email: "jdoe@kingsrook.com"};
+        const personRecord: QRecord = await qController.create("person", data);
+        expect(personRecord).toBeInstanceOf(QRecord);
+        expect(personRecord.values.get("firstName")).toBe("John")
+    });
+
+    it("should update a record", async () => {
+        const qController = new QController(baseURL);
+        let data = {firstName: "John", lastName: "Doe", email: "jdoe@kingsrook.com"};
+        const personRecord: QRecord = await qController.update("person", 1, data);
+        expect(personRecord).toBeInstanceOf(QRecord);
+        expect(personRecord.values.get("firstName")).toBe("John")
+    });
+
+    it("should query for records", async () => {
+        const qController = new QController(baseURL);
+        const personRecords: QRecord[] = await qController.query("person", 1);
+        expect(personRecords).toBeInstanceOf(Array);
+        expect(personRecords.length).toBe(1);
+    });
+
+    it("should delete a record", async () => {
+        const qController = new QController(baseURL);
+        const personRecord: QRecord = await qController.delete("person", 1);
+        expect(personRecord).toBeInstanceOf(QRecord);
+    });
+
 });

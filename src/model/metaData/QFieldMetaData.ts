@@ -22,6 +22,7 @@
 import {QFieldType} from './QFieldType';
 
 /*******************************************************************************
+ ** Meta-data to represent a single field in a table.
  **
  *******************************************************************************/
 export class QFieldMetaData
@@ -30,10 +31,10 @@ export class QFieldMetaData
    label: string;
    type: QFieldType;
 
-   constructor(name: string, type: QFieldType)
+   constructor(object: any)
    {
-      this.name = name;
-      this.label = name.substring(0, 1).toUpperCase() + name.substring(1);
-      this.type = type;
+      this.name = object.name;
+      this.label = object.label;
+      this.type = object.type;
    }
 }

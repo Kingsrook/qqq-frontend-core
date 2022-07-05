@@ -22,18 +22,25 @@
 import { QFieldMetaData } from "./QFieldMetaData";
 
 /*******************************************************************************
+ ** Meta-Data to define a table in a QQQ instance.
  **
  *******************************************************************************/
 export class QTableMetaData {
   name: string;
   label: string;
   primaryKeyField: string;
-  fields: Map<string, QFieldMetaData>;
+  fields?: Map<string, QFieldMetaData>;
 
-  constructor(name: string) {
-    this.name = name;
-    this.label = name.substring(0, 1).toUpperCase() + name.substring(1);
-    this.fields = new Map<string, QFieldMetaData>();
-    this.primaryKeyField = "";
+  constructor(object: any) {
+    this.name = object.name;
+    this.label = object.label;
+    this.primaryKeyField = object.primaryKeyField
+
+    if(object.fields) {
+      this.fields = new Map<string, QFieldMetaData>();
+      for (const key in object.fields) {
+        this.fields.set(key, new QFieldMetaData(object.fields[key]))
+      }
+    }
   }
 }

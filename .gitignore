@@ -7,3 +7,5 @@ lib
 .idea/aws.xml
 .idea/misc.xml
 .idea/runConfigurations.xml
+
+**/.DS_Store

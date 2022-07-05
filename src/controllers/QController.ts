@@ -21,125 +21,114 @@
 
 // export default (a: number, b: number): number => a + b;
 
-import { QTableMetaData } from "../model/metaData/QTableMetaData";
-import { QTableRecord } from "../model/metaData/QTableRecord";
-import { AxiosError, AxiosResponse } from "axios";
+import {QTableMetaData} from "../model/metaData/QTableMetaData";
+import {QRecord} from "../model/QRecord";
+import {AxiosError, AxiosResponse} from "axios";
 
 const axios = require("axios").default;
 
+const throwError = (response: AxiosError) => {
+    throw (response);
+}
+
 /*******************************************************************************
- **
+ ** Controller for interacting with a QQQ backend.
  *******************************************************************************/
 export class QController {
-  private baseUrl: string;
+    private axiosInstance;
 
-  /*******************************************************************************
-   **
-   *******************************************************************************/
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
-  }
-
-  /*******************************************************************************
-   **
-   *******************************************************************************/
-  async loadMetaData(): Promise<Map<string, QTableMetaData>> {
-    return await new Promise((resolve, reject) => {
-      axios
-        .get(this.baseUrl + "/metaData")
-        .then((response: AxiosResponse) => {
-          console.log(response);
-
-          // const table = new QTableMetaData('episode');
-
-          const tables = new Map();
-          for (const tableName in response.data.tables) {
-            tables.set(tableName, response.data.tables[tableName]);
-          }
-
-          resolve(tables);
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-          reject(error.message);
+    /*******************************************************************************
+     **
+     *******************************************************************************/
+    constructor(baseUrl: string) {
+        this.axiosInstance = axios.create({
+            baseURL: baseUrl,
+            timeout: 15000, // todo - evaulate this!
         });
-    });
-  }
-
-  /*******************************************************************************
-   **
-   *******************************************************************************/
-  async loadTableMetaData(tableName: String): Promise<QTableMetaData> {
-    return await new Promise((resolve, reject) => {
-      axios
-        .get(this.baseUrl + "/metaData/" + tableName)
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          resolve(response.data.table);
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-          reject(error.message);
-        });
-    });
-  }
-
-  /*******************************************************************************
-   **
-   *******************************************************************************/
-  async create(tableName: String, data: {}): Promise<QTableRecord[]> {
-    return await new Promise((resolve, reject) => {
-      axios
-        .post(this.baseUrl + "/data/" + tableName, data)
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          resolve(response.data.records); // create results
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-          reject(error.message);
-        });
-    });
-  }
-
-  /*******************************************************************************
-   **
-   *******************************************************************************/
-  async query(tableName: String, limit: number): Promise<QTableRecord[]> {
-    let queryURL = this.baseUrl + "/data/" + tableName + "?1=1";
-    if (limit != null) {
-      queryURL += "&limit=" + limit;
     }
 
-    return await new Promise((resolve, reject) => {
-      axios
-        .get(queryURL)
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          resolve(response.data.records); //queryResult
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-          reject(error.message);
-        });
-    });
-  }
+    /*******************************************************************************
+     ** Fetch the top-level meta data for a qqq instance.
+     *******************************************************************************/
+    async loadMetaData(): Promise<Map<string, QTableMetaData>> {
+        return this.axiosInstance.get(`/metaData/`)
+            .then((response: AxiosResponse) => {
+                const tables = new Map();
+                for (const tableName in response.data.tables) {
+                    tables.set(tableName, new QTableMetaData(response.data.tables[tableName]));
+                }
+                return (tables);
+            })
+            .catch(throwError);
+    }
 
-  /*******************************************************************************
-   **
-   *******************************************************************************/
-  async delete(tableName: String, id: any): Promise<QTableRecord[]> {
-    return await new Promise((resolve, reject) => {
-      axios
-        .delete(this.baseUrl + "/data/" + tableName + "/" + id)
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          resolve(response.data.records); //queryResult
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-          reject(error.message);
-        });
-    });
-  }
+
+    /*******************************************************************************
+     ** Fetch the full meta data for a specific table.
+     *******************************************************************************/
+    async loadTableMetaData(tableName: string): Promise<QTableMetaData> {
+        return this.axiosInstance.get(`/metaData/${tableName}`)
+            .then((response: AxiosResponse) => new QTableMetaData(response.data.table))
+            .catch(throwError);
+    }
+
+    /*******************************************************************************
+     ** Make a query request to the backend
+     *******************************************************************************/
+    async query(tableName: string, limit: number): Promise<QRecord[]> {
+        let queryURL = `/data/${tableName}?1=1`;
+        if (limit != null) {
+            queryURL += `&limit=${limit}`;
+        }
+
+        return this.axiosInstance.get(queryURL)
+            .then((response: AxiosResponse) => {
+                const records: QRecord[] = [];
+                for (let i = 0; i < response.data.records.length; i++) {
+                    records.push(new QRecord(response.data.records[i]));
+                }
+                return (records);
+            })
+            .catch(throwError);
+    }
+
+    /*******************************************************************************
+     ** Make a backend call to create a single record
+     ** TODO - bulk - despite being same on backend, feels like could or should be
+     **  different in here?  maybe not, but needs figured out.
+     *******************************************************************************/
+    async create(tableName: string, data: {}): Promise<QRecord> {
+        return this.axiosInstance.post(`/data/${tableName}`, data)
+            .then((response: AxiosResponse) => {
+                return new QRecord(response.data.records[0])
+            })
+            .catch(throwError);
+    }
+
+    /*******************************************************************************
+     ** Make a backend call to update a single record
+     ** TODO - bulk - despite being same on backend, feels like could or should be
+     **  different in here?  maybe not, but needs figured out.
+     *******************************************************************************/
+    async update(tableName: string, id: any, data: {}): Promise<QRecord> {
+        return this.axiosInstance.put(`/data/${tableName}/${id}`, data)
+            .then((response: AxiosResponse) => {
+                return new QRecord(response.data.records[0])
+            })
+            .catch(throwError);
+    }
+
+    /*******************************************************************************
+     ** Make a backend call to delete a single record
+     ** TODO - bulk - despite being same on backend, feels like could or should be
+     **  different in here?  maybe not, but needs figured out.
+     *******************************************************************************/
+    async delete(tableName: string, id: any): Promise<QRecord> {
+        return this.axiosInstance.delete(`/data/${tableName}/${id}`)
+            .then((response: AxiosResponse) => {
+                return new QRecord(response.data.records[0])
+            })
+            .catch(throwError);
+    }
+
 }

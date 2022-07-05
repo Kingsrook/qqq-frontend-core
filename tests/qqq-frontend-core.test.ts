@@ -19,12 +19,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// import {add, mul} from "../src/qqq-frontend-core";
+import {QController} from "../src/controllers/QController";
 
 describe("Top level test", () =>
 {
-   it("kinda just is here", () =>
+   it("should be able to instantiate a QController", () =>
    {
-      expect(true).toBeTruthy()
+      var qController = new QController("");
+      expect(qController).toBeInstanceOf(QController)
    });
 });
