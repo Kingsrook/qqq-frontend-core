@@ -19,29 +19,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFrontendStepMetaData } from "./QFrontendStepMetaData";
-
 /*******************************************************************************
- ** Meta-Data to define a process in a QQQ instance.
+ ** front-end state of a running process
  **
  *******************************************************************************/
-export class QProcessMetaData {
-  name: string;
-  label: string;
-  tableName: string;
-  frontendSteps?: QFrontendStepMetaData[];
+export class QProcessState {
+  processName: string;
+  uuid: string;
+  state: "running" | "done";
 
   constructor(object: any) {
-    this.name = object.name;
-    this.label = object.label;
-    this.tableName = object.tableName;
-
-    if (object.frontendSteps) {
-      this.frontendSteps = [];
-      for (let i = 0; i < object.frontendSteps.length; i++)
-        this.frontendSteps.push(
-          new QFrontendStepMetaData(object.frontendSteps[i])
-        );
-    }
+    this.processName = object.processName;
+    this.uuid = object.uuid;
+    this.state = object.state;
   }
 }

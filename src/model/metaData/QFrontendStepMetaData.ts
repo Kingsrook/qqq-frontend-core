@@ -19,29 +19,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFrontendStepMetaData } from "./QFrontendStepMetaData";
+import { QFieldMetaData } from "./QFieldMetaData";
 
 /*******************************************************************************
- ** Meta-Data to define a process in a QQQ instance.
+ ** Meta-Data to define a step (for the frontend) in a QQQ process.
  **
  *******************************************************************************/
-export class QProcessMetaData {
+export class QFrontendStepMetaData {
   name: string;
   label: string;
-  tableName: string;
-  frontendSteps?: QFrontendStepMetaData[];
+  formFields?: QFieldMetaData[];
 
   constructor(object: any) {
     this.name = object.name;
     this.label = object.label;
-    this.tableName = object.tableName;
 
-    if (object.frontendSteps) {
-      this.frontendSteps = [];
-      for (let i = 0; i < object.frontendSteps.length; i++)
-        this.frontendSteps.push(
-          new QFrontendStepMetaData(object.frontendSteps[i])
-        );
+    if (object.formFields) {
+      this.formFields = [];
+      for (let i = 0; i < object.formFields.length; i++)
+        this.formFields.push(new QFieldMetaData(object.formFields[i]));
     }
   }
 }
