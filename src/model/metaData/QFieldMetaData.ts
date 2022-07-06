@@ -19,22 +19,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QFieldType} from './QFieldType';
+import { QFieldType } from "./QFieldType";
 
 /*******************************************************************************
  ** Meta-data to represent a single field in a table.
  **
  *******************************************************************************/
-export class QFieldMetaData
-{
-   name: string;
-   label: string;
-   type: QFieldType;
+export class QFieldMetaData {
+  name: string;
+  label: string;
+  type: QFieldType;
+  isRequired: boolean;
 
-   constructor(object: any)
-   {
-      this.name = object.name;
-      this.label = object.label;
-      this.type = object.type;
-   }
+  constructor(object: any) {
+    this.name = object.name;
+    this.label = object.label;
+    this.type = object.type;
+    this.isRequired = object.isRequired;
+  }
 }

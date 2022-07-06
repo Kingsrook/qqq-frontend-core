@@ -29,17 +29,19 @@ export class QTableMetaData {
   name: string;
   label: string;
   primaryKeyField: string;
+  isRequired: string;
   fields?: Map<string, QFieldMetaData>;
 
   constructor(object: any) {
     this.name = object.name;
     this.label = object.label;
-    this.primaryKeyField = object.primaryKeyField
+    this.isRequired = object.isRequired;
+    this.primaryKeyField = object.primaryKeyField;
 
-    if(object.fields) {
+    if (object.fields) {
       this.fields = new Map<string, QFieldMetaData>();
       for (const key in object.fields) {
-        this.fields.set(key, new QFieldMetaData(object.fields[key]))
+        this.fields.set(key, new QFieldMetaData(object.fields[key]));
       }
     }
   }
