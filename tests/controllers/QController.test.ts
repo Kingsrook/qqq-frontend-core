@@ -33,7 +33,7 @@ import { QJobRunning } from "../../src/model/processes/QJobRunning";
 import { QJobComplete } from "../../src/model/processes/QJobComplete";
 import { QJobError } from "../../src/model/processes/QJobError";
 
-import { AxiosError } from "axios";
+import AxiosError from "axios";
 
 const baseURL = "http://localhost:8000";
 

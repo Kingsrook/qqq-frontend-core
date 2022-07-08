@@ -112,8 +112,8 @@ export class QController {
    *******************************************************************************/
   async query(
     tableName: string,
-    limit: number,
-    skip: number
+    limit?: number,
+    skip?: number
   ): Promise<QRecord[]> {
     let queryURL = `/data/${tableName}?1=1`;
     queryURL += limit ? `&limit=${limit}` : "";
