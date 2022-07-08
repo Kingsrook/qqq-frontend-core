@@ -92,20 +92,41 @@ export class QController {
   }
 
   /*******************************************************************************
+   ** Make a count request to the backend
+   *******************************************************************************/
+  async count(tableName: string): Promise<number> {
+    let countURL = `/data/${tableName}/count`;
+
+    console.log(`COUNTURL: ${countURL}`);
+
+    return this.axiosInstance
+      .get(countURL)
+      .then((response: AxiosResponse) => {
+        return response.data.count;
+      })
+      .catch(throwError);
+  }
+
+  /*******************************************************************************
    ** Make a query request to the backend
    *******************************************************************************/
-  async query(tableName: string, limit: number): Promise<QRecord[]> {
+  async query(
+    tableName: string,
+    limit: number,
+    skip: number
+  ): Promise<QRecord[]> {
     let queryURL = `/data/${tableName}?1=1`;
-    if (limit != null) {
-      queryURL += `&limit=${limit}`;
-    }
+    queryURL += limit ? `&limit=${limit}` : "";
+    queryURL += skip ? `&skip=${skip}` : "";
 
     return this.axiosInstance
       .get(queryURL)
       .then((response: AxiosResponse) => {
         const records: QRecord[] = [];
-        for (let i = 0; i < response.data.records.length; i++) {
-          records.push(new QRecord(response.data.records[i]));
+        if (response.data.records) {
+          for (let i = 0; i < response.data.records.length; i++) {
+            records.push(new QRecord(response.data.records[i]));
+          }
         }
         return records;
       })
