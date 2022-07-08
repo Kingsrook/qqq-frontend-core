@@ -26,8 +26,12 @@ import { QProcessMetaData } from "../model/metaData/QProcessMetaData";
 import { QRecord } from "../model/QRecord";
 import { QTableMetaData } from "../model/metaData/QTableMetaData";
 
+import { QJobStarted } from "../model/processes/QJobStarted";
+import { QJobComplete } from "../model/processes/QJobComplete";
+import { QJobError } from "../model/processes/QJobError";
+import { QJobRunning } from "../model/processes/QJobRunning";
+
 import { AxiosError, AxiosResponse } from "axios";
-import { QProcessState } from "../model/processState/QProcessState";
 
 const axios = require("axios").default;
 
@@ -164,13 +168,50 @@ export class QController {
   }
 
   /*******************************************************************************
+   ** Common logic to parse a process-related server response into an appropriate object.
+   *******************************************************************************/
+  parseProcessResponse(
+    response: AxiosResponse
+  ): QJobStarted | QJobRunning | QJobComplete | QJobError {
+    //////////////////////////////////////////////////////////////////////////////////////
+    // so, the order of these checks is critical (mostly because, complete & error have //
+    // a jobStatus with them too, so, you can't check that one too soon                 //
+    //////////////////////////////////////////////////////////////////////////////////////
+    if (response.data.jobUUID) {
+      return new QJobStarted(response.data);
+    } else if (response.data.values || response.data.nextStep) {
+      return new QJobComplete(response.data);
+    } else if (response.data.error) {
+      return new QJobError(response.data);
+    } else if (response.data.jobStatus) {
+      return new QJobRunning(response.data.jobStatus);
+    } else {
+      return new QJobError({ error: "Unexpected server response." });
+    }
+  }
+
+  /*******************************************************************************
    ** Initialize a process
    *******************************************************************************/
-  async processInit(processName: string): Promise<QRecord> {
+  async processInit(
+    processName: string,
+    queryString: string = ""
+  ): Promise<QJobStarted | QJobComplete | QJobError> {
+    let url = `/processes/${processName}/init`;
+    if (queryString !== "") {
+      url += `?${queryString}`;
+    }
     return this.axiosInstance
-      .post(`/processes/${processName}/init`)
+      .post(url)
       .then((response: AxiosResponse) => {
-        return new QProcessState(response.data);
+        const responseObject = this.parseProcessResponse(response);
+        if (responseObject instanceof QJobRunning) {
+          ////////////////////////////////////////////////////////////////////
+          // we aren't allowed to return "Running" here, so just in case... //
+          ////////////////////////////////////////////////////////////////////
+          return new QJobError({ error: "Unexpected server response." });
+        }
+        return responseObject;
       })
       .catch(throwError);
   }
@@ -179,25 +220,49 @@ export class QController {
    ** Proceed to the next step in a process
    *******************************************************************************/
   async processStep(
-    processState: QProcessState,
-    lastStep: string = ""
-  ): Promise<QRecord> {
+    processName: string,
+    processUUID: string,
+    step: string,
+    queryString: string = ""
+  ): Promise<QJobStarted | QJobComplete | QJobError> {
+    let url = `/processes/${processName}/${processUUID}/step/${step}`;
+    if (queryString !== "") {
+      url += `?${queryString}`;
+    }
     return this.axiosInstance
-      .post(`/processes/${processState.processName}/step/${lastStep}`)
+      .post(url)
       .then((response: AxiosResponse) => {
-        return new QProcessState(response.data);
+        const responseObject = this.parseProcessResponse(response);
+        if (responseObject instanceof QJobRunning) {
+          ////////////////////////////////////////////////////////////////////
+          // we aren't allowed to return "Running" here, so just in case... //
+          ////////////////////////////////////////////////////////////////////
+          return new QJobError({ error: "Unexpected server response." });
+        }
+        return responseObject;
       })
       .catch(throwError);
   }
 
   /*******************************************************************************
-   ** Get the status for a currently executing process step (init or step)
+   ** Get the status for a currently executing job within a process (init or step)
    *******************************************************************************/
-  async processStatus(processState: QProcessState): Promise<QRecord> {
+  async processJobStatus(
+    processName: string,
+    processUUID: string,
+    jobUUID: string
+  ): Promise<QJobRunning | QJobComplete | QJobError> {
     return this.axiosInstance
-      .get(`/processes/${processState.processName}/status/${processState.uuid}`)
+      .get(`/processes/${processName}/${processUUID}/status/${jobUUID}`)
       .then((response: AxiosResponse) => {
-        return new QProcessState(response.data);
+        const responseObject = this.parseProcessResponse(response);
+        if (responseObject instanceof QJobStarted) {
+          ////////////////////////////////////////////////////////////////////
+          // we aren't allowed to return "Started" here, so just in case... //
+          ////////////////////////////////////////////////////////////////////
+          return new QJobError({ error: "Unexpected server response." });
+        }
+        return responseObject;
       })
       .catch(throwError);
   }

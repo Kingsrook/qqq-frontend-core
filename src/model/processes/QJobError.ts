@@ -20,17 +20,15 @@
  */
 
 /*******************************************************************************
- ** front-end state of a running process
+ ** Indication that a process step had an error.
  **
  *******************************************************************************/
-export class QProcessState {
-  processName: string;
-  uuid: string;
-  state: "running" | "done";
+export class QJobError {
+  processUUID: string;
+  error: string;
 
   constructor(object: any) {
-    this.processName = object.processName;
-    this.uuid = object.uuid;
-    this.state = object.state;
+    this.processUUID = object.processUUID;
+    this.error = object.error;
   }
 }
