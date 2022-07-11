@@ -29,6 +29,8 @@ export class QFrontendStepMetaData {
   name: string;
   label: string;
   formFields?: QFieldMetaData[];
+  viewFields?: QFieldMetaData[];
+  recordListFields?: QFieldMetaData[];
 
   constructor(object: any) {
     this.name = object.name;
@@ -38,6 +40,20 @@ export class QFrontendStepMetaData {
       this.formFields = [];
       for (let i = 0; i < object.formFields.length; i++)
         this.formFields.push(new QFieldMetaData(object.formFields[i]));
+    }
+
+    if (object.viewFields) {
+      this.viewFields = [];
+      for (let i = 0; i < object.viewFields.length; i++)
+        this.viewFields.push(new QFieldMetaData(object.viewFields[i]));
+    }
+
+    if (object.recordListFields) {
+      this.recordListFields = [];
+      for (let i = 0; i < object.recordListFields.length; i++)
+        this.recordListFields.push(
+          new QFieldMetaData(object.recordListFields[i])
+        );
     }
   }
 }

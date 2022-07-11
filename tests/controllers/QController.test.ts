@@ -273,4 +273,27 @@ describe("q controller test", () => {
     );
     expect(statusResponse).toBeInstanceOf(QJobError);
   });
+
+  it("should return process records", async () => {
+    let processName = "greet";
+    const initResponse = await qController.processInit(
+      processName,
+      "recordsParam=recordIds&recordIds=2,3"
+    );
+    expect(initResponse).toBeInstanceOf(QJobComplete);
+    const qJobComplete = initResponse as QJobComplete;
+    const processUUID = qJobComplete.processUUID;
+
+    const records = await qController.processRecords(
+      processName,
+      processUUID,
+      0,
+      20
+    );
+    expect(records).toBeInstanceOf(Array);
+    expect(records.length).toBe(2);
+    expect(records[0].values).toBeInstanceOf(Map);
+    expect(records[0].values.get("id")).not.toBeNull();
+    expect(records[0].values.get("firstName")).not.toBeNull();
+  });
 });

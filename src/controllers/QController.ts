@@ -287,4 +287,27 @@ export class QController {
       })
       .catch(throwError);
   }
+
+  /*******************************************************************************
+   ** Get records from a process's state
+   *******************************************************************************/
+  async processRecords(
+    processName: string,
+    processUUID: string,
+    skip: number = 0,
+    limit: number = 20
+  ): Promise<QRecord[]> {
+    return this.axiosInstance
+      .get(
+        `/processes/${processName}/${processUUID}/records?skip=${skip}&limit=${limit}`
+      )
+      .then((response: AxiosResponse) => {
+        const records: QRecord[] = [];
+        for (let i = 0; i < response.data.records.length; i++) {
+          records.push(new QRecord(response.data.records[i]));
+        }
+        return records;
+      })
+      .catch(throwError);
+  }
 }
