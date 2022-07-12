@@ -19,19 +19,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { QFilterCriteria } from "./QFilterCriteria";
+import { QFilterOrderBy } from "./QFilterOrderBy";
+
 /*******************************************************************************
- ** Possible data types for Q-fields.
+ ** Define a filter in a QQQ instance.
  **
  *******************************************************************************/
-export enum QFieldType {
-  BOOLEAN = "BOOLEAN",
-  STRING = "STRING",
-  INTEGER = "INTEGER",
-  DECIMAL = "DECIMAL",
-  DATE = "DATE",
-  TIME = "TIME",
-  DATE_TIME = "DATE_TIME",
-  TEXT = "TEXT",
-  HTML = "HTML",
-  PASSWORD = "PASSWORD",
+export class QQueryFilter {
+  criteria?: QFilterCriteria[];
+  orderBys?: QFilterOrderBy[];
+
+  constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[]) {
+    this.criteria = criteria;
+    this.orderBys = orderBys;
+  }
+
+  public addOrderBy(orderBy: QFilterOrderBy) {
+    if (!this.orderBys) {
+      this.orderBys = [] as QFilterOrderBy[];
+    }
+    this.orderBys.push(orderBy);
+  }
+
+  public addCriteria(criteria: QFilterCriteria) {
+    if (!this.criteria) {
+      this.criteria = [] as QFilterCriteria[];
+    }
+    this.criteria.push(criteria);
+  }
 }

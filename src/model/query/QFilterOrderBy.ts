@@ -20,18 +20,15 @@
  */
 
 /*******************************************************************************
- ** Possible data types for Q-fields.
+ ** Define a filter order by in a QQQ instance.
  **
  *******************************************************************************/
-export enum QFieldType {
-  BOOLEAN = "BOOLEAN",
-  STRING = "STRING",
-  INTEGER = "INTEGER",
-  DECIMAL = "DECIMAL",
-  DATE = "DATE",
-  TIME = "TIME",
-  DATE_TIME = "DATE_TIME",
-  TEXT = "TEXT",
-  HTML = "HTML",
-  PASSWORD = "PASSWORD",
+export class QFilterOrderBy {
+  fieldName: string;
+  isAscending?: boolean;
+
+  constructor(fieldName: string, isAscending?: boolean) {
+    this.fieldName = fieldName;
+    this.isAscending = isAscending;
+  }
 }

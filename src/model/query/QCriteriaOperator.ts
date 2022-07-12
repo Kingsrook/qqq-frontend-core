@@ -20,18 +20,26 @@
  */
 
 /*******************************************************************************
- ** Possible data types for Q-fields.
+ ** Possible criteria operators for Q-filters.
  **
  *******************************************************************************/
-export enum QFieldType {
-  BOOLEAN = "BOOLEAN",
-  STRING = "STRING",
-  INTEGER = "INTEGER",
-  DECIMAL = "DECIMAL",
-  DATE = "DATE",
-  TIME = "TIME",
-  DATE_TIME = "DATE_TIME",
-  TEXT = "TEXT",
-  HTML = "HTML",
-  PASSWORD = "PASSWORD",
+export enum QCriteriaOperator {
+  EQUALS = "EQUALS",
+  NOT_EQUALS = "NOT_EQUALS",
+  IN = "IN",
+  NOT_IN = "NOT_IN",
+  STARTS_WITH = "STARTS_WITH",
+  ENDS_WITH = "ENDS_WITH",
+  CONTAINS = "CONTAINS",
+  NOT_STARTS_WITH = "NOT_STARTS_WITH",
+  NOT_ENDS_WITH = "NOT_ENDS_WITH",
+  NOT_CONTAINS = "NOT_CONTAINS",
+  LESS_THAN = "LESS_THAN",
+  LESS_THAN_OR_EQUALS = "LESS_THAN_OR_EQUALS",
+  GREATER_THAN = "GREATER_THAN",
+  GREATER_THAN_OR_EQUALS = "GREATER_THAN_OR_EQUALS",
+  IS_BLANK = "IS_BLANK",
+  IS_NOT_BLANK = "IS_NOT_BLANK",
+  BETWEEN = "BETWEEN",
+  NOT_BETWEEN = "NOT_BETWEEN",
 }

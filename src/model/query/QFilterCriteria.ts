@@ -19,19 +19,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { QCriteriaOperator } from "./QCriteriaOperator";
+
 /*******************************************************************************
- ** Possible data types for Q-fields.
+ ** Define a filter criteria in a QQQ instance.
  **
  *******************************************************************************/
-export enum QFieldType {
-  BOOLEAN = "BOOLEAN",
-  STRING = "STRING",
-  INTEGER = "INTEGER",
-  DECIMAL = "DECIMAL",
-  DATE = "DATE",
-  TIME = "TIME",
-  DATE_TIME = "DATE_TIME",
-  TEXT = "TEXT",
-  HTML = "HTML",
-  PASSWORD = "PASSWORD",
+export class QFilterCriteria {
+  fieldName: string;
+  operator: QCriteriaOperator;
+  values!: any[];
+
+  constructor(fieldName: string, operator: QCriteriaOperator, values: any[]) {
+    this.fieldName = fieldName;
+    this.operator = operator;
+    this.values = values;
+  }
 }

@@ -32,6 +32,7 @@ import { QJobError } from "../model/processes/QJobError";
 import { QJobRunning } from "../model/processes/QJobRunning";
 
 import { AxiosError, AxiosResponse } from "axios";
+import { QQueryFilter } from "../model/query/QQueryFilter";
 
 const axios = require("axios").default;
 
@@ -97,8 +98,6 @@ export class QController {
   async count(tableName: string): Promise<number> {
     let countURL = `/data/${tableName}/count`;
 
-    console.log(`COUNTURL: ${countURL}`);
-
     return this.axiosInstance
       .get(countURL)
       .then((response: AxiosResponse) => {
@@ -112,12 +111,17 @@ export class QController {
    *******************************************************************************/
   async query(
     tableName: string,
+    filterCriteria?: QQueryFilter,
     limit?: number,
     skip?: number
   ): Promise<QRecord[]> {
     let queryURL = `/data/${tableName}?1=1`;
     queryURL += limit ? `&limit=${limit}` : "";
     queryURL += skip ? `&skip=${skip}` : "";
+
+    if (filterCriteria) {
+      queryURL += `&filter=${JSON.stringify(filterCriteria)}`;
+    }
 
     return this.axiosInstance
       .get(queryURL)
