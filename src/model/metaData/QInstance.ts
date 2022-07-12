@@ -26,23 +26,29 @@ import {QProcessMetaData} from "./QProcessMetaData";
  ** Meta-Data definition of a QQQ Instance
  **
  *******************************************************************************/
-export class QInstance {
-    tables?: Map<string, QTableMetaData>;
-    processes?: Map<string, QProcessMetaData>;
+export class QInstance
+{
+   tables?: Map<string, QTableMetaData>;
+   processes?: Map<string, QProcessMetaData>;
 
-    constructor(object: any) {
-        if (object.tables) {
-            this.tables = new Map<string, QTableMetaData>();
-            for (const key in object.tables) {
-                this.tables.set(key, new QTableMetaData(object.tables[key]))
-            }
-        }
+   constructor(object: any)
+   {
+      if (object.tables)
+      {
+         this.tables = new Map<string, QTableMetaData>();
+         for (const key in object.tables)
+         {
+            this.tables.set(key, new QTableMetaData(object.tables[key]))
+         }
+      }
 
-        if (object.processes) {
-            this.processes = new Map<string, QProcessMetaData>();
-            for (const key in object.processes) {
-                this.processes.set(key, new QProcessMetaData(object.processes[key]))
-            }
-        }
-    }
+      if (object.processes)
+      {
+         this.processes = new Map<string, QProcessMetaData>();
+         for (const key in object.processes)
+         {
+            this.processes.set(key, new QProcessMetaData(object.processes[key]))
+         }
+      }
+   }
 }

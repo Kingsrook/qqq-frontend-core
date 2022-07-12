@@ -25,14 +25,16 @@ import { QCriteriaOperator } from "./QCriteriaOperator";
  ** Define a filter criteria in a QQQ instance.
  **
  *******************************************************************************/
-export class QFilterCriteria {
-  fieldName: string;
-  operator: QCriteriaOperator;
-  values!: any[];
+export class QFilterCriteria
+{
+   fieldName: string;
+   operator: QCriteriaOperator;
+   values!: any[];
 
-  constructor(fieldName: string, operator: QCriteriaOperator, values: any[]) {
-    this.fieldName = fieldName;
-    this.operator = operator;
-    this.values = values;
-  }
+   constructor(fieldName: string, operator: QCriteriaOperator, values: any[])
+   {
+      this.fieldName = fieldName;
+      this.operator = operator;
+      this.values = values;
+   }
 }

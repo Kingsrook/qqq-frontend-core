@@ -23,14 +23,16 @@
  ** Indication that a process step has successfully finished running.
  **
  *******************************************************************************/
-export class QJobComplete {
-  processUUID: string;
-  values?: any;
-  nextStep: string;
+export class QJobComplete
+{
+   processUUID: string;
+   values?: any;
+   nextStep: string;
 
-  constructor(object: any) {
-    this.processUUID = object.processUUID;
-    this.values = object.values || {};
-    this.nextStep = object.nextStep;
-  }
+   constructor(object: any)
+   {
+      this.processUUID = object.processUUID;
+      this.values = object.values || {};
+      this.nextStep = object.nextStep;
+   }
 }

@@ -23,12 +23,14 @@
  ** Define a filter order by in a QQQ instance.
  **
  *******************************************************************************/
-export class QFilterOrderBy {
-  fieldName: string;
-  isAscending?: boolean;
+export class QFilterOrderBy
+{
+   fieldName: string;
+   isAscending?: boolean;
 
-  constructor(fieldName: string, isAscending?: boolean) {
-    this.fieldName = fieldName;
-    this.isAscending = isAscending;
-  }
+   constructor(fieldName: string, isAscending?: boolean)
+   {
+      this.fieldName = fieldName;
+      this.isAscending = isAscending;
+   }
 }

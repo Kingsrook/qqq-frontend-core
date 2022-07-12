@@ -23,16 +23,18 @@
  ** Indication that a process step is still running.
  **
  *******************************************************************************/
-export class QJobRunning {
-  processUUID: string;
-  message: string;
-  current?: number;
-  total?: number;
+export class QJobRunning
+{
+   processUUID: string;
+   message: string;
+   current?: number;
+   total?: number;
 
-  constructor(object: any) {
-    this.processUUID = object.processUUID;
-    this.message = object.message;
-    this.current = object.current;
-    this.total = object.total;
-  }
+   constructor(object: any)
+   {
+      this.processUUID = object.processUUID;
+      this.message = object.message;
+      this.current = object.current;
+      this.total = object.total;
+   }
 }

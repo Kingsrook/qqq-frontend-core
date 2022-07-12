@@ -23,12 +23,14 @@
  ** Indication that a process step had an error.
  **
  *******************************************************************************/
-export class QJobError {
-  processUUID: string;
-  error: string;
+export class QJobError
+{
+   processUUID: string;
+   error: string;
 
-  constructor(object: any) {
-    this.processUUID = object.processUUID;
-    this.error = object.error;
-  }
+   constructor(object: any)
+   {
+      this.processUUID = object.processUUID;
+      this.error = object.error;
+   }
 }

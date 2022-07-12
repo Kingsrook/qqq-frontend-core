@@ -24,22 +24,27 @@
  ** Data Record within qqq.  e.g., a single row from a database.
  **
  *******************************************************************************/
-export class QRecord {
-    tableName: string;
-    values: Map<string, any>;
-    displayValues: Map<string, string>;
+export class QRecord
+{
+   tableName: string;
+   values: Map<string, any>;
+   displayValues: Map<string, string>;
 
-    constructor(object: any) {
-        this.tableName = object.tableName;
+   constructor(object: any)
+   {
+      this.tableName = object.tableName;
 
-        this.values = new Map<string, any>();
-        for (const key in object.values) {
-            this.values.set(key, object.values[key])
-        }
+      this.values = new Map<string, any>();
+      for (const key in object.values)
+      {
+         this.values.set(key, object.values[key])
+      }
 
-        this.displayValues = new Map<string, any>();
-        for (const key in object.displayValues) {
-            this.displayValues.set(key, object.displayValues[key])
-        }
-    }
+      this.displayValues = new Map<string, any>();
+      for (const key in object.displayValues)
+      {
+         this.displayValues.set(key, object.displayValues[key])
+      }
+   }
 }
+

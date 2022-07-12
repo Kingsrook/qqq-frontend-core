@@ -19,10 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QController} from './controllers/QController';
-import {QTableMetaData} from './model/metaData/QTableMetaData';
-import {QFieldMetaData} from './model/metaData/QFieldMetaData';
-import {QFieldType} from './model/metaData/QFieldType';
+import {QController} from "./controllers/QController";
+import {QTableMetaData} from "./model/metaData/QTableMetaData";
+import {QFieldMetaData} from "./model/metaData/QFieldMetaData";
+import {QFieldType} from "./model/metaData/QFieldType";
 
 module.exports = {
    QController,

@@ -25,23 +25,26 @@ import { QFrontendStepMetaData } from "./QFrontendStepMetaData";
  ** Meta-Data to define a process in a QQQ instance.
  **
  *******************************************************************************/
-export class QProcessMetaData {
-  name: string;
-  label: string;
-  tableName: string;
-  frontendSteps?: QFrontendStepMetaData[];
+export class QProcessMetaData
+{
+   name: string;
+   label: string;
+   tableName: string;
+   frontendSteps?: QFrontendStepMetaData[];
 
-  constructor(object: any) {
-    this.name = object.name;
-    this.label = object.label;
-    this.tableName = object.tableName;
+   constructor(object: any)
+   {
+      this.name = object.name;
+      this.label = object.label;
+      this.tableName = object.tableName;
 
-    if (object.frontendSteps) {
-      this.frontendSteps = [];
-      for (let i = 0; i < object.frontendSteps.length; i++)
-        this.frontendSteps.push(
-          new QFrontendStepMetaData(object.frontendSteps[i])
-        );
-    }
-  }
+      if (object.frontendSteps)
+      {
+         this.frontendSteps = [];
+         for (let i = 0; i < object.frontendSteps.length; i++)
+            this.frontendSteps.push(
+               new QFrontendStepMetaData(object.frontendSteps[i])
+            );
+      }
+   }
 }

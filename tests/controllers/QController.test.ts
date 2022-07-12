@@ -37,263 +37,291 @@ import AxiosError from "axios";
 
 const baseURL = "http://localhost:8000";
 
-describe("q controller test", () => {
-  const qController = new QController(baseURL);
+describe("q controller test", () =>
+{
+   const qController = new QController(baseURL);
 
-  it("should return meta data", async () => {
-    const metaData = await qController.loadMetaData();
-    expect(metaData).toBeInstanceOf(QInstance);
+   it("should return meta data", async () =>
+   {
+      const metaData = await qController.loadMetaData();
+      expect(metaData).toBeInstanceOf(QInstance);
 
-    const tables = metaData.tables;
-    expect(tables?.size).toBeGreaterThan(1);
-    const personTable = tables?.get("person");
-    expect(personTable).toBeInstanceOf(QTableMetaData);
-    expect(personTable?.label).toBe("Person");
-    const fields = personTable?.fields;
-    expect(fields).toBeUndefined(); // this meta data does not go down to the field level!
+      const tables = metaData.tables;
+      expect(tables?.size).toBeGreaterThan(1);
+      const personTable = tables?.get("person");
+      expect(personTable).toBeInstanceOf(QTableMetaData);
+      expect(personTable?.label).toBe("Person");
+      const fields = personTable?.fields;
+      expect(fields).toBeUndefined(); // this meta data does not go down to the field level!
 
-    const processes = metaData.processes;
-    expect(processes?.size).toBeGreaterThan(0);
-    const greetProcess = processes?.get("greet");
-    expect(greetProcess).toBeInstanceOf(QProcessMetaData);
-    expect(greetProcess?.label).toBe("Greet People");
-  });
+      const processes = metaData.processes;
+      expect(processes?.size).toBeGreaterThan(0);
+      const greetProcess = processes?.get("greet");
+      expect(greetProcess).toBeInstanceOf(QProcessMetaData);
+      expect(greetProcess?.label).toBe("Greet People");
+   });
 
-  it("should return an error with a bad base url meta data", async () => {
-    try {
-      const badQController = new QController("http://notahost:123");
-      const metaData = await badQController.loadMetaData();
-      expect(metaData).toBeNull();
-    } catch (error) {
-      expect(error).toBeInstanceOf(AxiosError);
-    }
-  });
+   it("should return an error with a bad base url meta data", async () =>
+   {
+      try
+      {
+         const badQController = new QController("http://notahost:123");
+         const metaData = await badQController.loadMetaData();
+         expect(metaData).toBeNull();
+      }
+      catch (error)
+      {
+         expect(error).toBeInstanceOf(AxiosError);
+      }
+   });
 
-  it("should return table meta data", async () => {
-    const tableMetaData = await qController.loadTableMetaData("carrier");
-    expect(tableMetaData).toBeInstanceOf(QTableMetaData);
-    expect(tableMetaData.fields).toBeInstanceOf(Map);
-    expect(tableMetaData?.label).toBe("Carrier");
+   it("should return table meta data", async () =>
+   {
+      const tableMetaData = await qController.loadTableMetaData("carrier");
+      expect(tableMetaData).toBeInstanceOf(QTableMetaData);
+      expect(tableMetaData.fields).toBeInstanceOf(Map);
+      expect(tableMetaData?.label).toBe("Carrier");
 
-    const nameField = tableMetaData?.fields?.get("name");
-    expect(nameField).toBeInstanceOf(QFieldMetaData);
-    expect(nameField?.name).toBe("name");
-    expect(nameField?.label).toBe("Name");
-    expect(nameField?.type).toBe(QFieldType.STRING);
-  });
+      const nameField = tableMetaData?.fields?.get("name");
+      expect(nameField).toBeInstanceOf(QFieldMetaData);
+      expect(nameField?.name).toBe("name");
+      expect(nameField?.label).toBe("Name");
+      expect(nameField?.type).toBe(QFieldType.STRING);
+   });
 
-  it("should fail table meta data for bad table name", async () => {
-    try {
-      const tableMetaData = await qController.loadTableMetaData("currier");
-      expect(tableMetaData).toBeNull();
-    } catch (error) {
-      expect(error).toBeInstanceOf(AxiosError);
-    }
-  });
+   it("should fail table meta data for bad table name", async () =>
+   {
+      try
+      {
+         const tableMetaData = await qController.loadTableMetaData("currier");
+         expect(tableMetaData).toBeNull();
+      }
+      catch (error)
+      {
+         expect(error).toBeInstanceOf(AxiosError);
+      }
+   });
 
-  it("should return process meta data", async () => {
-    const processMetaData = await qController.loadProcessMetaData(
-      "greetInteractive"
-    );
-    expect(processMetaData).toBeInstanceOf(QProcessMetaData);
-    expect(processMetaData?.label).toBe("Greet Interactive");
-    expect(processMetaData?.frontendSteps).toBeInstanceOf(Array);
+   it("should return process meta data", async () =>
+   {
+      const processMetaData = await qController.loadProcessMetaData(
+         "greetInteractive"
+      );
+      expect(processMetaData).toBeInstanceOf(QProcessMetaData);
+      expect(processMetaData?.label).toBe("Greet Interactive");
+      expect(processMetaData?.frontendSteps).toBeInstanceOf(Array);
 
-    const setupStep = processMetaData?.frontendSteps?.[0];
-    expect(setupStep).toBeInstanceOf(QFrontendStepMetaData);
-    expect(setupStep?.name).toBe("setup");
-    expect(setupStep?.label).toBe("Setup");
-    expect(setupStep?.formFields).toBeInstanceOf(Array);
-    expect(setupStep?.formFields?.[0]).toBeInstanceOf(QFieldMetaData);
-    expect(setupStep?.formFields?.[0].name).toBe("greetingPrefix");
-  });
+      const setupStep = processMetaData?.frontendSteps?.[0];
+      expect(setupStep).toBeInstanceOf(QFrontendStepMetaData);
+      expect(setupStep?.name).toBe("setup");
+      expect(setupStep?.label).toBe("Setup");
+      expect(setupStep?.formFields).toBeInstanceOf(Array);
+      expect(setupStep?.formFields?.[0]).toBeInstanceOf(QFieldMetaData);
+      expect(setupStep?.formFields?.[0].name).toBe("greetingPrefix");
+   });
 
-  it("should fail process meta data for bad process name", async () => {
-    try {
-      const processMetaData = await qController.loadProcessMetaData("gort");
-      expect(processMetaData).toBeNull();
-    } catch (error) {
-      expect(error).toBeInstanceOf(AxiosError);
-    }
-  });
+   it("should fail process meta data for bad process name", async () =>
+   {
+      try
+      {
+         const processMetaData = await qController.loadProcessMetaData("gort");
+         expect(processMetaData).toBeNull();
+      }
+      catch (error)
+      {
+         expect(error).toBeInstanceOf(AxiosError);
+      }
+   });
 
-  it("should create a record", async () => {
-    let data = {
-      firstName: "John",
-      lastName: "Doe",
-      email: "jdoe@kingsrook.com",
-    };
-    const personRecord: QRecord = await qController.create("person", data);
-    expect(personRecord).toBeInstanceOf(QRecord);
-    expect(personRecord.values.get("firstName")).toBe("John");
-  });
+   it("should create a record", async () =>
+   {
+      let data = {
+         firstName: "John",
+         lastName: "Doe",
+         email: "jdoe@kingsrook.com",
+      };
+      const personRecord: QRecord = await qController.create("person", data);
+      expect(personRecord).toBeInstanceOf(QRecord);
+      expect(personRecord.values.get("firstName")).toBe("John");
+   });
 
-  it("should update a record", async () => {
-    let data = {
-      firstName: "John",
-      lastName: "Doe",
-      email: "jdoe@kingsrook.com",
-    };
-    const personRecord: QRecord = await qController.update("person", 1, data);
-    expect(personRecord).toBeInstanceOf(QRecord);
-    expect(personRecord.values.get("firstName")).toBe("John");
-  });
+   it("should update a record", async () =>
+   {
+      let data = {
+         firstName: "John",
+         lastName: "Doe",
+         email: "jdoe@kingsrook.com",
+      };
+      const personRecord: QRecord = await qController.update("person", 1, data);
+      expect(personRecord).toBeInstanceOf(QRecord);
+      expect(personRecord.values.get("firstName")).toBe("John");
+   });
 
-  it("should query for records", async () => {
-    const personRecords: QRecord[] = await qController.query("person", 1);
-    expect(personRecords).toBeInstanceOf(Array);
-    expect(personRecords.length).toBe(1);
-  });
+   it("should query for records", async () =>
+   {
+      const personRecords: QRecord[] = await qController.query("person", 1);
+      expect(personRecords).toBeInstanceOf(Array);
+      expect(personRecords.length).toBe(1);
+   });
 
-  it("should get a single record by id", async () => {
-    const personRecord: QRecord = await qController.get("person", 5);
-    expect(personRecord).toBeInstanceOf(QRecord);
-    expect(personRecord.values).toBeInstanceOf(Map);
-    console.log(personRecord.values.get("firstName"));
-    expect(personRecord.values.get("firstName")).toBeDefined();
-  });
+   it("should get a single record by id", async () =>
+   {
+      const personRecord: QRecord = await qController.get("person", 5);
+      expect(personRecord).toBeInstanceOf(QRecord);
+      expect(personRecord.values).toBeInstanceOf(Map);
+      console.log(personRecord.values.get("firstName"));
+      expect(personRecord.values.get("firstName")).toBeDefined();
+   });
 
-  it("should delete a record", async () => {
-    const personRecord: QRecord = await qController.delete("person", 1);
-    expect(personRecord).toBeInstanceOf(QRecord);
-  });
+   it("should delete a record", async () =>
+   {
+      const personRecord: QRecord = await qController.delete("person", 1);
+      expect(personRecord).toBeInstanceOf(QRecord);
+   });
 
-  const sleep = (delay: number) =>
-    new Promise((resolve) => setTimeout(resolve, delay));
+   const sleep = (delay: number) =>
+      new Promise((resolve) => setTimeout(resolve, delay));
 
-  it("should init a process that goes async", async () => {
-    let processName = "simpleSleep";
-    const initResponse = await qController.processInit(
-      processName,
-      "_qStepTimeoutMillis=10&sleepMillis=100"
-    );
-    expect(initResponse).toBeInstanceOf(QJobStarted);
-    const qJobStarted = initResponse as QJobStarted;
+   it("should init a process that goes async", async () =>
+   {
+      let processName = "simpleSleep";
+      const initResponse = await qController.processInit(
+         processName,
+         "_qStepTimeoutMillis=10&sleepMillis=100"
+      );
+      expect(initResponse).toBeInstanceOf(QJobStarted);
+      const qJobStarted = initResponse as QJobStarted;
 
-    const statusResponse1 = await qController.processJobStatus(
-      processName,
-      qJobStarted.processUUID,
-      qJobStarted.jobUUID
-    );
-    expect(statusResponse1).toBeInstanceOf(QJobRunning);
+      const statusResponse1 = await qController.processJobStatus(
+         processName,
+         qJobStarted.processUUID,
+         qJobStarted.jobUUID
+      );
+      expect(statusResponse1).toBeInstanceOf(QJobRunning);
 
-    /////////////////////////////////////////
-    // wait for the job to actually finish //
-    /////////////////////////////////////////
-    await sleep(750);
+      /////////////////////////////////////////
+      // wait for the job to actually finish //
+      /////////////////////////////////////////
+      await sleep(750);
 
-    const statusResponse2 = await qController.processJobStatus(
-      processName,
-      qJobStarted.processUUID,
-      qJobStarted.jobUUID
-    );
-    expect(statusResponse2).toBeInstanceOf(QJobComplete);
-  });
+      const statusResponse2 = await qController.processJobStatus(
+         processName,
+         qJobStarted.processUUID,
+         qJobStarted.jobUUID
+      );
+      expect(statusResponse2).toBeInstanceOf(QJobComplete);
+   });
 
-  it("should init a process that completes synchronously", async () => {
-    let processName = "simpleSleep";
-    const initResponse = await qController.processInit(
-      processName,
-      "_qStepTimeoutMillis=100&sleepMillis=10"
-    );
-    expect(initResponse).toBeInstanceOf(QJobComplete);
-  });
+   it("should init a process that completes synchronously", async () =>
+   {
+      let processName = "simpleSleep";
+      const initResponse = await qController.processInit(
+         processName,
+         "_qStepTimeoutMillis=100&sleepMillis=10"
+      );
+      expect(initResponse).toBeInstanceOf(QJobComplete);
+   });
 
-  it("should run a step in a process that goes async", async () => {
-    let processName = "sleepInteractive";
-    const initResponse = await qController.processInit(processName);
-    expect(initResponse).toBeInstanceOf(QJobComplete);
-    const qJobComplete = initResponse as QJobComplete;
+   it("should run a step in a process that goes async", async () =>
+   {
+      let processName = "sleepInteractive";
+      const initResponse = await qController.processInit(processName);
+      expect(initResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete = initResponse as QJobComplete;
 
-    const stepResponse = await qController.processStep(
-      processName,
-      qJobComplete.processUUID,
-      qJobComplete.nextStep,
-      "_qStepTimeoutMillis=10&sleepMillis=100"
-    );
-    expect(stepResponse).toBeInstanceOf(QJobStarted);
-    const qJobStarted = stepResponse as QJobStarted;
+      const stepResponse = await qController.processStep(
+         processName,
+         qJobComplete.processUUID,
+         qJobComplete.nextStep,
+         "_qStepTimeoutMillis=10&sleepMillis=100"
+      );
+      expect(stepResponse).toBeInstanceOf(QJobStarted);
+      const qJobStarted = stepResponse as QJobStarted;
 
-    /////////////////////////////////////////
-    // wait for the job to actually finish //
-    /////////////////////////////////////////
-    await sleep(200);
-    const statusResponse = await qController.processJobStatus(
-      processName,
-      qJobComplete.processUUID,
-      qJobStarted.jobUUID
-    );
-    expect(statusResponse).toBeInstanceOf(QJobComplete);
-  });
+      /////////////////////////////////////////
+      // wait for the job to actually finish //
+      /////////////////////////////////////////
+      await sleep(200);
+      const statusResponse = await qController.processJobStatus(
+         processName,
+         qJobComplete.processUUID,
+         qJobStarted.jobUUID
+      );
+      expect(statusResponse).toBeInstanceOf(QJobComplete);
+   });
 
-  it("should run a step in a process that does NOT go async", async () => {
-    let processName = "sleepInteractive";
-    const initResponse = await qController.processInit(processName);
-    expect(initResponse).toBeInstanceOf(QJobComplete);
-    const qJobComplete = initResponse as QJobComplete;
+   it("should run a step in a process that does NOT go async", async () =>
+   {
+      let processName = "sleepInteractive";
+      const initResponse = await qController.processInit(processName);
+      expect(initResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete = initResponse as QJobComplete;
 
-    const stepResponse = await qController.processStep(
-      processName,
-      qJobComplete.processUUID,
-      qJobComplete.nextStep,
-      "_qStepTimeoutMillis=100&sleepMillis=10"
-    );
-    expect(stepResponse).toBeInstanceOf(QJobComplete);
-    const qJobComplete2 = stepResponse as QJobComplete;
+      const stepResponse = await qController.processStep(
+         processName,
+         qJobComplete.processUUID,
+         qJobComplete.nextStep,
+         "_qStepTimeoutMillis=100&sleepMillis=10"
+      );
+      expect(stepResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete2 = stepResponse as QJobComplete;
 
-    ///////////////////////////////////////////////////
-    // assert that we got back a different next-step //
-    ///////////////////////////////////////////////////
-    expect(qJobComplete.nextStep).not.toBe(qJobComplete2.nextStep);
-  });
+      ///////////////////////////////////////////////////
+      // assert that we got back a different next-step //
+      ///////////////////////////////////////////////////
+      expect(qJobComplete.nextStep).not.toBe(qJobComplete2.nextStep);
+   });
 
-  it("should handle an exception from an init", async () => {
-    let processName = "simpleThrow";
-    const initResponse = await qController.processInit(
-      processName,
-      "_qStepTimeoutMillis=100&sleepMillis=10"
-    );
-    expect(initResponse).toBeInstanceOf(QJobError);
-  });
+   it("should handle an exception from an init", async () =>
+   {
+      let processName = "simpleThrow";
+      const initResponse = await qController.processInit(
+         processName,
+         "_qStepTimeoutMillis=100&sleepMillis=10"
+      );
+      expect(initResponse).toBeInstanceOf(QJobError);
+   });
 
-  it("should handle an exception from an async init", async () => {
-    let processName = "simpleThrow";
-    const initResponse = await qController.processInit(
-      processName,
-      "_qStepTimeoutMillis=10&sleepMillis=100"
-    );
-    expect(initResponse).toBeInstanceOf(QJobStarted);
-    const qJobStarted = initResponse as QJobStarted;
+   it("should handle an exception from an async init", async () =>
+   {
+      let processName = "simpleThrow";
+      const initResponse = await qController.processInit(
+         processName,
+         "_qStepTimeoutMillis=10&sleepMillis=100"
+      );
+      expect(initResponse).toBeInstanceOf(QJobStarted);
+      const qJobStarted = initResponse as QJobStarted;
 
-    await sleep(200);
-    const statusResponse = await qController.processJobStatus(
-      processName,
-      qJobStarted.processUUID,
-      qJobStarted.jobUUID
-    );
-    expect(statusResponse).toBeInstanceOf(QJobError);
-  });
+      await sleep(200);
+      const statusResponse = await qController.processJobStatus(
+         processName,
+         qJobStarted.processUUID,
+         qJobStarted.jobUUID
+      );
+      expect(statusResponse).toBeInstanceOf(QJobError);
+   });
 
-  it("should return process records", async () => {
-    let processName = "greet";
-    const initResponse = await qController.processInit(
-      processName,
-      "recordsParam=recordIds&recordIds=2,3"
-    );
-    expect(initResponse).toBeInstanceOf(QJobComplete);
-    const qJobComplete = initResponse as QJobComplete;
-    const processUUID = qJobComplete.processUUID;
+   it("should return process records", async () =>
+   {
+      let processName = "greet";
+      const initResponse = await qController.processInit(
+         processName,
+         "recordsParam=recordIds&recordIds=2,3"
+      );
+      expect(initResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete = initResponse as QJobComplete;
+      const processUUID = qJobComplete.processUUID;
 
-    const records = await qController.processRecords(
-      processName,
-      processUUID,
-      0,
-      20
-    );
-    expect(records).toBeInstanceOf(Array);
-    expect(records.length).toBe(2);
-    expect(records[0].values).toBeInstanceOf(Map);
-    expect(records[0].values.get("id")).not.toBeNull();
-    expect(records[0].values.get("firstName")).not.toBeNull();
-  });
+      const records = await qController.processRecords(
+         processName,
+         processUUID,
+         0,
+         20
+      );
+      expect(records).toBeInstanceOf(Array);
+      expect(records.length).toBe(2);
+      expect(records[0].values).toBeInstanceOf(Map);
+      expect(records[0].values.get("id")).not.toBeNull();
+      expect(records[0].values.get("firstName")).not.toBeNull();
+   });
 });

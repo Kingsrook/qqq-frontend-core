@@ -23,12 +23,14 @@
  ** Indication that a process step has started running an async job.
  **
  *******************************************************************************/
-export class QJobStarted {
-  processUUID: string;
-  jobUUID: string;
+export class QJobStarted
+{
+   processUUID: string;
+   jobUUID: string;
 
-  constructor(object: any) {
-    this.processUUID = object.processUUID;
-    this.jobUUID = object.jobUUID;
-  }
+   constructor(object: any)
+   {
+      this.processUUID = object.processUUID;
+      this.jobUUID = object.jobUUID;
+   }
 }

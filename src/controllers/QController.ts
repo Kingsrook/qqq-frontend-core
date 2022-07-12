@@ -36,282 +36,330 @@ import { QQueryFilter } from "../model/query/QQueryFilter";
 
 const axios = require("axios").default;
 
-const throwError = (response: AxiosError) => {
-  throw response;
+const throwError = (response: AxiosError) =>
+{
+   throw response;
 };
 
 /*******************************************************************************
  ** Controller for interacting with a QQQ backend.
  *******************************************************************************/
-export class QController {
-  private axiosInstance;
+export class QController
+{
+   private axiosInstance;
 
-  /*******************************************************************************
+   /*******************************************************************************
    **
    *******************************************************************************/
-  constructor(baseUrl: string) {
-    this.axiosInstance = axios.create({
-      baseURL: baseUrl,
-      timeout: 15000, // todo - evaulate this!
-    });
-  }
+   constructor(baseUrl: string)
+   {
+      this.axiosInstance = axios.create({
+         baseURL: baseUrl,
+         timeout: 15000, // todo - evaulate this!
+      });
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Fetch the top-level meta data for a qqq instance.
    *******************************************************************************/
-  async loadMetaData(): Promise<QInstance> {
-    return this.axiosInstance
-      .get(`/metaData/`)
-      .then((response: AxiosResponse) => {
-        return new QInstance(response.data);
-      })
-      .catch(throwError);
-  }
+   async loadMetaData(): Promise<QInstance>
+   {
+      return this.axiosInstance
+         .get("/metaData/")
+         .then((response: AxiosResponse) =>
+         {
+            return new QInstance(response.data);
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Fetch the full meta data for a specific table.
    *******************************************************************************/
-  async loadTableMetaData(tableName: string): Promise<QTableMetaData> {
-    return this.axiosInstance
-      .get(`/metaData/table/${tableName}`)
-      .then((response: AxiosResponse) => {
-        return new QTableMetaData(response.data.table);
-      })
-      .catch(throwError);
-  }
+   async loadTableMetaData(tableName: string): Promise<QTableMetaData>
+   {
+      return this.axiosInstance
+         .get(`/metaData/table/${tableName}`)
+         .then((response: AxiosResponse) =>
+         {
+            return new QTableMetaData(response.data.table);
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Fetch the full meta data for a specific process.
    *******************************************************************************/
-  async loadProcessMetaData(tableName: string): Promise<QProcessMetaData> {
-    return this.axiosInstance
-      .get(`/metaData/process/${tableName}`)
-      .then((response: AxiosResponse) => {
-        return new QProcessMetaData(response.data.process);
-      })
-      .catch(throwError);
-  }
+   async loadProcessMetaData(tableName: string): Promise<QProcessMetaData>
+   {
+      return this.axiosInstance
+         .get(`/metaData/process/${tableName}`)
+         .then((response: AxiosResponse) =>
+         {
+            return new QProcessMetaData(response.data.process);
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Make a count request to the backend
    *******************************************************************************/
-  async count(tableName: string): Promise<number> {
-    let countURL = `/data/${tableName}/count`;
+   async count(tableName: string): Promise<number>
+   {
+      let countURL = `/data/${tableName}/count`;
 
-    return this.axiosInstance
-      .get(countURL)
-      .then((response: AxiosResponse) => {
-        return response.data.count;
-      })
-      .catch(throwError);
-  }
+      return this.axiosInstance
+         .get(countURL)
+         .then((response: AxiosResponse) =>
+         {
+            return response.data.count;
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Make a query request to the backend
    *******************************************************************************/
-  async query(
-    tableName: string,
-    filterCriteria?: QQueryFilter,
-    limit?: number,
-    skip?: number
-  ): Promise<QRecord[]> {
-    let queryURL = `/data/${tableName}?1=1`;
-    queryURL += limit ? `&limit=${limit}` : "";
-    queryURL += skip ? `&skip=${skip}` : "";
+   async query(
+      tableName: string,
+      filterCriteria?: QQueryFilter,
+      limit?: number,
+      skip?: number
+   ): Promise<QRecord[]>
+   {
+      let queryURL = `/data/${tableName}?1=1`;
+      queryURL += limit ? `&limit=${limit}` : "";
+      queryURL += skip ? `&skip=${skip}` : "";
 
-    if (filterCriteria) {
-      queryURL += `&filter=${JSON.stringify(filterCriteria)}`;
-    }
+      if (filterCriteria)
+      {
+         queryURL += `&filter=${JSON.stringify(filterCriteria)}`;
+      }
 
-    return this.axiosInstance
-      .get(queryURL)
-      .then((response: AxiosResponse) => {
-        const records: QRecord[] = [];
-        if (response.data.records) {
-          for (let i = 0; i < response.data.records.length; i++) {
-            records.push(new QRecord(response.data.records[i]));
-          }
-        }
-        return records;
-      })
-      .catch(throwError);
-  }
+      return this.axiosInstance
+         .get(queryURL)
+         .then((response: AxiosResponse) =>
+         {
+            const records: QRecord[] = [];
+            if (response.data.records)
+            {
+               for (let i = 0; i < response.data.records.length; i++)
+               {
+                  records.push(new QRecord(response.data.records[i]));
+               }
+            }
+            return records;
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Make a request to the backend for a single record
    *******************************************************************************/
-  async get(tableName: string, primaryKey: any): Promise<QRecord> {
-    let getURL = `/data/${tableName}/${primaryKey}`;
-    return this.axiosInstance
-      .get(getURL)
-      .then((response: AxiosResponse) => {
-        return new QRecord(response.data);
-      })
-      .catch(throwError);
-  }
+   async get(tableName: string, primaryKey: any): Promise<QRecord>
+   {
+      let getURL = `/data/${tableName}/${primaryKey}`;
+      return this.axiosInstance
+         .get(getURL)
+         .then((response: AxiosResponse) =>
+         {
+            return new QRecord(response.data);
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Make a backend call to create a single record
    ** TODO - bulk - despite being same on backend, feels like could or should be
    **  different in here?  maybe not, but needs figured out.
    *******************************************************************************/
-  async create(tableName: string, data: {}): Promise<QRecord> {
-    return this.axiosInstance
-      .post(`/data/${tableName}`, data)
-      .then((response: AxiosResponse) => {
-        return new QRecord(response.data.records[0]);
-      })
-      .catch(throwError);
-  }
+   async create(tableName: string, data: {}): Promise<QRecord>
+   {
+      return this.axiosInstance
+         .post(`/data/${tableName}`, data)
+         .then((response: AxiosResponse) =>
+         {
+            return new QRecord(response.data.records[0]);
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Make a backend call to update a single record
    ** TODO - bulk - despite being same on backend, feels like could or should be
    **  different in here?  maybe not, but needs figured out.
    *******************************************************************************/
-  async update(tableName: string, id: any, data: {}): Promise<QRecord> {
-    return this.axiosInstance
-      .put(`/data/${tableName}/${id}`, data)
-      .then((response: AxiosResponse) => {
-        return new QRecord(response.data.records[0]);
-      })
-      .catch(throwError);
-  }
+   async update(tableName: string, id: any, data: {}): Promise<QRecord>
+   {
+      return this.axiosInstance
+         .put(`/data/${tableName}/${id}`, data)
+         .then((response: AxiosResponse) =>
+         {
+            return new QRecord(response.data.records[0]);
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Make a backend call to delete a single record
    ** TODO - bulk - despite being same on backend, feels like could or should be
    **  different in here?  maybe not, but needs figured out.
    *******************************************************************************/
-  async delete(tableName: string, id: any): Promise<QRecord> {
-    return this.axiosInstance
-      .delete(`/data/${tableName}/${id}`)
-      .then((response: AxiosResponse) => {
-        return new QRecord(response.data.records[0]);
-      })
-      .catch(throwError);
-  }
+   async delete(tableName: string, id: any): Promise<QRecord>
+   {
+      return this.axiosInstance
+         .delete(`/data/${tableName}/${id}`)
+         .then((response: AxiosResponse) =>
+         {
+            return new QRecord(response.data.records[0]);
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Common logic to parse a process-related server response into an appropriate object.
    *******************************************************************************/
-  parseProcessResponse(
-    response: AxiosResponse
-  ): QJobStarted | QJobRunning | QJobComplete | QJobError {
-    //////////////////////////////////////////////////////////////////////////////////////
-    // so, the order of these checks is critical (mostly because, complete & error have //
-    // a jobStatus with them too, so, you can't check that one too soon                 //
-    //////////////////////////////////////////////////////////////////////////////////////
-    if (response.data.jobUUID) {
-      return new QJobStarted(response.data);
-    } else if (response.data.values || response.data.nextStep) {
-      return new QJobComplete(response.data);
-    } else if (response.data.error) {
-      return new QJobError(response.data);
-    } else if (response.data.jobStatus) {
-      return new QJobRunning(response.data.jobStatus);
-    } else {
-      return new QJobError({ error: "Unexpected server response." });
-    }
-  }
+   parseProcessResponse(
+      response: AxiosResponse
+   ): QJobStarted | QJobRunning | QJobComplete | QJobError
+   {
+      //////////////////////////////////////////////////////////////////////////////////////
+      // so, the order of these checks is critical (mostly because, complete & error have //
+      // a jobStatus with them too, so, you can't check that one too soon                 //
+      //////////////////////////////////////////////////////////////////////////////////////
+      if (response.data.jobUUID)
+      {
+         return new QJobStarted(response.data);
+      }
+      else if (response.data.values || response.data.nextStep)
+      {
+         return new QJobComplete(response.data);
+      }
+      else if (response.data.error)
+      {
+         return new QJobError(response.data);
+      }
+      else if (response.data.jobStatus)
+      {
+         return new QJobRunning(response.data.jobStatus);
+      }
+      else
+      {
+         return new QJobError({ error: "Unexpected server response." });
+      }
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Initialize a process
    *******************************************************************************/
-  async processInit(
-    processName: string,
-    queryString: string = ""
-  ): Promise<QJobStarted | QJobComplete | QJobError> {
-    let url = `/processes/${processName}/init`;
-    if (queryString !== "") {
-      url += `?${queryString}`;
-    }
-    return this.axiosInstance
-      .post(url)
-      .then((response: AxiosResponse) => {
-        const responseObject = this.parseProcessResponse(response);
-        if (responseObject instanceof QJobRunning) {
-          ////////////////////////////////////////////////////////////////////
-          // we aren't allowed to return "Running" here, so just in case... //
-          ////////////////////////////////////////////////////////////////////
-          return new QJobError({ error: "Unexpected server response." });
-        }
-        return responseObject;
-      })
-      .catch(throwError);
-  }
+   async processInit(
+      processName: string,
+      queryString: string = ""
+   ): Promise<QJobStarted | QJobComplete | QJobError>
+   {
+      let url = `/processes/${processName}/init`;
+      if (queryString !== "")
+      {
+         url += `?${queryString}`;
+      }
+      return this.axiosInstance
+         .post(url)
+         .then((response: AxiosResponse) =>
+         {
+            const responseObject = this.parseProcessResponse(response);
+            if (responseObject instanceof QJobRunning)
+            {
+               ////////////////////////////////////////////////////////////////////
+               // we aren't allowed to return "Running" here, so just in case... //
+               ////////////////////////////////////////////////////////////////////
+               return new QJobError({ error: "Unexpected server response." });
+            }
+            return responseObject;
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Proceed to the next step in a process
    *******************************************************************************/
-  async processStep(
-    processName: string,
-    processUUID: string,
-    step: string,
-    queryString: string = ""
-  ): Promise<QJobStarted | QJobComplete | QJobError> {
-    let url = `/processes/${processName}/${processUUID}/step/${step}`;
-    if (queryString !== "") {
-      url += `?${queryString}`;
-    }
-    return this.axiosInstance
-      .post(url)
-      .then((response: AxiosResponse) => {
-        const responseObject = this.parseProcessResponse(response);
-        if (responseObject instanceof QJobRunning) {
-          ////////////////////////////////////////////////////////////////////
-          // we aren't allowed to return "Running" here, so just in case... //
-          ////////////////////////////////////////////////////////////////////
-          return new QJobError({ error: "Unexpected server response." });
-        }
-        return responseObject;
-      })
-      .catch(throwError);
-  }
+   async processStep(
+      processName: string,
+      processUUID: string,
+      step: string,
+      queryString: string = ""
+   ): Promise<QJobStarted | QJobComplete | QJobError>
+   {
+      let url = `/processes/${processName}/${processUUID}/step/${step}`;
+      if (queryString !== "")
+      {
+         url += `?${queryString}`;
+      }
+      return this.axiosInstance
+         .post(url)
+         .then((response: AxiosResponse) =>
+         {
+            const responseObject = this.parseProcessResponse(response);
+            if (responseObject instanceof QJobRunning)
+            {
+               ////////////////////////////////////////////////////////////////////
+               // we aren't allowed to return "Running" here, so just in case... //
+               ////////////////////////////////////////////////////////////////////
+               return new QJobError({ error: "Unexpected server response." });
+            }
+            return responseObject;
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Get the status for a currently executing job within a process (init or step)
    *******************************************************************************/
-  async processJobStatus(
-    processName: string,
-    processUUID: string,
-    jobUUID: string
-  ): Promise<QJobRunning | QJobComplete | QJobError> {
-    return this.axiosInstance
-      .get(`/processes/${processName}/${processUUID}/status/${jobUUID}`)
-      .then((response: AxiosResponse) => {
-        const responseObject = this.parseProcessResponse(response);
-        if (responseObject instanceof QJobStarted) {
-          ////////////////////////////////////////////////////////////////////
-          // we aren't allowed to return "Started" here, so just in case... //
-          ////////////////////////////////////////////////////////////////////
-          return new QJobError({ error: "Unexpected server response." });
-        }
-        return responseObject;
-      })
-      .catch(throwError);
-  }
+   async processJobStatus(
+      processName: string,
+      processUUID: string,
+      jobUUID: string
+   ): Promise<QJobRunning | QJobComplete | QJobError>
+   {
+      return this.axiosInstance
+         .get(`/processes/${processName}/${processUUID}/status/${jobUUID}`)
+         .then((response: AxiosResponse) =>
+         {
+            const responseObject = this.parseProcessResponse(response);
+            if (responseObject instanceof QJobStarted)
+            {
+               ////////////////////////////////////////////////////////////////////
+               // we aren't allowed to return "Started" here, so just in case... //
+               ////////////////////////////////////////////////////////////////////
+               return new QJobError({ error: "Unexpected server response." });
+            }
+            return responseObject;
+         })
+         .catch(throwError);
+   }
 
-  /*******************************************************************************
+   /*******************************************************************************
    ** Get records from a process's state
    *******************************************************************************/
-  async processRecords(
-    processName: string,
-    processUUID: string,
-    skip: number = 0,
-    limit: number = 20
-  ): Promise<QRecord[]> {
-    return this.axiosInstance
-      .get(
-        `/processes/${processName}/${processUUID}/records?skip=${skip}&limit=${limit}`
-      )
-      .then((response: AxiosResponse) => {
-        const records: QRecord[] = [];
-        for (let i = 0; i < response.data.records.length; i++) {
-          records.push(new QRecord(response.data.records[i]));
-        }
-        return records;
-      })
-      .catch(throwError);
-  }
+   async processRecords(
+      processName: string,
+      processUUID: string,
+      skip: number = 0,
+      limit: number = 20
+   ): Promise<QRecord[]>
+   {
+      return this.axiosInstance
+         .get(
+            `/processes/${processName}/${processUUID}/records?skip=${skip}&limit=${limit}`
+         )
+         .then((response: AxiosResponse) =>
+         {
+            const records: QRecord[] = [];
+            for (let i = 0; i < response.data.records.length; i++)
+            {
+               records.push(new QRecord(response.data.records[i]));
+            }
+            return records;
+         })
+         .catch(throwError);
+   }
 }

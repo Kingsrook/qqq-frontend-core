@@ -26,26 +26,32 @@ import { QFilterOrderBy } from "./QFilterOrderBy";
  ** Define a filter in a QQQ instance.
  **
  *******************************************************************************/
-export class QQueryFilter {
-  criteria?: QFilterCriteria[];
-  orderBys?: QFilterOrderBy[];
+export class QQueryFilter
+{
+   criteria?: QFilterCriteria[];
+   orderBys?: QFilterOrderBy[];
 
-  constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[]) {
-    this.criteria = criteria;
-    this.orderBys = orderBys;
-  }
+   constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[])
+   {
+      this.criteria = criteria;
+      this.orderBys = orderBys;
+   }
 
-  public addOrderBy(orderBy: QFilterOrderBy) {
-    if (!this.orderBys) {
-      this.orderBys = [] as QFilterOrderBy[];
-    }
-    this.orderBys.push(orderBy);
-  }
+   public addOrderBy(orderBy: QFilterOrderBy)
+   {
+      if (!this.orderBys)
+      {
+         this.orderBys = [] as QFilterOrderBy[];
+      }
+      this.orderBys.push(orderBy);
+   }
 
-  public addCriteria(criteria: QFilterCriteria) {
-    if (!this.criteria) {
-      this.criteria = [] as QFilterCriteria[];
-    }
-    this.criteria.push(criteria);
-  }
+   public addCriteria(criteria: QFilterCriteria)
+   {
+      if (!this.criteria)
+      {
+         this.criteria = [] as QFilterCriteria[];
+      }
+      this.criteria.push(criteria);
+   }
 }
