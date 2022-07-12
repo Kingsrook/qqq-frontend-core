@@ -159,9 +159,16 @@ describe("q controller test", () =>
 
    it("should query for records", async () =>
    {
-      const personRecords: QRecord[] = await qController.query("person", 1);
+      const personRecords: QRecord[] = await qController.query("person");
       expect(personRecords).toBeInstanceOf(Array);
-      expect(personRecords.length).toBe(1);
+      expect(personRecords.length).toBe(11);
+   });
+
+   it("should query for a limited number of records", async () =>
+   {
+      const personRecords: QRecord[] = await qController.query("person", undefined, 5);
+      expect(personRecords).toBeInstanceOf(Array);
+      expect(personRecords.length).toBe(5);
    });
 
    it("should get a single record by id", async () =>
