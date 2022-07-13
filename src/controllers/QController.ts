@@ -104,9 +104,13 @@ export class QController
    /*******************************************************************************
    ** Make a count request to the backend
    *******************************************************************************/
-   async count(tableName: string): Promise<number>
+   async count(tableName: string, queryFilter?: QQueryFilter): Promise<number>
    {
       let countURL = `/data/${tableName}/count`;
+      if (queryFilter)
+      {
+         countURL += `?filter=${JSON.stringify(queryFilter)}`;
+      }
 
       return this.axiosInstance
          .get(countURL)
@@ -122,7 +126,7 @@ export class QController
    *******************************************************************************/
    async query(
       tableName: string,
-      filterCriteria?: QQueryFilter,
+      queryFilter?: QQueryFilter,
       limit?: number,
       skip?: number
    ): Promise<QRecord[]>
@@ -131,9 +135,9 @@ export class QController
       queryURL += limit ? `&limit=${limit}` : "";
       queryURL += skip ? `&skip=${skip}` : "";
 
-      if (filterCriteria)
+      if (queryFilter)
       {
-         queryURL += `&filter=${JSON.stringify(filterCriteria)}`;
+         queryURL += `&filter=${JSON.stringify(queryFilter)}`;
       }
 
       return this.axiosInstance
