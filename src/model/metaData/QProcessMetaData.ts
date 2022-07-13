@@ -30,6 +30,7 @@ export class QProcessMetaData
    name: string;
    label: string;
    tableName: string;
+   isHidden: boolean = false;
    frontendSteps?: QFrontendStepMetaData[];
 
    constructor(object: any)
@@ -37,6 +38,7 @@ export class QProcessMetaData
       this.name = object.name;
       this.label = object.label;
       this.tableName = object.tableName;
+      this.isHidden = object.isHidden;
 
       if (object.frontendSteps)
       {

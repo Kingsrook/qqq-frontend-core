@@ -29,6 +29,7 @@ export class QTableMetaData
 {
    name: string;
    label: string;
+   isHidden: boolean = false;
    primaryKeyField: string;
    isRequired: string;
    fields?: Map<string, QFieldMetaData>;
@@ -37,6 +38,7 @@ export class QTableMetaData
    {
       this.name = object.name;
       this.label = object.label;
+      this.isHidden = object.isHidden;
       this.isRequired = object.isRequired;
       this.primaryKeyField = object.primaryKeyField;
 
