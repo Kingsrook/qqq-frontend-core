@@ -27,13 +27,13 @@ import { QInstance } from "../../src/model/metaData/QInstance";
 import { QProcessMetaData } from "../../src/model/metaData/QProcessMetaData";
 import { QRecord } from "../../src/model/QRecord";
 import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
-
 import { QJobStarted } from "../../src/model/processes/QJobStarted";
 import { QJobRunning } from "../../src/model/processes/QJobRunning";
 import { QJobComplete } from "../../src/model/processes/QJobComplete";
 import { QJobError } from "../../src/model/processes/QJobError";
 
-import AxiosError from "axios";
+// @ts-ignore
+import FormData from "form-data";
 
 const baseURL = "http://localhost:8000";
 
@@ -71,7 +71,7 @@ describe("q controller test", () =>
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(AxiosError);
+         expect(error).toBeInstanceOf(Error);
       }
    });
 
@@ -98,7 +98,7 @@ describe("q controller test", () =>
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(AxiosError);
+         expect(error).toBeInstanceOf(Error);
       }
    });
 
@@ -129,7 +129,7 @@ describe("q controller test", () =>
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(AxiosError);
+         expect(error).toBeInstanceOf(Error);
       }
    });
 
@@ -161,7 +161,7 @@ describe("q controller test", () =>
    {
       const personRecords: QRecord[] = await qController.query("person");
       expect(personRecords).toBeInstanceOf(Array);
-      expect(personRecords.length).toBe(11);
+      expect(personRecords.length).toBe(6);
    });
 
    it("should query for a limited number of records", async () =>
@@ -182,8 +182,21 @@ describe("q controller test", () =>
 
    it("should delete a record", async () =>
    {
-      const personRecord: QRecord = await qController.delete("person", 1);
-      expect(personRecord).toBeInstanceOf(QRecord);
+      const numberDeleted: number = await qController.delete("person", 6);
+      expect(numberDeleted).toBe(1);
+   });
+
+   it("should throw when a delete fails", async () =>
+   {
+      try
+      {
+         const numberDeleted: number = await qController.delete("person", -1);
+         expect(numberDeleted).toBeNull();
+      }
+      catch (error)
+      {
+         expect(error).toBeInstanceOf(Error);
+      }
    });
 
    const sleep = (delay: number) =>
@@ -257,7 +270,7 @@ describe("q controller test", () =>
       expect(statusResponse).toBeInstanceOf(QJobComplete);
    });
 
-   it("should run a step in a process that does NOT go async", async () =>
+   it("should run a step in a process that does NOT go async with a query string", async () =>
    {
       let processName = "sleepInteractive";
       const initResponse = await qController.processInit(processName);
@@ -269,6 +282,32 @@ describe("q controller test", () =>
          qJobComplete.processUUID,
          qJobComplete.nextStep,
          "_qStepTimeoutMillis=100&sleepMillis=10"
+      );
+      expect(stepResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete2 = stepResponse as QJobComplete;
+
+      ///////////////////////////////////////////////////
+      // assert that we got back a different next-step //
+      ///////////////////////////////////////////////////
+      expect(qJobComplete.nextStep).not.toBe(qJobComplete2.nextStep);
+   });
+
+   it("should run a step in a process that does NOT go async with a POST body", async () =>
+   {
+      let processName = "sleepInteractive";
+      const initResponse = await qController.processInit(processName);
+      expect(initResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete = initResponse as QJobComplete;
+
+      const formData = new FormData();
+      formData.append("sleepMillis", 10);
+      formData.append("_qStepTimeoutMillis", 100);
+
+      const stepResponse = await qController.processStep(
+         processName,
+         qJobComplete.processUUID,
+         qJobComplete.nextStep,
+         formData
       );
       expect(stepResponse).toBeInstanceOf(QJobComplete);
       const qJobComplete2 = stepResponse as QJobComplete;
@@ -319,16 +358,18 @@ describe("q controller test", () =>
       const qJobComplete = initResponse as QJobComplete;
       const processUUID = qJobComplete.processUUID;
 
-      const records = await qController.processRecords(
+      const response = await qController.processRecords(
          processName,
          processUUID,
          0,
          20
       );
+      const records = response.records;
       expect(records).toBeInstanceOf(Array);
       expect(records.length).toBe(2);
       expect(records[0].values).toBeInstanceOf(Map);
       expect(records[0].values.get("id")).not.toBeNull();
       expect(records[0].values.get("firstName")).not.toBeNull();
+      expect(response.totalRecords).toBe(2);
    });
 });

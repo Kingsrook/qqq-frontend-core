@@ -42,6 +42,7 @@
     "no-shadow": "off",
     "no-unused-vars": "off",
     "no-plusplus": "off",
+    "no-underscore-dangle": "off",
     "spaced-comment": "off",
     "object-shorthand": "off",
     "react/prop-types": "off",

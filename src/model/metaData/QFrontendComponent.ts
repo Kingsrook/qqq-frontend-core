@@ -19,26 +19,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFieldType } from "./QFieldType";
+import {QComponentType} from "./QComponentType";
 
 /*******************************************************************************
- ** Meta-data to represent a single field in a table.
+ ** Meta-Data to define a component on a screen in a QQQ process.
  **
  *******************************************************************************/
-export class QFieldMetaData
+export class QFrontendComponent
 {
-   name: string;
-   label: string;
-   type: QFieldType;
-   isRequired: boolean = false;
-   isEditable: boolean = true;
+   type: QComponentType;
+   values?: any
 
    constructor(object: any)
    {
-      this.name = object.name;
-      this.label = object.label;
-      this.type = object.type;
-      this.isRequired = object.isRequired;
-      this.isEditable = object.isEditable;
+      this.type = object.type
+
+      if (object.values)
+      {
+         this.values = object.values;
+      }
    }
 }
