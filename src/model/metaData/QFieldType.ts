@@ -34,4 +34,5 @@ export enum QFieldType {
   TEXT = "TEXT",
   HTML = "HTML",
   PASSWORD = "PASSWORD",
+  BLOB = "BLOB",
 }

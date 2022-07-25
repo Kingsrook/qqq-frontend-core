@@ -25,7 +25,6 @@
  *******************************************************************************/
 export enum QComponentType
 {
-  FILE_UPLOAD = "FILE_UPLOAD",
   HELP_TEXT = "HELP_TEXT",
   BULK_EDIT_FORM = "BULK_EDIT_FORM"
   ////////////////////////////////////////////////////////////////////////////
