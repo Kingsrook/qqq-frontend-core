@@ -32,8 +32,7 @@ import { QJobRunning } from "../../src/model/processes/QJobRunning";
 import { QJobComplete } from "../../src/model/processes/QJobComplete";
 import { QJobError } from "../../src/model/processes/QJobError";
 
-// @ts-ignore
-import FormData from "form-data";
+import FormData = require("form-data")
 
 const baseURL = "http://localhost:8000";
 
