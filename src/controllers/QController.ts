@@ -322,8 +322,6 @@ export class QController
             formDataHeaders = formData.getHeaders();
          }
 
-         console.log(formDataHeaders);
-
          return this.axiosInstance
             .post(url, formData, { headers: formDataHeaders })
             .then((response: AxiosResponse) =>
