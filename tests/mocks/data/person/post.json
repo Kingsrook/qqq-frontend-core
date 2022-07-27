@@ -1,0 +1,15 @@
+{
+   "records": [
+      {
+         "tableName": "person",
+         "values": {
+            "id": 6,
+            "createDate": "2022-07-26T21:52:54",
+            "modifyDate": "2022-07-26T21:52:54",
+            "firstName": "John",
+            "lastName": "Doe",
+            "email": "jdoe@kingsrook.com"
+         }
+      }
+   ]
+}

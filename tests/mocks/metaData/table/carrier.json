@@ -1,0 +1,38 @@
+{
+  "table": {
+    "name": "carrier",
+    "label": "Carrier",
+    "isHidden": false,
+    "primaryKeyField": "id",
+    "fields": {
+      "service_level": {
+        "name": "service_level",
+        "label": "Service_level",
+        "type": "STRING",
+        "isRequired": true,
+        "isEditable": true
+      },
+      "name": {
+        "name": "name",
+        "label": "Name",
+        "type": "STRING",
+        "isRequired": true,
+        "isEditable": true
+      },
+      "company_code": {
+        "name": "company_code",
+        "label": "Company",
+        "type": "STRING",
+        "isRequired": true,
+        "isEditable": true
+      },
+      "id": {
+        "name": "id",
+        "label": "Id",
+        "type": "INTEGER",
+        "isRequired": false,
+        "isEditable": true
+      }
+    }
+  }
+}

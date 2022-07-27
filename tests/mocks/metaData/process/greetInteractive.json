@@ -1,0 +1,75 @@
+{
+  "process": {
+    "name": "greetInteractive",
+    "label": "Greet Interactive",
+    "tableName": "person",
+    "isHidden": false,
+    "frontendSteps": [
+      {
+        "name": "setup",
+        "label": "Setup",
+        "stepType": "frontend",
+        "formFields": [
+          {
+            "name": "greetingPrefix",
+            "label": "Greeting Prefix",
+            "type": "STRING",
+            "isRequired": false,
+            "isEditable": true
+          },
+          {
+            "name": "greetingSuffix",
+            "label": "Greeting Suffix",
+            "type": "STRING",
+            "isRequired": false,
+            "isEditable": true
+          }
+        ]
+      },
+      {
+        "name": "results",
+        "label": "Results",
+        "stepType": "frontend",
+        "viewFields": [
+          {
+            "name": "noOfPeopleGreeted",
+            "label": "No Of People Greeted",
+            "type": "INTEGER",
+            "isRequired": false,
+            "isEditable": true
+          },
+          {
+            "name": "outputMessage",
+            "label": "Output Message",
+            "type": "STRING",
+            "isRequired": false,
+            "isEditable": true
+          }
+        ],
+        "recordListFields": [
+          {
+            "name": "id",
+            "label": "Id",
+            "type": "INTEGER",
+            "isRequired": false,
+            "isEditable": true
+          },
+          {
+            "name": "firstName",
+            "label": "First Name",
+            "type": "STRING",
+            "isRequired": false,
+            "isEditable": true
+          },
+          {
+            "name": "greetingMessage",
+            "label": "Greeting Message",
+            "type": "STRING",
+            "isRequired": false,
+            "isEditable": true
+          }
+        ]
+      }
+    ]
+  }
+}

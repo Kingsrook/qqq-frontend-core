@@ -1,0 +1,12 @@
+{
+  "tableName": "person",
+  "values": {
+    "id": 5,
+    "createDate": "2022-07-27T03:24:07",
+    "modifyDate": "2022-07-27T03:24:07",
+    "firstName": "Garret",
+    "lastName": "Richardson",
+    "birthDate": "1981-01-01",
+    "email": "grichardson@mmltholdings.com"
+  }
+}
