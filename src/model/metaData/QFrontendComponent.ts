@@ -19,23 +19,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QComponentType} from "./QComponentType";
+
 /*******************************************************************************
- ** Possible data types for Q-fields.
+ ** Meta-Data to define a component on a screen in a QQQ process.
  **
  *******************************************************************************/
-export enum QFieldType {
-  BOOLEAN = "BOOLEAN",
-  STRING = "STRING",
-  INTEGER = "INTEGER",
-  DECIMAL = "DECIMAL",
-  DATE = "DATE",
-  TIME = "TIME",
-  DATE_TIME = "DATE_TIME",
-  TEXT = "TEXT",
-  HTML = "HTML",
-  PASSWORD = "PASSWORD",
-  BLOB = "BLOB",
-  ////////////////////////////////////////////////////////////////////////
-  // keep these values in sync with QFieldType.java in qqq-backend-core //
-  ////////////////////////////////////////////////////////////////////////
+export class QFrontendComponent
+{
+   type: QComponentType;
+   values?: any
+
+   constructor(object: any)
+   {
+      this.type = object.type
+
+      if (object.values)
+      {
+         this.values = object.values;
+      }
+   }
 }

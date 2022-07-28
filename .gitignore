@@ -1,4 +1,5 @@
 *.iml
+.env
 
 node_modules
 coverage

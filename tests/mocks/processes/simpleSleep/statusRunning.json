@@ -1,0 +1,7 @@
+{
+   "jobStatus": "RUNNING",
+   "processUUID": "1f3184ff-8145-40d2-ac94-8cea5236fce6",
+   "message": "Mock job is running",
+   "current": 2,
+   "total": 3
+}

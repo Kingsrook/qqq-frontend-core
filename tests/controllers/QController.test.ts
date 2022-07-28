@@ -27,22 +27,142 @@ import { QInstance } from "../../src/model/metaData/QInstance";
 import { QProcessMetaData } from "../../src/model/metaData/QProcessMetaData";
 import { QRecord } from "../../src/model/QRecord";
 import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
-
 import { QJobStarted } from "../../src/model/processes/QJobStarted";
 import { QJobRunning } from "../../src/model/processes/QJobRunning";
 import { QJobComplete } from "../../src/model/processes/QJobComplete";
 import { QJobError } from "../../src/model/processes/QJobError";
+import FormData = require("form-data")
+const fs = require("fs");
 
-import AxiosError from "axios";
+import axios from "axios";
 
 const baseURL = "http://localhost:8000";
 
+/////////////////////////////////////////////////////////////////////////////////////
+// define if we're using mocks or not (in CI we always want to. but for local dev, //
+// we may want to hit an actual backend server, e.g. at the baseURL given above)   //
+/////////////////////////////////////////////////////////////////////////////////////
+const useMock = true;
+if(useMock)
+{
+   jest.mock("axios");
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+// function to setup the axis mock, to return the contents of the specified file //
+///////////////////////////////////////////////////////////////////////////////////
+function mockGet(mockPath: string)
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.get = buildMockSuccessfulPromise(mockPath)
+   }
+}
+
+function mockGetError()
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.get = buildMockFailedPromise();
+   }
+}
+
+function mockPost(mockPath: string)
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.post = buildMockSuccessfulPromise(mockPath)
+   }
+}
+
+// function mockPostError()
+// {
+//    if(useMock)
+//    {
+//       axios.create = jest.fn(() => axios);
+//       // @ts-ignore
+//       axios.post = buildMockFailedPromise();
+//    }
+// }
+
+function mockPut(mockPath: string)
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.put = buildMockSuccessfulPromise(mockPath)
+   }
+}
+
+// function mockPutError()
+// {
+//    if(useMock)
+//    {
+//       axios.create = jest.fn(() => axios);
+//       // @ts-ignore
+//       axios.put = buildMockFailedPromise();
+//    }
+// }
+
+function mockDelete(mockPath: string)
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.delete = buildMockSuccessfulPromise(mockPath)
+   }
+}
+
+// function mockDeleteError()
+// {
+//    if(useMock)
+//    {
+//       axios.create = jest.fn(() => axios);
+//       // @ts-ignore
+//       axios.delete = buildMockFailedPromise();
+//    }
+// }
+
+function buildMockSuccessfulPromise(mockPath: string)
+{
+   const json = fs.readFileSync(`./tests/mocks/${mockPath}`);
+   const response = {data: JSON.parse(json)};
+   return jest.fn(() =>
+   {
+      return new Promise(function (resolve)
+      {
+         // @ts-ignore
+         resolve(response);
+      });
+   });
+}
+
+function buildMockFailedPromise()
+{
+   return jest.fn(() =>
+   {
+      return new Promise(function (_, reject)
+      {
+         reject(new Error());
+      });
+   });
+}
+
 describe("q controller test", () =>
 {
-   const qController = new QController(baseURL);
-
    it("should return meta data", async () =>
    {
+      mockGet("metaData/index.json");
+      const qController = new QController(baseURL);
+
       const metaData = await qController.loadMetaData();
       expect(metaData).toBeInstanceOf(QInstance);
 
@@ -65,18 +185,21 @@ describe("q controller test", () =>
    {
       try
       {
-         const badQController = new QController("http://notahost:123");
-         const metaData = await badQController.loadMetaData();
+         mockGetError();
+         const qController = new QController("http://notahost:123");
+         const metaData = await qController.loadMetaData();
          expect(metaData).toBeNull();
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(AxiosError);
+         expect(error).toBeInstanceOf(Error);
       }
    });
 
    it("should return table meta data", async () =>
    {
+      mockGet("metaData/table/carrier.json");
+      const qController = new QController(baseURL);
       const tableMetaData = await qController.loadTableMetaData("carrier");
       expect(tableMetaData).toBeInstanceOf(QTableMetaData);
       expect(tableMetaData.fields).toBeInstanceOf(Map);
@@ -93,17 +216,21 @@ describe("q controller test", () =>
    {
       try
       {
+         mockGetError();
+         const qController = new QController(baseURL);
          const tableMetaData = await qController.loadTableMetaData("currier");
          expect(tableMetaData).toBeNull();
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(AxiosError);
+         expect(error).toBeInstanceOf(Error);
       }
    });
 
    it("should return process meta data", async () =>
    {
+      mockGet("metaData/process/greetInteractive.json");
+      const qController = new QController(baseURL);
       const processMetaData = await qController.loadProcessMetaData(
          "greetInteractive"
       );
@@ -124,12 +251,14 @@ describe("q controller test", () =>
    {
       try
       {
+         mockGetError();
+         const qController = new QController(baseURL);
          const processMetaData = await qController.loadProcessMetaData("gort");
          expect(processMetaData).toBeNull();
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(AxiosError);
+         expect(error).toBeInstanceOf(Error);
       }
    });
 
@@ -140,6 +269,8 @@ describe("q controller test", () =>
          lastName: "Doe",
          email: "jdoe@kingsrook.com",
       };
+      mockPost("data/person/post.json");
+      const qController = new QController(baseURL);
       const personRecord: QRecord = await qController.create("person", data);
       expect(personRecord).toBeInstanceOf(QRecord);
       expect(personRecord.values.get("firstName")).toBe("John");
@@ -152,6 +283,8 @@ describe("q controller test", () =>
          lastName: "Doe",
          email: "jdoe@kingsrook.com",
       };
+      mockPut("data/person/put.json");
+      const qController = new QController(baseURL);
       const personRecord: QRecord = await qController.update("person", 1, data);
       expect(personRecord).toBeInstanceOf(QRecord);
       expect(personRecord.values.get("firstName")).toBe("John");
@@ -159,39 +292,75 @@ describe("q controller test", () =>
 
    it("should query for records", async () =>
    {
+      mockGet("data/person/query.json");
+      const qController = new QController(baseURL);
       const personRecords: QRecord[] = await qController.query("person");
       expect(personRecords).toBeInstanceOf(Array);
-      expect(personRecords.length).toBe(11);
+      expect(personRecords.length).toBe(6);
    });
 
    it("should query for a limited number of records", async () =>
    {
-      const personRecords: QRecord[] = await qController.query("person", undefined, 5);
+      mockGet("data/person/queryLimit=2.json");
+      const qController = new QController(baseURL);
+      const personRecords: QRecord[] = await qController.query("person", undefined, 2);
       expect(personRecords).toBeInstanceOf(Array);
-      expect(personRecords.length).toBe(5);
+      expect(personRecords.length).toBe(2);
    });
 
    it("should get a single record by id", async () =>
    {
+      mockGet("data/person/get5.json");
+      const qController = new QController(baseURL);
       const personRecord: QRecord = await qController.get("person", 5);
       expect(personRecord).toBeInstanceOf(QRecord);
       expect(personRecord.values).toBeInstanceOf(Map);
-      console.log(personRecord.values.get("firstName"));
       expect(personRecord.values.get("firstName")).toBeDefined();
    });
 
    it("should delete a record", async () =>
    {
-      const personRecord: QRecord = await qController.delete("person", 1);
-      expect(personRecord).toBeInstanceOf(QRecord);
+      mockDelete("data/person/delete6.json");
+      const qController = new QController(baseURL);
+      const numberDeleted: number = await qController.delete("person", 6);
+      expect(numberDeleted).toBe(1);
    });
 
+   it("should throw when a delete fails", async () =>
+   {
+      try
+      {
+         mockDelete("data/person/delete-1.json");
+         const qController = new QController(baseURL);
+         const numberDeleted: number = await qController.delete("person", -1);
+         expect(numberDeleted).toBeNull();
+      }
+      catch (error)
+      {
+         expect(error).toBeInstanceOf(Error);
+      }
+   });
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
+   // function that non-mock mode can use, to actually wait on server to finish running async processes //
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
    const sleep = (delay: number) =>
-      new Promise((resolve) => setTimeout(resolve, delay));
+   {
+      if (useMock)
+      {
+         return new Promise((resolve) => setTimeout(resolve, 0));
+      }
+      else
+      {
+         return new Promise((resolve) => setTimeout(resolve, delay));
+      }
+   }
 
    it("should init a process that goes async", async () =>
    {
       let processName = "simpleSleep";
+      mockPost("processes/simpleSleep/initStarted.json");
+      const qController = new QController(baseURL);
       const initResponse = await qController.processInit(
          processName,
          "_qStepTimeoutMillis=10&sleepMillis=100"
@@ -199,6 +368,7 @@ describe("q controller test", () =>
       expect(initResponse).toBeInstanceOf(QJobStarted);
       const qJobStarted = initResponse as QJobStarted;
 
+      mockGet("processes/simpleSleep/statusRunning.json");
       const statusResponse1 = await qController.processJobStatus(
          processName,
          qJobStarted.processUUID,
@@ -211,6 +381,7 @@ describe("q controller test", () =>
       /////////////////////////////////////////
       await sleep(750);
 
+      mockGet("processes/simpleSleep/statusComplete.json");
       const statusResponse2 = await qController.processJobStatus(
          processName,
          qJobStarted.processUUID,
@@ -222,6 +393,9 @@ describe("q controller test", () =>
    it("should init a process that completes synchronously", async () =>
    {
       let processName = "simpleSleep";
+      mockGet("metaData/table/carrier.json");
+      mockPost("processes/simpleSleep/initComplete.json");
+      const qController = new QController(baseURL);
       const initResponse = await qController.processInit(
          processName,
          "_qStepTimeoutMillis=100&sleepMillis=10"
@@ -232,10 +406,13 @@ describe("q controller test", () =>
    it("should run a step in a process that goes async", async () =>
    {
       let processName = "sleepInteractive";
+      mockPost("processes/sleepInteractive/initComplete.json");
+      const qController = new QController(baseURL);
       const initResponse = await qController.processInit(processName);
       expect(initResponse).toBeInstanceOf(QJobComplete);
       const qJobComplete = initResponse as QJobComplete;
 
+      mockPost("processes/sleepInteractive/stepStarted.json");
       const stepResponse = await qController.processStep(
          processName,
          qJobComplete.processUUID,
@@ -249,6 +426,7 @@ describe("q controller test", () =>
       // wait for the job to actually finish //
       /////////////////////////////////////////
       await sleep(200);
+      mockGet("processes/simpleSleep/statusComplete.json");
       const statusResponse = await qController.processJobStatus(
          processName,
          qJobComplete.processUUID,
@@ -257,13 +435,16 @@ describe("q controller test", () =>
       expect(statusResponse).toBeInstanceOf(QJobComplete);
    });
 
-   it("should run a step in a process that does NOT go async", async () =>
+   it("should run a step in a process that does NOT go async with a query string", async () =>
    {
       let processName = "sleepInteractive";
+      mockPost("processes/sleepInteractive/initComplete.json");
+      const qController = new QController(baseURL);
       const initResponse = await qController.processInit(processName);
       expect(initResponse).toBeInstanceOf(QJobComplete);
       const qJobComplete = initResponse as QJobComplete;
 
+      mockPost("processes/sleepInteractive/stepComplete.json");
       const stepResponse = await qController.processStep(
          processName,
          qJobComplete.processUUID,
@@ -279,9 +460,40 @@ describe("q controller test", () =>
       expect(qJobComplete.nextStep).not.toBe(qJobComplete2.nextStep);
    });
 
+   it("should run a step in a process that does NOT go async with a POST body", async () =>
+   {
+      let processName = "sleepInteractive";
+      mockPost("processes/sleepInteractive/initComplete.json");
+      const qController = new QController(baseURL);
+      const initResponse = await qController.processInit(processName);
+      expect(initResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete = initResponse as QJobComplete;
+
+      const formData = new FormData();
+      formData.append("sleepMillis", 10);
+      formData.append("_qStepTimeoutMillis", 100);
+
+      mockPost("processes/sleepInteractive/stepComplete.json");
+      const stepResponse = await qController.processStep(
+         processName,
+         qJobComplete.processUUID,
+         qJobComplete.nextStep,
+         formData
+      );
+      expect(stepResponse).toBeInstanceOf(QJobComplete);
+      const qJobComplete2 = stepResponse as QJobComplete;
+
+      ///////////////////////////////////////////////////
+      // assert that we got back a different next-step //
+      ///////////////////////////////////////////////////
+      expect(qJobComplete.nextStep).not.toBe(qJobComplete2.nextStep);
+   });
+
    it("should handle an exception from an init", async () =>
    {
       let processName = "simpleThrow";
+      mockPost("processes/simpleThrow/initError.json");
+      const qController = new QController(baseURL);
       const initResponse = await qController.processInit(
          processName,
          "_qStepTimeoutMillis=100&sleepMillis=10"
@@ -292,6 +504,8 @@ describe("q controller test", () =>
    it("should handle an exception from an async init", async () =>
    {
       let processName = "simpleThrow";
+      mockPost("processes/simpleThrow/initStarted.json");
+      const qController = new QController(baseURL);
       const initResponse = await qController.processInit(
          processName,
          "_qStepTimeoutMillis=10&sleepMillis=100"
@@ -300,6 +514,7 @@ describe("q controller test", () =>
       const qJobStarted = initResponse as QJobStarted;
 
       await sleep(200);
+      mockGet("processes/simpleThrow/statusError.json");
       const statusResponse = await qController.processJobStatus(
          processName,
          qJobStarted.processUUID,
@@ -311,6 +526,8 @@ describe("q controller test", () =>
    it("should return process records", async () =>
    {
       let processName = "greet";
+      mockPost("processes/greet/initComplete.json");
+      const qController = new QController(baseURL);
       const initResponse = await qController.processInit(
          processName,
          "recordsParam=recordIds&recordIds=2,3"
@@ -319,16 +536,19 @@ describe("q controller test", () =>
       const qJobComplete = initResponse as QJobComplete;
       const processUUID = qJobComplete.processUUID;
 
-      const records = await qController.processRecords(
+      mockGet("processes/greet/records.json");
+      const response = await qController.processRecords(
          processName,
          processUUID,
          0,
          20
       );
+      const records = response.records;
       expect(records).toBeInstanceOf(Array);
       expect(records.length).toBe(2);
       expect(records[0].values).toBeInstanceOf(Map);
       expect(records[0].values.get("id")).not.toBeNull();
       expect(records[0].values.get("firstName")).not.toBeNull();
+      expect(response.totalRecords).toBe(2);
    });
 });

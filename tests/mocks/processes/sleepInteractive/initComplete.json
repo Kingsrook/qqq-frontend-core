@@ -1,0 +1,8 @@
+{
+   "processUUID": "1f3184ff-8145-40d2-ac94-8cea5236fce6",
+   "values":
+   {
+      "foo": "bar"
+   },
+   "nextStep": "step1"
+}

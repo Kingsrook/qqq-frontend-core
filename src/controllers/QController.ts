@@ -23,9 +23,8 @@
 
 import { QInstance } from "../model/metaData/QInstance";
 import { QProcessMetaData } from "../model/metaData/QProcessMetaData";
-import { QRecord } from "../model/QRecord";
 import { QTableMetaData } from "../model/metaData/QTableMetaData";
-
+import { QRecord } from "../model/QRecord";
 import { QJobStarted } from "../model/processes/QJobStarted";
 import { QJobComplete } from "../model/processes/QJobComplete";
 import { QJobError } from "../model/processes/QJobError";
@@ -33,6 +32,8 @@ import { QJobRunning } from "../model/processes/QJobRunning";
 
 import { AxiosError, AxiosResponse } from "axios";
 import { QQueryFilter } from "../model/query/QQueryFilter";
+
+import FormData from "form-data"
 
 const axios = require("axios").default;
 
@@ -174,8 +175,7 @@ export class QController
 
    /*******************************************************************************
    ** Make a backend call to create a single record
-   ** TODO - bulk - despite being same on backend, feels like could or should be
-   **  different in here?  maybe not, but needs figured out.
+   **
    *******************************************************************************/
    async create(tableName: string, data: {}): Promise<QRecord>
    {
@@ -190,8 +190,7 @@ export class QController
 
    /*******************************************************************************
    ** Make a backend call to update a single record
-   ** TODO - bulk - despite being same on backend, feels like could or should be
-   **  different in here?  maybe not, but needs figured out.
+   **
    *******************************************************************************/
    async update(tableName: string, id: any, data: {}): Promise<QRecord>
    {
@@ -205,17 +204,28 @@ export class QController
    }
 
    /*******************************************************************************
-   ** Make a backend call to delete a single record
-   ** TODO - bulk - despite being same on backend, feels like could or should be
-   **  different in here?  maybe not, but needs figured out.
-   *******************************************************************************/
-   async delete(tableName: string, id: any): Promise<QRecord>
+    ** Make a backend call to delete a single record
+    **
+    *******************************************************************************/
+   async delete(tableName: string, id: any): Promise<number>
    {
       return this.axiosInstance
          .delete(`/data/${tableName}/${id}`)
          .then((response: AxiosResponse) =>
          {
-            return new QRecord(response.data.records[0]);
+            if (response.data.deletedRecordCount === 1)
+            {
+               return (1);
+            }
+            else
+            {
+               const error = response.data?.recordsWithErrors[0]?.errors[0];
+               if (error)
+               {
+                  throw (new Error(error));
+               }
+               throw (new Error("Unknown error deleting record."));
+            }
          })
          .catch(throwError);
    }
@@ -256,13 +266,19 @@ export class QController
    /*******************************************************************************
    ** Initialize a process
    *******************************************************************************/
-   async processInit(
-      processName: string,
-      queryString: string = ""
-   ): Promise<QJobStarted | QJobComplete | QJobError>
+   async processInit(processName: string, queryString: string = ""): Promise<QJobStarted | QJobComplete | QJobError>
    {
       let url = `/processes/${processName}/init`;
-      if (queryString !== "")
+      return this.postWithQueryStringToPossibleAsyncBackendJob(queryString, url);
+   }
+
+   /*******************************************************************************
+   ** Helper function for the process init & step functions, as well as bulk functions
+   ** which may run async.
+   *******************************************************************************/
+   private postWithQueryStringToPossibleAsyncBackendJob(queryString: string, url: string)
+   {
+      if (queryString && queryString !== "")
       {
          url += `?${queryString}`;
       }
@@ -276,7 +292,7 @@ export class QController
                ////////////////////////////////////////////////////////////////////
                // we aren't allowed to return "Running" here, so just in case... //
                ////////////////////////////////////////////////////////////////////
-               return new QJobError({ error: "Unexpected server response." });
+               return new QJobError({error: "Unexpected server response."});
             }
             return responseObject;
          })
@@ -290,29 +306,42 @@ export class QController
       processName: string,
       processUUID: string,
       step: string,
-      queryString: string = ""
+      formData: string | FormData = "",
+      formDataHeaders?: FormData.Headers
    ): Promise<QJobStarted | QJobComplete | QJobError>
    {
       let url = `/processes/${processName}/${processUUID}/step/${step}`;
-      if (queryString !== "")
+      if (formData instanceof FormData)
       {
-         url += `?${queryString}`;
-      }
-      return this.axiosInstance
-         .post(url)
-         .then((response: AxiosResponse) =>
+         if(!formDataHeaders)
          {
-            const responseObject = this.parseProcessResponse(response);
-            if (responseObject instanceof QJobRunning)
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // so, it looks like FormData is supplied by the browser, when running the browser, but by a form-data //
+            // lib when running not in the browser.  The browser version doesn't have a getHeaders method...       //
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            formDataHeaders = formData.getHeaders();
+         }
+
+         return this.axiosInstance
+            .post(url, formData, { headers: formDataHeaders })
+            .then((response: AxiosResponse) =>
             {
-               ////////////////////////////////////////////////////////////////////
-               // we aren't allowed to return "Running" here, so just in case... //
-               ////////////////////////////////////////////////////////////////////
-               return new QJobError({ error: "Unexpected server response." });
-            }
-            return responseObject;
-         })
-         .catch(throwError);
+               const responseObject = this.parseProcessResponse(response);
+               if (responseObject instanceof QJobRunning)
+               {
+                  ////////////////////////////////////////////////////////////////////
+                  // we aren't allowed to return "Running" here, so just in case... //
+                  ////////////////////////////////////////////////////////////////////
+                  return new QJobError({error: "Unexpected server response."});
+               }
+               return responseObject;
+            })
+            .catch(throwError);
+      }
+      else
+      {
+         return this.postWithQueryStringToPossibleAsyncBackendJob(formData, url);
+      }
    }
 
    /*******************************************************************************
@@ -349,7 +378,7 @@ export class QController
       processUUID: string,
       skip: number = 0,
       limit: number = 20
-   ): Promise<QRecord[]>
+   ): Promise<{totalRecords: number, records: QRecord[]}>
    {
       return this.axiosInstance
          .get(
@@ -362,7 +391,7 @@ export class QController
             {
                records.push(new QRecord(response.data.records[i]));
             }
-            return records;
+            return {totalRecords: response.data.totalRecords, records: records};
          })
          .catch(throwError);
    }

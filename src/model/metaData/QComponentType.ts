@@ -20,22 +20,14 @@
  */
 
 /*******************************************************************************
- ** Possible data types for Q-fields.
+ ** Possible types for QFrontendComponents
  **
  *******************************************************************************/
-export enum QFieldType {
-  BOOLEAN = "BOOLEAN",
-  STRING = "STRING",
-  INTEGER = "INTEGER",
-  DECIMAL = "DECIMAL",
-  DATE = "DATE",
-  TIME = "TIME",
-  DATE_TIME = "DATE_TIME",
-  TEXT = "TEXT",
-  HTML = "HTML",
-  PASSWORD = "PASSWORD",
-  BLOB = "BLOB",
-  ////////////////////////////////////////////////////////////////////////
-  // keep these values in sync with QFieldType.java in qqq-backend-core //
-  ////////////////////////////////////////////////////////////////////////
+export enum QComponentType
+{
+  HELP_TEXT = "HELP_TEXT",
+  BULK_EDIT_FORM = "BULK_EDIT_FORM"
+  ////////////////////////////////////////////////////////////////////////////
+  // keep these values in sync with QComponentType.java in qqq-backend-core //
+  ////////////////////////////////////////////////////////////////////////////
 }
