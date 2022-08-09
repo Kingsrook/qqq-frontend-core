@@ -21,26 +21,23 @@
 
 // export default (a: number, b: number): number => a + b;
 
-import { QInstance } from "../model/metaData/QInstance";
-import { QProcessMetaData } from "../model/metaData/QProcessMetaData";
-import { QTableMetaData } from "../model/metaData/QTableMetaData";
-import { QRecord } from "../model/QRecord";
-import { QJobStarted } from "../model/processes/QJobStarted";
-import { QJobComplete } from "../model/processes/QJobComplete";
-import { QJobError } from "../model/processes/QJobError";
-import { QJobRunning } from "../model/processes/QJobRunning";
+import {QInstance} from "../model/metaData/QInstance";
+import {QProcessMetaData} from "../model/metaData/QProcessMetaData";
+import {QTableMetaData} from "../model/metaData/QTableMetaData";
+import {QRecord} from "../model/QRecord";
+import {QJobStarted} from "../model/processes/QJobStarted";
+import {QJobComplete} from "../model/processes/QJobComplete";
+import {QJobError} from "../model/processes/QJobError";
+import {QJobRunning} from "../model/processes/QJobRunning";
 
-import { AxiosError, AxiosResponse } from "axios";
-import { QQueryFilter } from "../model/query/QQueryFilter";
+import {AxiosError, AxiosResponse} from "axios";
+import {QQueryFilter} from "../model/query/QQueryFilter";
+import {QException} from "../exceptions/QException";
 
-import FormData from "form-data"
+import FormData from "form-data";
+
 
 const axios = require("axios").default;
-
-const throwError = (response: AxiosError) =>
-{
-   throw response;
-};
 
 /*******************************************************************************
  ** Controller for interacting with a QQQ backend.
@@ -48,21 +45,35 @@ const throwError = (response: AxiosError) =>
 export class QController
 {
    private axiosInstance;
+   private exceptionHandler;
+
 
    /*******************************************************************************
-   **
-   *******************************************************************************/
-   constructor(baseUrl: string)
+    **
+    *******************************************************************************/
+   constructor(baseUrl: string, exceptionHandler?: (error: QException) => any)
    {
       this.axiosInstance = axios.create({
          baseURL: baseUrl,
          timeout: 15000, // todo - evaulate this!
       });
+
+      if (exceptionHandler != null)
+      {
+         this.exceptionHandler = exceptionHandler;
+      }
+      else
+      {
+         this.exceptionHandler = (error: QException) =>
+         {
+            throw error;
+         };
+      }
    }
 
    /*******************************************************************************
-   ** Fetch the top-level meta data for a qqq instance.
-   *******************************************************************************/
+    ** Fetch the top-level meta data for a qqq instance.
+    *******************************************************************************/
    async loadMetaData(): Promise<QInstance>
    {
       return this.axiosInstance
@@ -71,12 +82,12 @@ export class QController
          {
             return new QInstance(response.data);
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Fetch the full meta data for a specific table.
-   *******************************************************************************/
+    ** Fetch the full meta data for a specific table.
+    *******************************************************************************/
    async loadTableMetaData(tableName: string): Promise<QTableMetaData>
    {
       return this.axiosInstance
@@ -85,12 +96,12 @@ export class QController
          {
             return new QTableMetaData(response.data.table);
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Fetch the full meta data for a specific process.
-   *******************************************************************************/
+    ** Fetch the full meta data for a specific process.
+    *******************************************************************************/
    async loadProcessMetaData(tableName: string): Promise<QProcessMetaData>
    {
       return this.axiosInstance
@@ -99,12 +110,12 @@ export class QController
          {
             return new QProcessMetaData(response.data.process);
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Make a count request to the backend
-   *******************************************************************************/
+    ** Make a count request to the backend
+    *******************************************************************************/
    async count(tableName: string, queryFilter?: QQueryFilter): Promise<number>
    {
       let countURL = `/data/${tableName}/count`;
@@ -119,12 +130,12 @@ export class QController
          {
             return response.data.count;
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Make a query request to the backend
-   *******************************************************************************/
+    ** Make a query request to the backend
+    *******************************************************************************/
    async query(
       tableName: string,
       queryFilter?: QQueryFilter,
@@ -155,12 +166,12 @@ export class QController
             }
             return records;
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Make a request to the backend for a single record
-   *******************************************************************************/
+    ** Make a request to the backend for a single record
+    *******************************************************************************/
    async get(tableName: string, primaryKey: any): Promise<QRecord>
    {
       let getURL = `/data/${tableName}/${primaryKey}`;
@@ -170,13 +181,13 @@ export class QController
          {
             return new QRecord(response.data);
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Make a backend call to create a single record
-   **
-   *******************************************************************************/
+    ** Make a backend call to create a single record
+    **
+    *******************************************************************************/
    async create(tableName: string, data: {}): Promise<QRecord>
    {
       return this.axiosInstance
@@ -185,13 +196,13 @@ export class QController
          {
             return new QRecord(response.data.records[0]);
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Make a backend call to update a single record
-   **
-   *******************************************************************************/
+    ** Make a backend call to update a single record
+    **
+    *******************************************************************************/
    async update(tableName: string, id: any, data: {}): Promise<QRecord>
    {
       return this.axiosInstance
@@ -200,7 +211,7 @@ export class QController
          {
             return new QRecord(response.data.records[0]);
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
@@ -227,12 +238,12 @@ export class QController
                throw (new Error("Unknown error deleting record."));
             }
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Common logic to parse a process-related server response into an appropriate object.
-   *******************************************************************************/
+    ** Common logic to parse a process-related server response into an appropriate object.
+    *******************************************************************************/
    parseProcessResponse(
       response: AxiosResponse
    ): QJobStarted | QJobRunning | QJobComplete | QJobError
@@ -259,13 +270,13 @@ export class QController
       }
       else
       {
-         return new QJobError({ error: "Unexpected server response." });
+         return new QJobError({error: "Unexpected server response."});
       }
    }
 
    /*******************************************************************************
-   ** Initialize a process
-   *******************************************************************************/
+    ** Initialize a process
+    *******************************************************************************/
    async processInit(processName: string, queryString: string = ""): Promise<QJobStarted | QJobComplete | QJobError>
    {
       let url = `/processes/${processName}/init`;
@@ -273,9 +284,9 @@ export class QController
    }
 
    /*******************************************************************************
-   ** Helper function for the process init & step functions, as well as bulk functions
-   ** which may run async.
-   *******************************************************************************/
+    ** Helper function for the process init & step functions, as well as bulk functions
+    ** which may run async.
+    *******************************************************************************/
    private postWithQueryStringToPossibleAsyncBackendJob(queryString: string, url: string)
    {
       if (queryString && queryString !== "")
@@ -296,12 +307,12 @@ export class QController
             }
             return responseObject;
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Proceed to the next step in a process
-   *******************************************************************************/
+    ** Proceed to the next step in a process
+    *******************************************************************************/
    async processStep(
       processName: string,
       processUUID: string,
@@ -313,7 +324,7 @@ export class QController
       let url = `/processes/${processName}/${processUUID}/step/${step}`;
       if (formData instanceof FormData)
       {
-         if(!formDataHeaders)
+         if (!formDataHeaders)
          {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
             // so, it looks like FormData is supplied by the browser, when running the browser, but by a form-data //
@@ -323,7 +334,7 @@ export class QController
          }
 
          return this.axiosInstance
-            .post(url, formData, { headers: formDataHeaders })
+            .post(url, formData, {headers: formDataHeaders})
             .then((response: AxiosResponse) =>
             {
                const responseObject = this.parseProcessResponse(response);
@@ -336,7 +347,7 @@ export class QController
                }
                return responseObject;
             })
-            .catch(throwError);
+            .catch(this.handleException);
       }
       else
       {
@@ -345,8 +356,8 @@ export class QController
    }
 
    /*******************************************************************************
-   ** Get the status for a currently executing job within a process (init or step)
-   *******************************************************************************/
+    ** Get the status for a currently executing job within a process (init or step)
+    *******************************************************************************/
    async processJobStatus(
       processName: string,
       processUUID: string,
@@ -363,22 +374,22 @@ export class QController
                ////////////////////////////////////////////////////////////////////
                // we aren't allowed to return "Started" here, so just in case... //
                ////////////////////////////////////////////////////////////////////
-               return new QJobError({ error: "Unexpected server response." });
+               return new QJobError({error: "Unexpected server response."});
             }
             return responseObject;
          })
-         .catch(throwError);
+         .catch(this.handleException);
    }
 
    /*******************************************************************************
-   ** Get records from a process's state
-   *******************************************************************************/
+    ** Get records from a process's state
+    *******************************************************************************/
    async processRecords(
       processName: string,
       processUUID: string,
       skip: number = 0,
       limit: number = 20
-   ): Promise<{totalRecords: number, records: QRecord[]}>
+   ): Promise<{ totalRecords: number, records: QRecord[] }>
    {
       return this.axiosInstance
          .get(
@@ -393,6 +404,17 @@ export class QController
             }
             return {totalRecords: response.data.totalRecords, records: records};
          })
-         .catch(throwError);
+         .catch(this.handleException);
+   }
+
+
+   /*******************************************************************************
+    ** exception handler which will marshal axios error into a Qexception and
+    *  send that the exception handler provided to this class
+    *******************************************************************************/
+   private handleException(error: AxiosError): void
+   {
+      const qException = new QException(error);
+      this.exceptionHandler(qException);
    }
 }
