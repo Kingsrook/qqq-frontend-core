@@ -27,6 +27,9 @@ import { QInstance } from "../../src/model/metaData/QInstance";
 import { QProcessMetaData } from "../../src/model/metaData/QProcessMetaData";
 import { QRecord } from "../../src/model/QRecord";
 import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
+import { QAppMetaData } from "../../src/model/metaData/QAppMetaData";
+import { QAppNodeType } from "../../src/model/metaData/QAppNodeType";
+import { QSection } from "../../src/model/metaData/QSection";
 import { QJobStarted } from "../../src/model/processes/QJobStarted";
 import { QJobRunning } from "../../src/model/processes/QJobRunning";
 import { QJobComplete } from "../../src/model/processes/QJobComplete";
@@ -179,6 +182,29 @@ describe("q controller test", () =>
       const greetProcess = processes?.get("greet");
       expect(greetProcess).toBeInstanceOf(QProcessMetaData);
       expect(greetProcess?.label).toBe("Greet People");
+
+      const apps = metaData.apps;
+      expect(apps?.size).toBeGreaterThan(0);
+      const greetingsApp = apps?.get("greetingsApp")
+      expect(greetingsApp).toBeInstanceOf(QAppMetaData);
+      expect(greetingsApp?.label).toBe("Greetings App");
+      expect(greetingsApp?.type).toBe(QAppNodeType.APP);
+      const greetPeopleProcess = greetingsApp?.children?.[0];
+      expect(greetPeopleProcess).toBeInstanceOf(QAppMetaData);
+      expect(greetPeopleProcess?.label).toBe("Greet People");
+      expect(greetPeopleProcess?.type).toBe(QAppNodeType.PROCESS);
+      const peopleApp = apps?.get("peopleApp");
+      const greetingsAppUnderPeople = peopleApp?.children?.find(child => child.name === "greetingsApp");
+      expect(greetingsAppUnderPeople).toBeInstanceOf(QAppMetaData);
+      expect(greetingsAppUnderPeople?.children?.length).toBe(0); // apps map is Not nested
+
+      const appTree = metaData.appTree;
+      expect(appTree?.length).toBeGreaterThan(0);
+      const peopleAppUnderTree = appTree?.find(app => app.name === "peopleApp");
+      expect(peopleAppUnderTree).toBeInstanceOf(QAppMetaData);
+      const greetingsAppUnderPeopleInTree = peopleAppUnderTree?.children?.find(child => child.name === "greetingsApp");
+      expect(greetingsAppUnderPeopleInTree).toBeInstanceOf(QAppMetaData);
+      expect(greetingsAppUnderPeopleInTree?.children?.length).toBeGreaterThan(0); // apps tree IS nested
    });
 
    it("should return an error with a bad base url meta data", async () =>
@@ -210,6 +236,16 @@ describe("q controller test", () =>
       expect(nameField?.name).toBe("name");
       expect(nameField?.label).toBe("Name");
       expect(nameField?.type).toBe(QFieldType.STRING);
+
+      const sections = tableMetaData?.sections;
+      expect(sections).toBeDefined();
+      expect(sections?.length).toBeGreaterThan(0);
+      const section = sections?.[0];
+      expect(section).toBeInstanceOf(QSection);
+      expect(section?.name).toBeDefined();
+      expect(section?.iconName).toBeDefined();
+      expect(section?.fieldNames).toBeDefined();
+      expect(section?.fieldNames?.length).toBeGreaterThan(0);
    });
 
    it("should fail table meta data for bad table name", async () =>

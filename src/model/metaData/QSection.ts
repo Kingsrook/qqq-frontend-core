@@ -19,34 +19,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /*******************************************************************************
- ** Data Record within qqq.  e.g., a single row from a database.
+ ** Meta-Data to define a section (of fields) in a table in a QQQ instance.
  **
  *******************************************************************************/
-export class QRecord
+export class QSection
 {
-   tableName: string;
-   recordLabel: string;
-   values: Map<string, any>;
-   displayValues: Map<string, string>;
+   name: string;
+   label: string;
+   tier: string; // todo - enum
+   iconName: string;
+   fieldNames?: string[];
 
    constructor(object: any)
    {
-      this.tableName = object.tableName;
-      this.recordLabel = object.recordLabel;
+      this.name = object.name;
+      this.label = object.label;
+      this.tier = object.tier;
+      this.iconName = object.icon ? object.icon.name : null;
 
-      this.values = new Map<string, any>();
-      for (const key in object.values)
+      if (object.fieldNames)
       {
-         this.values.set(key, object.values[key])
-      }
-
-      this.displayValues = new Map<string, any>();
-      for (const key in object.displayValues)
-      {
-         this.displayValues.set(key, object.displayValues[key])
+         this.fieldNames = object.fieldNames;
       }
    }
 }
-

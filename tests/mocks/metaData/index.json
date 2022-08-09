@@ -5,68 +5,21 @@
          "label": "Carrier",
          "isHidden": false
       },
-      "city": {
-         "name": "city",
-         "label": "Cities",
-         "isHidden": true
-      },
       "person": {
          "name": "person",
          "label": "Person",
          "isHidden": false
+      },
+      "city": {
+         "name": "city",
+         "label": "Cities",
+         "isHidden": true
       }
    },
    "processes": {
-      "person.bulkInsert": {
-         "name": "person.bulkInsert",
-         "label": "Person Bulk Insert",
-         "tableName": "person",
-         "isHidden": true
-      },
-      "carrier.bulkInsert": {
-         "name": "carrier.bulkInsert",
-         "label": "Carrier Bulk Insert",
-         "tableName": "carrier",
-         "isHidden": true
-      },
-      "simpleSleep": {
-         "name": "simpleSleep",
-         "label": "Simple Sleep",
-         "isHidden": true
-      },
-      "carrier.bulkDelete": {
-         "name": "carrier.bulkDelete",
-         "label": "Carrier Bulk Delete",
-         "tableName": "carrier",
-         "isHidden": true
-      },
       "greet": {
          "name": "greet",
          "label": "Greet People",
-         "tableName": "person",
-         "isHidden": true
-      },
-      "city.bulkDelete": {
-         "name": "city.bulkDelete",
-         "label": "Cities Bulk Delete",
-         "tableName": "city",
-         "isHidden": true
-      },
-      "person.bulkDelete": {
-         "name": "person.bulkDelete",
-         "label": "Person Bulk Delete",
-         "tableName": "person",
-         "isHidden": true
-      },
-      "carrier.bulkEdit": {
-         "name": "carrier.bulkEdit",
-         "label": "Carrier Bulk Edit",
-         "tableName": "carrier",
-         "isHidden": true
-      },
-      "person.bulkEdit": {
-         "name": "person.bulkEdit",
-         "label": "Person Bulk Edit",
          "tableName": "person",
          "isHidden": true
       },
@@ -76,27 +29,222 @@
          "tableName": "person",
          "isHidden": false
       },
-      "city.bulkEdit": {
-         "name": "city.bulkEdit",
-         "label": "Cities Bulk Edit",
-         "tableName": "city",
+      "simpleSleep": {
+         "name": "simpleSleep",
+         "label": "Simple Sleep",
          "isHidden": true
-      },
-      "simpleThrow": {
-         "name": "simpleThrow",
-         "label": "Simple Throw",
-         "isHidden": false
       },
       "sleepInteractive": {
          "name": "sleepInteractive",
          "label": "Sleep Interactive",
          "isHidden": false
       },
+      "simpleThrow": {
+         "name": "simpleThrow",
+         "label": "Simple Throw",
+         "isHidden": false
+      },
+      "carrier.bulkInsert": {
+         "name": "carrier.bulkInsert",
+         "label": "Carrier Bulk Insert",
+         "tableName": "carrier",
+         "isHidden": true
+      },
+      "carrier.bulkEdit": {
+         "name": "carrier.bulkEdit",
+         "label": "Carrier Bulk Edit",
+         "tableName": "carrier",
+         "isHidden": true
+      },
+      "carrier.bulkDelete": {
+         "name": "carrier.bulkDelete",
+         "label": "Carrier Bulk Delete",
+         "tableName": "carrier",
+         "isHidden": true
+      },
+      "person.bulkInsert": {
+         "name": "person.bulkInsert",
+         "label": "Person Bulk Insert",
+         "tableName": "person",
+         "isHidden": true
+      },
+      "person.bulkEdit": {
+         "name": "person.bulkEdit",
+         "label": "Person Bulk Edit",
+         "tableName": "person",
+         "isHidden": true
+      },
+      "person.bulkDelete": {
+         "name": "person.bulkDelete",
+         "label": "Person Bulk Delete",
+         "tableName": "person",
+         "isHidden": true
+      },
       "city.bulkInsert": {
          "name": "city.bulkInsert",
          "label": "Cities Bulk Insert",
          "tableName": "city",
          "isHidden": true
+      },
+      "city.bulkEdit": {
+         "name": "city.bulkEdit",
+         "label": "Cities Bulk Edit",
+         "tableName": "city",
+         "isHidden": true
+      },
+      "city.bulkDelete": {
+         "name": "city.bulkDelete",
+         "label": "Cities Bulk Delete",
+         "tableName": "city",
+         "isHidden": true
       }
-   }
+   },
+   "apps": {
+      "greetingsApp": {
+         "type": "APP",
+         "name": "greetingsApp",
+         "label": "Greetings App",
+         "children": [
+            {
+               "type": "PROCESS",
+               "name": "greet",
+               "label": "Greet People",
+               "children": []
+            },
+            {
+               "type": "PROCESS",
+               "name": "greetInteractive",
+               "label": "Greet Interactive",
+               "children": []
+            }
+         ]
+      },
+      "peopleApp": {
+         "type": "APP",
+         "name": "peopleApp",
+         "label": "People App",
+         "children": [
+            {
+               "type": "TABLE",
+               "name": "person",
+               "label": "Person",
+               "children": []
+            },
+            {
+               "type": "TABLE",
+               "name": "city",
+               "label": "Cities",
+               "children": []
+            },
+            {
+               "type": "APP",
+               "name": "greetingsApp",
+               "label": "Greetings App",
+               "children": []
+            }
+         ]
+      },
+      "miscellaneous": {
+         "type": "APP",
+         "name": "miscellaneous",
+         "label": "Miscellaneous",
+         "children": [
+            {
+               "type": "TABLE",
+               "name": "carrier",
+               "label": "Carrier",
+               "children": []
+            },
+            {
+               "type": "PROCESS",
+               "name": "simpleSleep",
+               "label": "Simple Sleep",
+               "children": []
+            },
+            {
+               "type": "PROCESS",
+               "name": "sleepInteractive",
+               "label": "Sleep Interactive",
+               "children": []
+            },
+            {
+               "type": "PROCESS",
+               "name": "simpleThrow",
+               "label": "Simple Throw",
+               "children": []
+            }
+         ]
+      }
+   },
+   "appTree": [
+      {
+         "type": "APP",
+         "name": "peopleApp",
+         "label": "People App",
+         "children": [
+            {
+               "type": "TABLE",
+               "name": "person",
+               "label": "Person",
+               "children": []
+            },
+            {
+               "type": "TABLE",
+               "name": "city",
+               "label": "Cities",
+               "children": []
+            },
+            {
+               "type": "APP",
+               "name": "greetingsApp",
+               "label": "Greetings App",
+               "children": [
+                  {
+                     "type": "PROCESS",
+                     "name": "greet",
+                     "label": "Greet People",
+                     "children": []
+                  },
+                  {
+                     "type": "PROCESS",
+                     "name": "greetInteractive",
+                     "label": "Greet Interactive",
+                     "children": []
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "type": "APP",
+         "name": "miscellaneous",
+         "label": "Miscellaneous",
+         "children": [
+            {
+               "type": "TABLE",
+               "name": "carrier",
+               "label": "Carrier",
+               "children": []
+            },
+            {
+               "type": "PROCESS",
+               "name": "simpleSleep",
+               "label": "Simple Sleep",
+               "children": []
+            },
+            {
+               "type": "PROCESS",
+               "name": "sleepInteractive",
+               "label": "Sleep Interactive",
+               "children": []
+            },
+            {
+               "type": "PROCESS",
+               "name": "simpleThrow",
+               "label": "Simple Throw",
+               "children": []
+            }
+         ]
+      }
+   ]
 }
