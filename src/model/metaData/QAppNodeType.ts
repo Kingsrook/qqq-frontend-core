@@ -19,13 +19,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QController} from "../src/controllers/QController";
-
-describe("Top level test", () =>
-{
-   it("should be able to instantiate a QController", () =>
-   {
-      var qController = new QController("");
-      expect(qController).toBeInstanceOf(QController)
-   });
-});
+/*******************************************************************************
+ ** Possible data types for QAppNodeType
+ **
+ *******************************************************************************/
+export enum QAppNodeType {
+  TABLE = "TABLE",
+  PROCESS = "PROCESS",
+  APP = "APP"
+}

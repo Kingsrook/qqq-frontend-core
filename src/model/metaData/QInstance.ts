@@ -21,6 +21,8 @@
 
 import {QTableMetaData} from "./QTableMetaData";
 import {QProcessMetaData} from "./QProcessMetaData";
+import {QAppMetaData} from "./QAppMetaData";
+import {QAppTreeNode} from "./QAppTreeNode";
 
 /*******************************************************************************
  ** Meta-Data definition of a QQQ Instance
@@ -30,6 +32,8 @@ export class QInstance
 {
    tables?: Map<string, QTableMetaData>;
    processes?: Map<string, QProcessMetaData>;
+   apps?: Map<string, QAppMetaData>;
+   appTree?: QAppTreeNode[];
 
    constructor(object: any)
    {
@@ -48,6 +52,24 @@ export class QInstance
          for (const key in object.processes)
          {
             this.processes.set(key, new QProcessMetaData(object.processes[key]))
+         }
+      }
+
+      if (object.apps)
+      {
+         this.apps = new Map<string, QAppMetaData>();
+         for (const key in object.apps)
+         {
+            this.apps.set(key, new QAppMetaData(object.apps[key]))
+         }
+      }
+
+      if (object.appTree)
+      {
+         this.appTree = [];
+         for (let i = 0; i < object.appTree.length; i++)
+         {
+            this.appTree.push(new QAppTreeNode(object.appTree[i]))
          }
       }
    }

@@ -19,7 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFieldMetaData } from "./QFieldMetaData";
+import {QFieldMetaData} from "./QFieldMetaData";
+import {QSection} from "./QSection";
 
 /*******************************************************************************
  ** Meta-Data to define a table in a QQQ instance.
@@ -31,16 +32,17 @@ export class QTableMetaData
    label: string;
    isHidden: boolean = false;
    primaryKeyField: string;
-   isRequired: string;
    fields?: Map<string, QFieldMetaData>;
+   iconName?: string;
+   sections?: QSection[];
 
    constructor(object: any)
    {
       this.name = object.name;
       this.label = object.label;
       this.isHidden = object.isHidden;
-      this.isRequired = object.isRequired;
       this.primaryKeyField = object.primaryKeyField;
+      this.iconName = object.iconName;
 
       if (object.fields)
       {
@@ -48,6 +50,15 @@ export class QTableMetaData
          for (const key in object.fields)
          {
             this.fields.set(key, new QFieldMetaData(object.fields[key]));
+         }
+      }
+
+      if (object.sections)
+      {
+         this.sections = [];
+         for (let i = 0; i < object.sections.length; i++)
+         {
+            this.sections.push(new QSection(object.sections[i]));
          }
       }
    }

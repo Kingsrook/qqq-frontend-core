@@ -20,32 +20,39 @@
  */
 
 
+import {AxiosError} from "axios";
+
 /*******************************************************************************
- ** Data Record within qqq.  e.g., a single row from a database.
+ ** Exception within qqq
  **
  *******************************************************************************/
-export class QRecord
+export class QException
 {
-   tableName: string;
-   recordLabel: string;
-   values: Map<string, any>;
-   displayValues: Map<string, string>;
+   message: string;
+   status: string | undefined;
+   code: string | undefined;
 
-   constructor(object: any)
+   constructor(error: AxiosError)
    {
-      this.tableName = object.tableName;
-      this.recordLabel = object.recordLabel;
+      this.message = error.message;
+      this.code = error.code;
 
-      this.values = new Map<string, any>();
-      for (const key in object.values)
+      if(error.response !== undefined && error.response.status !== undefined)
       {
-         this.values.set(key, object.values[key])
+         this.status = error.response.status.toString();
+      }
+      else if(error.status !== undefined)
+      {
+         this.status = error.status;
       }
 
-      this.displayValues = new Map<string, any>();
-      for (const key in object.displayValues)
+      if(error.response !== undefined && error.response.statusText !== undefined)
       {
-         this.displayValues.set(key, object.displayValues[key])
+         this.code = error.response.statusText;
+      }
+      else if(error.code !== undefined)
+      {
+         this.status = error.code;
       }
    }
 }

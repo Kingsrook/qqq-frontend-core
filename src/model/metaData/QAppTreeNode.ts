@@ -19,34 +19,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QAppNodeType} from "./QAppNodeType";
 
 /*******************************************************************************
- ** Data Record within qqq.  e.g., a single row from a database.
+ ** Meta-Data to define an object that is part of the app-hierarchy/tree.
+ ** e.g., Tables, Processes, and Apps themselves (since they can be nested).
  **
  *******************************************************************************/
-export class QRecord
+export class QAppTreeNode
 {
-   tableName: string;
-   recordLabel: string;
-   values: Map<string, any>;
-   displayValues: Map<string, string>;
+   name: string;
+   label: string;
+   type: QAppNodeType;
+   children?: QAppTreeNode[];
+   iconName?: string;
 
    constructor(object: any)
    {
-      this.tableName = object.tableName;
-      this.recordLabel = object.recordLabel;
+      this.name = object.name;
+      this.label = object.label;
+      this.type = object.type;
+      this.iconName = object.iconName;
 
-      this.values = new Map<string, any>();
-      for (const key in object.values)
+      if (object.children)
       {
-         this.values.set(key, object.values[key])
-      }
-
-      this.displayValues = new Map<string, any>();
-      for (const key in object.displayValues)
-      {
-         this.displayValues.set(key, object.displayValues[key])
+         this.children = [];
+         for (let i = 0; i < object.children.length; i++)
+         {
+            this.children.push(new QAppTreeNode(object.children[i]));
+         }
       }
    }
-}
 
+}
