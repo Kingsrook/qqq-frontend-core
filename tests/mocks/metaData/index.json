@@ -3,17 +3,20 @@
       "carrier": {
          "name": "carrier",
          "label": "Carrier",
-         "isHidden": false
+         "isHidden": false,
+         "iconName": "local_shipping"
       },
       "person": {
          "name": "person",
          "label": "Person",
-         "isHidden": false
+         "isHidden": false,
+         "iconName": "person"
       },
       "city": {
          "name": "city",
          "label": "Cities",
-         "isHidden": true
+         "isHidden": true,
+         "iconName": "location_city"
       }
    },
    "processes": {
@@ -21,7 +24,8 @@
          "name": "greet",
          "label": "Greet People",
          "tableName": "person",
-         "isHidden": true
+         "isHidden": true,
+         "iconName": "emoji_people"
       },
       "greetInteractive": {
          "name": "greetInteractive",
@@ -101,7 +105,6 @@
    },
    "apps": {
       "greetingsApp": {
-         "type": "APP",
          "name": "greetingsApp",
          "label": "Greetings App",
          "children": [
@@ -109,43 +112,42 @@
                "type": "PROCESS",
                "name": "greet",
                "label": "Greet People",
-               "children": []
+               "iconName": "emoji_people"
             },
-            {
-               "type": "PROCESS",
-               "name": "greetInteractive",
-               "label": "Greet Interactive",
-               "children": []
-            }
-         ]
-      },
-      "peopleApp": {
-         "type": "APP",
-         "name": "peopleApp",
-         "label": "People App",
-         "children": [
             {
                "type": "TABLE",
                "name": "person",
                "label": "Person",
-               "children": []
+               "iconName": "person"
             },
             {
                "type": "TABLE",
                "name": "city",
                "label": "Cities",
-               "children": []
+               "iconName": "location_city"
             },
+            {
+               "type": "PROCESS",
+               "name": "greetInteractive",
+               "label": "Greet Interactive"
+            }
+         ],
+         "iconName": "waving_hand"
+      },
+      "peopleApp": {
+         "name": "peopleApp",
+         "label": "People App",
+         "children": [
             {
                "type": "APP",
                "name": "greetingsApp",
                "label": "Greetings App",
-               "children": []
+               "iconName": "waving_hand"
             }
-         ]
+         ],
+         "iconName": "person"
       },
       "miscellaneous": {
-         "type": "APP",
          "name": "miscellaneous",
          "label": "Miscellaneous",
          "children": [
@@ -153,27 +155,25 @@
                "type": "TABLE",
                "name": "carrier",
                "label": "Carrier",
-               "children": []
+               "iconName": "local_shipping"
             },
             {
                "type": "PROCESS",
                "name": "simpleSleep",
-               "label": "Simple Sleep",
-               "children": []
+               "label": "Simple Sleep"
             },
             {
                "type": "PROCESS",
                "name": "sleepInteractive",
-               "label": "Sleep Interactive",
-               "children": []
+               "label": "Sleep Interactive"
             },
             {
                "type": "PROCESS",
                "name": "simpleThrow",
-               "label": "Simple Throw",
-               "children": []
+               "label": "Simple Throw"
             }
-         ]
+         ],
+         "iconName": "stars"
       }
    },
    "appTree": [
@@ -183,18 +183,6 @@
          "label": "People App",
          "children": [
             {
-               "type": "TABLE",
-               "name": "person",
-               "label": "Person",
-               "children": []
-            },
-            {
-               "type": "TABLE",
-               "name": "city",
-               "label": "Cities",
-               "children": []
-            },
-            {
                "type": "APP",
                "name": "greetingsApp",
                "label": "Greetings App",
@@ -203,17 +191,30 @@
                      "type": "PROCESS",
                      "name": "greet",
                      "label": "Greet People",
-                     "children": []
+                     "iconName": "emoji_people"
+                  },
+                  {
+                     "type": "TABLE",
+                     "name": "person",
+                     "label": "Person",
+                     "iconName": "person"
+                  },
+                  {
+                     "type": "TABLE",
+                     "name": "city",
+                     "label": "Cities",
+                     "iconName": "location_city"
                   },
                   {
                      "type": "PROCESS",
                      "name": "greetInteractive",
-                     "label": "Greet Interactive",
-                     "children": []
+                     "label": "Greet Interactive"
                   }
-               ]
+               ],
+               "iconName": "waving_hand"
             }
-         ]
+         ],
+         "iconName": "person"
       },
       {
          "type": "APP",
@@ -224,27 +225,25 @@
                "type": "TABLE",
                "name": "carrier",
                "label": "Carrier",
-               "children": []
+               "iconName": "local_shipping"
             },
             {
                "type": "PROCESS",
                "name": "simpleSleep",
-               "label": "Simple Sleep",
-               "children": []
+               "label": "Simple Sleep"
             },
             {
                "type": "PROCESS",
                "name": "sleepInteractive",
-               "label": "Sleep Interactive",
-               "children": []
+               "label": "Sleep Interactive"
             },
             {
                "type": "PROCESS",
                "name": "simpleThrow",
-               "label": "Simple Throw",
-               "children": []
+               "label": "Simple Throw"
             }
-         ]
+         ],
+         "iconName": "stars"
       }
    ]
 }

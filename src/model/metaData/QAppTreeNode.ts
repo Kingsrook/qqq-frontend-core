@@ -19,16 +19,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QAppTreeNode} from "./QAppTreeNode";
+import {QAppNodeType} from "./QAppNodeType";
 
 /*******************************************************************************
- ** Meta-Data to define an app in a QQQ instance.
+ ** Meta-Data to define an object that is part of the app-hierarchy/tree.
+ ** e.g., Tables, Processes, and Apps themselves (since they can be nested).
  **
  *******************************************************************************/
-export class QAppMetaData
+export class QAppTreeNode
 {
    name: string;
    label: string;
+   type: QAppNodeType;
    children?: QAppTreeNode[];
    iconName?: string;
 
@@ -36,6 +38,7 @@ export class QAppMetaData
    {
       this.name = object.name;
       this.label = object.label;
+      this.type = object.type;
       this.iconName = object.iconName;
 
       if (object.children)

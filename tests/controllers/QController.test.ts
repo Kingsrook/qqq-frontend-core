@@ -28,6 +28,7 @@ import { QProcessMetaData } from "../../src/model/metaData/QProcessMetaData";
 import { QRecord } from "../../src/model/QRecord";
 import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
 import { QAppMetaData } from "../../src/model/metaData/QAppMetaData";
+import { QAppTreeNode } from "../../src/model/metaData/QAppTreeNode";
 import { QAppNodeType } from "../../src/model/metaData/QAppNodeType";
 import { QSection } from "../../src/model/metaData/QSection";
 import { QJobStarted } from "../../src/model/processes/QJobStarted";
@@ -188,22 +189,21 @@ describe("q controller test", () =>
       const greetingsApp = apps?.get("greetingsApp")
       expect(greetingsApp).toBeInstanceOf(QAppMetaData);
       expect(greetingsApp?.label).toBe("Greetings App");
-      expect(greetingsApp?.type).toBe(QAppNodeType.APP);
       const greetPeopleProcess = greetingsApp?.children?.[0];
-      expect(greetPeopleProcess).toBeInstanceOf(QAppMetaData);
+      expect(greetPeopleProcess).toBeInstanceOf(QAppTreeNode);
       expect(greetPeopleProcess?.label).toBe("Greet People");
       expect(greetPeopleProcess?.type).toBe(QAppNodeType.PROCESS);
       const peopleApp = apps?.get("peopleApp");
       const greetingsAppUnderPeople = peopleApp?.children?.find(child => child.name === "greetingsApp");
-      expect(greetingsAppUnderPeople).toBeInstanceOf(QAppMetaData);
-      expect(greetingsAppUnderPeople?.children?.length).toBe(0); // apps map is Not nested
+      expect(greetingsAppUnderPeople).toBeInstanceOf(QAppTreeNode);
+      expect(greetingsAppUnderPeople?.children).toBeUndefined(); // apps map is Not nested
 
       const appTree = metaData.appTree;
       expect(appTree?.length).toBeGreaterThan(0);
       const peopleAppUnderTree = appTree?.find(app => app.name === "peopleApp");
-      expect(peopleAppUnderTree).toBeInstanceOf(QAppMetaData);
+      expect(peopleAppUnderTree).toBeInstanceOf(QAppTreeNode);
       const greetingsAppUnderPeopleInTree = peopleAppUnderTree?.children?.find(child => child.name === "greetingsApp");
-      expect(greetingsAppUnderPeopleInTree).toBeInstanceOf(QAppMetaData);
+      expect(greetingsAppUnderPeopleInTree).toBeInstanceOf(QAppTreeNode);
       expect(greetingsAppUnderPeopleInTree?.children?.length).toBeGreaterThan(0); // apps tree IS nested
    });
 
