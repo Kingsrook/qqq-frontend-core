@@ -32,6 +32,8 @@ export class QFieldMetaData
    type: QFieldType;
    isRequired: boolean = false;
    isEditable: boolean = true;
+   possibleValueSourceName: string;
+   displayFormat: string;
 
    constructor(object: any)
    {
@@ -40,5 +42,7 @@ export class QFieldMetaData
       this.type = object.type;
       this.isRequired = object.isRequired;
       this.isEditable = object.isEditable;
+      this.possibleValueSourceName = object.possibleValueSourceName;
+      this.displayFormat = object.displayFormat;
    }
 }
