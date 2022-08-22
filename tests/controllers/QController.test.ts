@@ -587,4 +587,13 @@ describe("q controller test", () =>
       expect(records[0].values.get("firstName")).not.toBeNull();
       expect(response.totalRecords).toBe(2);
    });
+
+   it("should get data for a widget", async () =>
+   {
+      mockGet("widget/PersonsByCreateDateBarChart.json");
+      const qController = new QController(baseURL);
+      const widget = await qController.widget("PersonsByCreateDateBarChart");
+      console.log(widget);
+      expect(widget).not.toBeNull();
+   });
 });

@@ -31,12 +31,14 @@ export class QAppMetaData
    label: string;
    children?: QAppTreeNode[];
    iconName?: string;
+   widgets: string[]
 
    constructor(object: any)
    {
       this.name = object.name;
       this.label = object.label;
       this.iconName = object.iconName;
+      this.widgets = object.widgets;
 
       if (object.children)
       {
