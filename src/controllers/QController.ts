@@ -82,7 +82,10 @@ export class QController
          {
             return new QInstance(response.data);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -96,7 +99,10 @@ export class QController
          {
             return new QTableMetaData(response.data.table);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -110,7 +116,10 @@ export class QController
          {
             return new QProcessMetaData(response.data.process);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -130,7 +139,10 @@ export class QController
          {
             return response.data.count;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -166,7 +178,10 @@ export class QController
             }
             return records;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -181,7 +196,10 @@ export class QController
          {
             return new QRecord(response.data);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -196,7 +214,10 @@ export class QController
          {
             return new QRecord(response.data.records[0]);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -211,7 +232,10 @@ export class QController
          {
             return new QRecord(response.data.records[0]);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -238,7 +262,10 @@ export class QController
                throw (new Error("Unknown error deleting record."));
             }
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -307,7 +334,10 @@ export class QController
             }
             return responseObject;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -347,7 +377,10 @@ export class QController
                }
                return responseObject;
             })
-            .catch(this.handleException);
+            .catch((error: AxiosError) =>
+            {
+               this.handleException(error);
+            });
       }
       else
       {
@@ -378,7 +411,10 @@ export class QController
             }
             return responseObject;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -404,12 +440,15 @@ export class QController
             }
             return {totalRecords: response.data.totalRecords, records: records};
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
 
    /*******************************************************************************
-    ** exception handler which will marshal axios error into a Qexception and
+    ** exception handler which will marshal axios error into a QException and
     *  send that the exception handler provided to this class
     *******************************************************************************/
    private handleException(error: AxiosError): void
