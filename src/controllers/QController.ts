@@ -19,8 +19,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// export default (a: number, b: number): number => a + b;
-
 import {QInstance} from "../model/metaData/QInstance";
 import {QProcessMetaData} from "../model/metaData/QProcessMetaData";
 import {QTableMetaData} from "../model/metaData/QTableMetaData";
@@ -55,7 +53,7 @@ export class QController
    {
       this.axiosInstance = axios.create({
          baseURL: baseUrl,
-         timeout: 15000, // todo - evaulate this!
+         timeout: 60000, // todo - evaulate this!
       });
 
       if (exceptionHandler != null)
