@@ -20,6 +20,7 @@
  */
 
 import { QController } from "../../src/controllers/QController";
+import { QException } from "../../src/exceptions/QException";
 import { QFieldMetaData } from "../../src/model/metaData/QFieldMetaData";
 import { QFieldType } from "../../src/model/metaData/QFieldType";
 import { QFrontendStepMetaData } from "../../src/model/metaData/QFrontendStepMetaData";
@@ -85,15 +86,15 @@ function mockPost(mockPath: string)
    }
 }
 
-// function mockPostError()
-// {
-//    if(useMock)
-//    {
-//       axios.create = jest.fn(() => axios);
-//       // @ts-ignore
-//       axios.post = buildMockFailedPromise();
-//    }
-// }
+function mockPostError()
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.post = buildMockFailedPromise();
+   }
+}
 
 function mockPut(mockPath: string)
 {
@@ -105,15 +106,15 @@ function mockPut(mockPath: string)
    }
 }
 
-// function mockPutError()
-// {
-//    if(useMock)
-//    {
-//       axios.create = jest.fn(() => axios);
-//       // @ts-ignore
-//       axios.put = buildMockFailedPromise();
-//    }
-// }
+function mockPutError()
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.put = buildMockFailedPromise();
+   }
+}
 
 function mockDelete(mockPath: string)
 {
@@ -125,15 +126,15 @@ function mockDelete(mockPath: string)
    }
 }
 
-// function mockDeleteError()
-// {
-//    if(useMock)
-//    {
-//       axios.create = jest.fn(() => axios);
-//       // @ts-ignore
-//       axios.delete = buildMockFailedPromise();
-//    }
-// }
+function mockDeleteError()
+{
+   if(useMock)
+   {
+      axios.create = jest.fn(() => axios);
+      // @ts-ignore
+      axios.delete = buildMockFailedPromise();
+   }
+}
 
 function buildMockSuccessfulPromise(mockPath: string)
 {
@@ -218,7 +219,7 @@ describe("q controller test", () =>
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(Error);
+         expect(error).toBeInstanceOf(QException);
       }
    });
 
@@ -259,7 +260,7 @@ describe("q controller test", () =>
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(Error);
+         expect(error).toBeInstanceOf(QException);
       }
    });
 
@@ -294,7 +295,7 @@ describe("q controller test", () =>
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(Error);
+         expect(error).toBeInstanceOf(QException);
       }
    });
 
@@ -373,7 +374,7 @@ describe("q controller test", () =>
       }
       catch (error)
       {
-         expect(error).toBeInstanceOf(Error);
+         expect(error).toBeInstanceOf(QException);
       }
    });
 
