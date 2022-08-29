@@ -37,6 +37,7 @@
       "error",
       3
     ],
+    "jsx-one-expression-per-line": "off",
     "max-len": "off",
     "no-console": "off",
     "no-shadow": "off",

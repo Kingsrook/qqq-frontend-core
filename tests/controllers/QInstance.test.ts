@@ -19,20 +19,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*******************************************************************************
- ** Possible types for QFrontendComponents
- **
- *******************************************************************************/
-export enum QComponentType
+import { QInstance } from "../../src/model/metaData/QInstance";
+import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
+const fs = require("fs");
+
+describe("q instance test", () =>
 {
-   HELP_TEXT = "HELP_TEXT",
-   BULK_EDIT_FORM = "BULK_EDIT_FORM",
-   VALIDATION_REVIEW_SCREEN = "VALIDATION_REVIEW_SCREEN",
-   EDIT_FORM = "EDIT_FORM",
-   VIEW_FORM = "VIEW_FORM",
-   RECORD_LIST = "RECORD_LIST",
-   PROCESS_SUMMARY_RESULTS = "PROCESS_SUMMARY_RESULTS",
-   ////////////////////////////////////////////////////////////////////////////
-   // keep these values in sync with QComponentType.java in qqq-backend-core //
-   ////////////////////////////////////////////////////////////////////////////
-}
+   it("should return table path", async () =>
+   {
+      const json = fs.readFileSync("./tests/mocks/metaData/index.json");
+      const qInstance = new QInstance(JSON.parse(json));
+
+      const table = new QTableMetaData({name: "person"});
+
+      const tablePath = qInstance.getTablePath(table);
+      expect(tablePath).toBe("/peopleApp/greetingsApp/person")
+   });
+
+});

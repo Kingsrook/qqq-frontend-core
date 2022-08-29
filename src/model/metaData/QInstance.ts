@@ -23,6 +23,7 @@ import {QTableMetaData} from "./QTableMetaData";
 import {QProcessMetaData} from "./QProcessMetaData";
 import {QAppMetaData} from "./QAppMetaData";
 import {QAppTreeNode} from "./QAppTreeNode";
+import {QAppNodeType} from "./QAppNodeType";
 
 /*******************************************************************************
  ** Meta-Data definition of a QQQ Instance
@@ -73,4 +74,42 @@ export class QInstance
          }
       }
    }
+
+
+   /*******************************************************************************
+    ** Get the full path to a table
+    *******************************************************************************/
+   getTablePath(table: QTableMetaData): string | null
+   {
+      return QInstance.searchAppTree(this.appTree, table, "");
+   }
+
+   /*******************************************************************************
+    **
+    *******************************************************************************/
+   private static searchAppTree(nodes: QAppTreeNode[] | undefined, table: QTableMetaData, path: string): string | null
+   {
+      if (nodes === undefined)
+      {
+         return (null);
+      }
+
+      for (let i = 0; i < nodes.length; i++)
+      {
+         if (nodes[i].type === QAppNodeType.TABLE && nodes[i].name === table.name)
+         {
+            return (`${path}/${table.name}`);
+         }
+         else if (nodes[i].type === QAppNodeType.APP)
+         {
+            const result = this.searchAppTree(nodes[i].children, table, `${path}/${nodes[i].name}`);
+            if (result !== null)
+            {
+               return (result);
+            }
+         }
+      }
+      return (null);
+   }
+
 }
