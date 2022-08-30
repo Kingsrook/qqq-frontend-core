@@ -19,8 +19,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// export default (a: number, b: number): number => a + b;
-
 import {QInstance} from "../model/metaData/QInstance";
 import {QProcessMetaData} from "../model/metaData/QProcessMetaData";
 import {QTableMetaData} from "../model/metaData/QTableMetaData";
@@ -55,7 +53,7 @@ export class QController
    {
       this.axiosInstance = axios.create({
          baseURL: baseUrl,
-         timeout: 15000, // todo - evaulate this!
+         timeout: 60000, // todo - evaulate this!
       });
 
       if (exceptionHandler != null)
@@ -82,7 +80,10 @@ export class QController
          {
             return new QInstance(response.data);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -96,7 +97,10 @@ export class QController
          {
             return new QTableMetaData(response.data.table);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -110,7 +114,10 @@ export class QController
          {
             return new QProcessMetaData(response.data.process);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -130,7 +137,10 @@ export class QController
          {
             return response.data.count;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -166,7 +176,10 @@ export class QController
             }
             return records;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -181,7 +194,10 @@ export class QController
          {
             return new QRecord(response.data);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -196,7 +212,10 @@ export class QController
          {
             return new QRecord(response.data.records[0]);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -211,7 +230,10 @@ export class QController
          {
             return new QRecord(response.data.records[0]);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -238,7 +260,10 @@ export class QController
                throw (new Error("Unknown error deleting record."));
             }
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -307,7 +332,10 @@ export class QController
             }
             return responseObject;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -347,7 +375,10 @@ export class QController
                }
                return responseObject;
             })
-            .catch(this.handleException);
+            .catch((error: AxiosError) =>
+            {
+               this.handleException(error);
+            });
       }
       else
       {
@@ -378,7 +409,10 @@ export class QController
             }
             return responseObject;
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
@@ -404,12 +438,15 @@ export class QController
             }
             return {totalRecords: response.data.totalRecords, records: records};
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
 
    /*******************************************************************************
-    ** Fetch the full meta data for a specific process.
+    ** Fetch the data for a specific widget.
     *******************************************************************************/
    async widget(widgetName: string): Promise<any>
    {
