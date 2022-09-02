@@ -446,7 +446,22 @@ export class QController
 
 
    /*******************************************************************************
-    ** exception handler which will marshal axios error into a QException and
+    ** Fetch the data for a specific widget.
+    *******************************************************************************/
+   async widget(widgetName: string): Promise<any>
+   {
+      return this.axiosInstance
+         .get(`/widget/${widgetName}`)
+         .then((response: AxiosResponse) =>
+         {
+            return response.data;
+         })
+         .catch(this.handleException);
+   }
+
+
+   /*******************************************************************************
+    ** exception handler which will marshal axios error into a Qexception and
     *  send that the exception handler provided to this class
     *******************************************************************************/
    private handleException(error: AxiosError): void

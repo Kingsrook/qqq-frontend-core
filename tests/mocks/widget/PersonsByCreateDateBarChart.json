@@ -1,0 +1,23 @@
+{
+   "type": "barChart",
+   "title": "Persons by Create Date",
+   "barChartData": {
+      "labels": [
+         "01-2022",
+         "02-2022",
+         "03-2022",
+         "04-2022",
+         "05-2022"
+      ],
+      "datasets": {
+         "label": "Person Records",
+         "data": [
+            5,
+            1,
+            3,
+            1,
+            2
+         ]
+      }
+   }
+}
