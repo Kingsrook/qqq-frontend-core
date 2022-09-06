@@ -19,22 +19,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QCriteriaOperator} from "./QCriteriaOperator";
+import {QFieldMetaData} from "./QFieldMetaData";
+import {QSection} from "./QSection";
 
 /*******************************************************************************
- ** Define a filter criteria in a QQQ instance.
+ ** Meta-Data to define branding in a QQQ instance.
  **
  *******************************************************************************/
-export class QFilterCriteria
+export class QBrandingMetaData
 {
-   fieldName: string;
-   operator: QCriteriaOperator;
-   values!: any[];
+   companyName?: string;
+   logo?: string;
+   icon?: string;
 
-   constructor(fieldName: string, operator: QCriteriaOperator, values: any[])
+   constructor(object: any)
    {
-      this.fieldName = fieldName;
-      this.operator = operator;
-      this.values = values;
+      this.companyName = object.companyName;
+      this.logo = object.logo;
+      this.icon = object.icon;
    }
 }

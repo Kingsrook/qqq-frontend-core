@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFilterCriteria } from "./QFilterCriteria";
-import { QFilterOrderBy } from "./QFilterOrderBy";
+import {QFilterCriteria} from "./QFilterCriteria";
+import {QFilterOrderBy} from "./QFilterOrderBy";
 
 /*******************************************************************************
  ** Define a filter in a QQQ instance.

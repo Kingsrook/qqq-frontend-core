@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFrontendStepMetaData } from "./QFrontendStepMetaData";
+import {QFrontendStepMetaData} from "./QFrontendStepMetaData";
 
 /*******************************************************************************
  ** Meta-Data to define a process in a QQQ instance.

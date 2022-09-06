@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QInstance } from "../../src/model/metaData/QInstance";
-import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
+import {QInstance} from "../../src/model/metaData/QInstance";
+import {QTableMetaData} from "../../src/model/metaData/QTableMetaData";
 const fs = require("fs");
 
 describe("q instance test", () =>

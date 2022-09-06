@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFieldMetaData } from "./QFieldMetaData";
-import { QFrontendComponent } from "./QFrontendComponent";
+import {QFieldMetaData} from "./QFieldMetaData";
+import {QFrontendComponent} from "./QFrontendComponent";
 
 /*******************************************************************************
  ** Meta-Data to define a step (for the frontend) in a QQQ process.

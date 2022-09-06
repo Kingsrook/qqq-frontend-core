@@ -245,5 +245,10 @@
          ],
          "iconName": "stars"
       }
-   ]
+   ],
+   "branding": {
+      "companyName": "Kingsrook",
+      "icon": "kr-icon.png",
+      "logo": "kr-logo.png"
+   }
 }

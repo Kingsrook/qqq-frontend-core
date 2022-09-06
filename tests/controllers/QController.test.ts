@@ -19,27 +19,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QController } from "../../src/controllers/QController";
-import { QException } from "../../src/exceptions/QException";
-import { QFieldMetaData } from "../../src/model/metaData/QFieldMetaData";
-import { QFieldType } from "../../src/model/metaData/QFieldType";
-import { QFrontendStepMetaData } from "../../src/model/metaData/QFrontendStepMetaData";
-import { QInstance } from "../../src/model/metaData/QInstance";
-import { QProcessMetaData } from "../../src/model/metaData/QProcessMetaData";
-import { QRecord } from "../../src/model/QRecord";
-import { QTableMetaData } from "../../src/model/metaData/QTableMetaData";
-import { QAppMetaData } from "../../src/model/metaData/QAppMetaData";
-import { QAppTreeNode } from "../../src/model/metaData/QAppTreeNode";
-import { QAppNodeType } from "../../src/model/metaData/QAppNodeType";
-import { QSection } from "../../src/model/metaData/QSection";
-import { QJobStarted } from "../../src/model/processes/QJobStarted";
-import { QJobRunning } from "../../src/model/processes/QJobRunning";
-import { QJobComplete } from "../../src/model/processes/QJobComplete";
-import { QJobError } from "../../src/model/processes/QJobError";
-import FormData = require("form-data")
-const fs = require("fs");
-
 import axios from "axios";
+import FormData = require("form-data")
+import {QController} from "../../src/controllers/QController";
+import {QException} from "../../src/exceptions/QException";
+import {QAppMetaData} from "../../src/model/metaData/QAppMetaData";
+import {QAppNodeType} from "../../src/model/metaData/QAppNodeType";
+import {QAppTreeNode} from "../../src/model/metaData/QAppTreeNode";
+import {QBrandingMetaData} from "../../src/model/metaData/QBrandingMetaData";
+import {QFieldMetaData} from "../../src/model/metaData/QFieldMetaData";
+import {QFieldType} from "../../src/model/metaData/QFieldType";
+import {QFrontendStepMetaData} from "../../src/model/metaData/QFrontendStepMetaData";
+import {QInstance} from "../../src/model/metaData/QInstance";
+import {QProcessMetaData} from "../../src/model/metaData/QProcessMetaData";
+import {QSection} from "../../src/model/metaData/QSection";
+import {QTableMetaData} from "../../src/model/metaData/QTableMetaData";
+import {QJobComplete} from "../../src/model/processes/QJobComplete";
+import {QJobError} from "../../src/model/processes/QJobError";
+import {QJobRunning} from "../../src/model/processes/QJobRunning";
+import {QJobStarted} from "../../src/model/processes/QJobStarted";
+import {QRecord} from "../../src/model/QRecord";
+const fs = require("fs");
 
 const baseURL = "http://localhost:8000";
 
@@ -206,6 +206,12 @@ describe("q controller test", () =>
       const greetingsAppUnderPeopleInTree = peopleAppUnderTree?.children?.find(child => child.name === "greetingsApp");
       expect(greetingsAppUnderPeopleInTree).toBeInstanceOf(QAppTreeNode);
       expect(greetingsAppUnderPeopleInTree?.children?.length).toBeGreaterThan(0); // apps tree IS nested
+
+      const branding = metaData.branding;
+      expect(branding).toBeInstanceOf(QBrandingMetaData)
+      expect(branding?.companyName).toBe("Kingsrook")
+      expect(branding?.icon).toBe("kr-icon.png")
+      expect(branding?.logo).toBe("kr-logo.png")
    });
 
    it("should return an error with a bad base url meta data", async () =>

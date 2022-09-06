@@ -19,11 +19,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QTableMetaData} from "./QTableMetaData";
-import {QProcessMetaData} from "./QProcessMetaData";
 import {QAppMetaData} from "./QAppMetaData";
-import {QAppTreeNode} from "./QAppTreeNode";
 import {QAppNodeType} from "./QAppNodeType";
+import {QAppTreeNode} from "./QAppTreeNode";
+import {QBrandingMetaData} from "./QBrandingMetaData";
+import {QProcessMetaData} from "./QProcessMetaData";
+import {QTableMetaData} from "./QTableMetaData";
 
 /*******************************************************************************
  ** Meta-Data definition of a QQQ Instance
@@ -35,6 +36,7 @@ export class QInstance
    processes?: Map<string, QProcessMetaData>;
    apps?: Map<string, QAppMetaData>;
    appTree?: QAppTreeNode[];
+   branding?: QBrandingMetaData;
 
    constructor(object: any)
    {
@@ -72,6 +74,11 @@ export class QInstance
          {
             this.appTree.push(new QAppTreeNode(object.appTree[i]))
          }
+      }
+
+      if (object.branding)
+      {
+         this.branding = new QBrandingMetaData(object.branding);
       }
    }
 

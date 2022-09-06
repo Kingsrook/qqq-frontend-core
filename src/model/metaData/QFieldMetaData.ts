@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { QFieldType } from "./QFieldType";
+import {QFieldType} from "./QFieldType";
 
 /*******************************************************************************
  ** Meta-data to represent a single field in a table.

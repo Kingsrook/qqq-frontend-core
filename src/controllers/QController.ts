@@ -19,22 +19,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {AxiosError, AxiosResponse} from "axios";
+import FormData from "form-data";
+import {QException} from "../exceptions/QException";
 import {QInstance} from "../model/metaData/QInstance";
 import {QProcessMetaData} from "../model/metaData/QProcessMetaData";
 import {QTableMetaData} from "../model/metaData/QTableMetaData";
-import {QRecord} from "../model/QRecord";
-import {QJobStarted} from "../model/processes/QJobStarted";
 import {QJobComplete} from "../model/processes/QJobComplete";
 import {QJobError} from "../model/processes/QJobError";
 import {QJobRunning} from "../model/processes/QJobRunning";
-
-import {AxiosError, AxiosResponse} from "axios";
+import {QJobStarted} from "../model/processes/QJobStarted";
+import {QRecord} from "../model/QRecord";
 import {QQueryFilter} from "../model/query/QQueryFilter";
-import {QException} from "../exceptions/QException";
-
-import FormData from "form-data";
-
-
 const axios = require("axios").default;
 
 /*******************************************************************************

@@ -20,9 +20,9 @@
  */
 
 import {QController} from "./controllers/QController";
-import {QTableMetaData} from "./model/metaData/QTableMetaData";
 import {QFieldMetaData} from "./model/metaData/QFieldMetaData";
 import {QFieldType} from "./model/metaData/QFieldType";
+import {QTableMetaData} from "./model/metaData/QTableMetaData";
 
 module.exports = {
    QController,
