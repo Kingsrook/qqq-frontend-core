@@ -45,7 +45,7 @@ export class QInstance
          this.tables = new Map<string, QTableMetaData>();
          for (const key in object.tables)
          {
-            this.tables.set(key, new QTableMetaData(object.tables[key]))
+            this.tables.set(key, new QTableMetaData(object.tables[key]));
          }
       }
 
@@ -54,7 +54,7 @@ export class QInstance
          this.processes = new Map<string, QProcessMetaData>();
          for (const key in object.processes)
          {
-            this.processes.set(key, new QProcessMetaData(object.processes[key]))
+            this.processes.set(key, new QProcessMetaData(object.processes[key]));
          }
       }
 
@@ -63,7 +63,7 @@ export class QInstance
          this.apps = new Map<string, QAppMetaData>();
          for (const key in object.apps)
          {
-            this.apps.set(key, new QAppMetaData(object.apps[key]))
+            this.apps.set(key, new QAppMetaData(object.apps[key]));
          }
       }
 
@@ -72,7 +72,7 @@ export class QInstance
          this.appTree = [];
          for (let i = 0; i < object.appTree.length; i++)
          {
-            this.appTree.push(new QAppTreeNode(object.appTree[i]))
+            this.appTree.push(new QAppTreeNode(object.appTree[i]));
          }
       }
 
