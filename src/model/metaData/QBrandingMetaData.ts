@@ -19,9 +19,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QFieldMetaData} from "./QFieldMetaData";
-import {QSection} from "./QSection";
-
 /*******************************************************************************
  ** Meta-Data to define branding in a QQQ instance.
  **

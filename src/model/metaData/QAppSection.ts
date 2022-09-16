@@ -19,47 +19,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QFieldMetaData} from "./QFieldMetaData";
-import {QTableSection} from "./QTableSection";
-
 /*******************************************************************************
- ** Meta-Data to define a table in a QQQ instance.
+ ** Meta-Data to define a section (of children) in an app in a QQQ instance.
  **
  *******************************************************************************/
-export class QTableMetaData
+export class QAppSection
 {
    name: string;
    label: string;
-   isHidden: boolean = false;
-   primaryKeyField: string;
-   fields?: Map<string, QFieldMetaData>;
-   iconName?: string;
-   sections?: QTableSection[];
+   iconName: string;
+   tables?: string[];
+   processes?: string[];
 
    constructor(object: any)
    {
       this.name = object.name;
       this.label = object.label;
-      this.isHidden = object.isHidden;
-      this.primaryKeyField = object.primaryKeyField;
-      this.iconName = object.iconName;
-
-      if (object.fields)
+      this.iconName = object.icon ? object.icon.name : null;
+      if (object.processes)
       {
-         this.fields = new Map<string, QFieldMetaData>();
-         for (const key in object.fields)
-         {
-            this.fields.set(key, new QFieldMetaData(object.fields[key]));
-         }
+         this.processes = object.processes;
       }
-
-      if (object.sections)
+      if (object.tables)
       {
-         this.sections = [];
-         for (let i = 0; i < object.sections.length; i++)
-         {
-            this.sections.push(new QTableSection(object.sections[i]));
-         }
+         this.tables = object.tables;
       }
    }
 }

@@ -20,7 +20,8 @@
  */
 
 import axios from "axios";
-import FormData = require("form-data")
+import FormData = require("form-data");
+import {QTableSection} from "src/model/metaData/QTableSection";
 import {QController} from "../../src/controllers/QController";
 import {QException} from "../../src/exceptions/QException";
 import {QAppMetaData} from "../../src/model/metaData/QAppMetaData";
@@ -32,7 +33,6 @@ import {QFieldType} from "../../src/model/metaData/QFieldType";
 import {QFrontendStepMetaData} from "../../src/model/metaData/QFrontendStepMetaData";
 import {QInstance} from "../../src/model/metaData/QInstance";
 import {QProcessMetaData} from "../../src/model/metaData/QProcessMetaData";
-import {QSection} from "../../src/model/metaData/QSection";
 import {QTableMetaData} from "../../src/model/metaData/QTableMetaData";
 import {QJobComplete} from "../../src/model/processes/QJobComplete";
 import {QJobError} from "../../src/model/processes/QJobError";
@@ -48,7 +48,7 @@ const baseURL = "http://localhost:8000";
 // we may want to hit an actual backend server, e.g. at the baseURL given above)   //
 /////////////////////////////////////////////////////////////////////////////////////
 const useMock = true;
-if(useMock)
+if (useMock)
 {
    jest.mock("axios");
 }
@@ -58,17 +58,17 @@ if(useMock)
 ///////////////////////////////////////////////////////////////////////////////////
 function mockGet(mockPath: string)
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
-      axios.get = buildMockSuccessfulPromise(mockPath)
+      axios.get = buildMockSuccessfulPromise(mockPath);
    }
 }
 
 function mockGetError()
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
@@ -78,17 +78,17 @@ function mockGetError()
 
 function mockPost(mockPath: string)
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
-      axios.post = buildMockSuccessfulPromise(mockPath)
+      axios.post = buildMockSuccessfulPromise(mockPath);
    }
 }
 
 function mockPostError()
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
@@ -98,17 +98,17 @@ function mockPostError()
 
 function mockPut(mockPath: string)
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
-      axios.put = buildMockSuccessfulPromise(mockPath)
+      axios.put = buildMockSuccessfulPromise(mockPath);
    }
 }
 
 function mockPutError()
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
@@ -118,17 +118,17 @@ function mockPutError()
 
 function mockDelete(mockPath: string)
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
-      axios.delete = buildMockSuccessfulPromise(mockPath)
+      axios.delete = buildMockSuccessfulPromise(mockPath);
    }
 }
 
 function mockDeleteError()
 {
-   if(useMock)
+   if (useMock)
    {
       axios.create = jest.fn(() => axios);
       // @ts-ignore
@@ -187,7 +187,7 @@ describe("q controller test", () =>
 
       const apps = metaData.apps;
       expect(apps?.size).toBeGreaterThan(0);
-      const greetingsApp = apps?.get("greetingsApp")
+      const greetingsApp = apps?.get("greetingsApp");
       expect(greetingsApp).toBeInstanceOf(QAppMetaData);
       expect(greetingsApp?.label).toBe("Greetings App");
       const greetPeopleProcess = greetingsApp?.children?.[0];
@@ -208,10 +208,10 @@ describe("q controller test", () =>
       expect(greetingsAppUnderPeopleInTree?.children?.length).toBeGreaterThan(0); // apps tree IS nested
 
       const branding = metaData.branding;
-      expect(branding).toBeInstanceOf(QBrandingMetaData)
-      expect(branding?.companyName).toBe("Kingsrook")
-      expect(branding?.icon).toBe("kr-icon.png")
-      expect(branding?.logo).toBe("kr-logo.png")
+      expect(branding).toBeInstanceOf(QBrandingMetaData);
+      expect(branding?.companyName).toBe("Kingsrook");
+      expect(branding?.icon).toBe("kr-icon.png");
+      expect(branding?.logo).toBe("kr-logo.png");
    });
 
    it("should return an error with a bad base url meta data", async () =>
@@ -248,7 +248,7 @@ describe("q controller test", () =>
       expect(sections).toBeDefined();
       expect(sections?.length).toBeGreaterThan(0);
       const section = sections?.[0];
-      expect(section).toBeInstanceOf(QSection);
+      expect(section).toBeInstanceOf(QTableSection);
       expect(section?.name).toBeDefined();
       expect(section?.iconName).toBeDefined();
       expect(section?.fieldNames).toBeDefined();
@@ -397,7 +397,7 @@ describe("q controller test", () =>
       {
          return new Promise((resolve) => setTimeout(resolve, delay));
       }
-   }
+   };
 
    it("should init a process that goes async", async () =>
    {

@@ -23,7 +23,7 @@
  ** Meta-Data to define a section (of fields) in a table in a QQQ instance.
  **
  *******************************************************************************/
-export class QSection
+export class QTableSection
 {
    name: string;
    label: string;

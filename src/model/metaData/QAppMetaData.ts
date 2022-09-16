@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QAppSection} from "./QAppSection";
 import {QAppTreeNode} from "./QAppTreeNode";
 
 /*******************************************************************************
@@ -30,8 +31,10 @@ export class QAppMetaData
    name: string;
    label: string;
    children?: QAppTreeNode[];
+   childMap?: Map<string, QAppTreeNode>;
    iconName?: string;
-   widgets: string[]
+   widgets: string[];
+   sections?: QAppSection[];
 
    constructor(object: any)
    {
@@ -43,9 +46,20 @@ export class QAppMetaData
       if (object.children)
       {
          this.children = [];
+         this.childMap = new Map<string, QAppTreeNode>;
          for (let i = 0; i < object.children.length; i++)
          {
             this.children.push(new QAppTreeNode(object.children[i]));
+            this.childMap.set(object.children[i].name, object.children[i]);
+         }
+      }
+
+      if (object.sections)
+      {
+         this.sections = [];
+         for (let i = 0; i < object.sections.length; i++)
+         {
+            this.sections.push(new QAppSection(object.sections[i]));
          }
       }
    }
