@@ -30,6 +30,7 @@ export enum QComponentType
    VALIDATION_REVIEW_SCREEN = "VALIDATION_REVIEW_SCREEN",
    EDIT_FORM = "EDIT_FORM",
    VIEW_FORM = "VIEW_FORM",
+   DOWNLOAD_FORM = "DOWNLOAD_FORM",
    RECORD_LIST = "RECORD_LIST",
    PROCESS_SUMMARY_RESULTS = "PROCESS_SUMMARY_RESULTS",
    ////////////////////////////////////////////////////////////////////////////

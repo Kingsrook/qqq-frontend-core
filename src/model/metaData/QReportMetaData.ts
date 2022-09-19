@@ -20,12 +20,23 @@
  */
 
 /*******************************************************************************
- ** Possible data types for QAppNodeType
+ ** Meta-Data to define a report in a QQQ instance.
  **
  *******************************************************************************/
-export enum QAppNodeType {
-  TABLE = "TABLE",
-  PROCESS = "PROCESS",
-  REPORT = "REPORT",
-  APP = "APP"
+export class QReportMetaData
+{
+   name: string;
+   label: string;
+   tableName: string;
+   processName: string;
+   iconName?: string;
+
+   constructor(object: any)
+   {
+      this.name = object.name;
+      this.label = object.label;
+      this.tableName = object.tableName;
+      this.processName = object.processName;
+      this.iconName = object.iconName;
+   }
 }

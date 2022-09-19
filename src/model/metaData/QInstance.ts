@@ -24,6 +24,7 @@ import {QAppNodeType} from "./QAppNodeType";
 import {QAppTreeNode} from "./QAppTreeNode";
 import {QBrandingMetaData} from "./QBrandingMetaData";
 import {QProcessMetaData} from "./QProcessMetaData";
+import {QReportMetaData} from "./QReportMetaData";
 import {QTableMetaData} from "./QTableMetaData";
 
 /*******************************************************************************
@@ -34,6 +35,7 @@ export class QInstance
 {
    tables?: Map<string, QTableMetaData>;
    processes?: Map<string, QProcessMetaData>;
+   reports?: Map<string, QReportMetaData>;
    apps?: Map<string, QAppMetaData>;
    appTree?: QAppTreeNode[];
    branding?: QBrandingMetaData;
@@ -55,6 +57,15 @@ export class QInstance
          for (const key in object.processes)
          {
             this.processes.set(key, new QProcessMetaData(object.processes[key]));
+         }
+      }
+
+      if (object.reports)
+      {
+         this.reports = new Map<string, QReportMetaData>();
+         for (const key in object.reports)
+         {
+            this.reports.set(key, new QReportMetaData(object.reports[key]));
          }
       }
 
