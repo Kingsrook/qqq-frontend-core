@@ -30,6 +30,7 @@ export class QAppSection
    iconName: string;
    tables?: string[];
    processes?: string[];
+   reports?: string[];
 
    constructor(object: any)
    {
@@ -39,6 +40,10 @@ export class QAppSection
       if (object.processes)
       {
          this.processes = object.processes;
+      }
+      if (object.reports)
+      {
+         this.reports = object.reports;
       }
       if (object.tables)
       {

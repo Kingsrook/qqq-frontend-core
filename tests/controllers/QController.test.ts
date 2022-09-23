@@ -21,7 +21,6 @@
 
 import axios from "axios";
 import FormData = require("form-data");
-import {QTableSection} from "src/model/metaData/QTableSection";
 import {QController} from "../../src/controllers/QController";
 import {QException} from "../../src/exceptions/QException";
 import {QAppMetaData} from "../../src/model/metaData/QAppMetaData";
@@ -34,6 +33,7 @@ import {QFrontendStepMetaData} from "../../src/model/metaData/QFrontendStepMetaD
 import {QInstance} from "../../src/model/metaData/QInstance";
 import {QProcessMetaData} from "../../src/model/metaData/QProcessMetaData";
 import {QTableMetaData} from "../../src/model/metaData/QTableMetaData";
+import {QTableSection} from "../../src/model/metaData/QTableSection";
 import {QJobComplete} from "../../src/model/processes/QJobComplete";
 import {QJobError} from "../../src/model/processes/QJobError";
 import {QJobRunning} from "../../src/model/processes/QJobRunning";
