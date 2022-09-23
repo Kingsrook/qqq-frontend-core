@@ -35,6 +35,7 @@ export class QTableMetaData
    fields?: Map<string, QFieldMetaData>;
    iconName?: string;
    sections?: QTableSection[];
+   widgets?: string[];
 
    constructor(object: any)
    {
@@ -43,6 +44,7 @@ export class QTableMetaData
       this.isHidden = object.isHidden;
       this.primaryKeyField = object.primaryKeyField;
       this.iconName = object.iconName;
+      this.widgets = object.widgets;
 
       if (object.fields)
       {

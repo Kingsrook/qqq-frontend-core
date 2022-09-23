@@ -444,10 +444,18 @@ export class QController
    /*******************************************************************************
     ** Fetch the data for a specific widget.
     *******************************************************************************/
-   async widget(widgetName: string): Promise<any>
+   async widget(widgetName: string, urlParams?: string): Promise<any>
    {
+      let url = `/widget/${widgetName}`;
+      if (urlParams)
+      {
+         url += `?${urlParams}`;
+      }
+
+      console.log(urlParams);
+
       return this.axiosInstance
-         .get(`/widget/${widgetName}`)
+         .get(url)
          .then((response: AxiosResponse) =>
          {
             return response.data;

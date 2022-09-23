@@ -33,7 +33,7 @@ export class QAppMetaData
    children?: QAppTreeNode[];
    childMap?: Map<string, QAppTreeNode>;
    iconName?: string;
-   widgets: string[];
+   widgets?: string[];
    sections?: QAppSection[];
 
    constructor(object: any)
