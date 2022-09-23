@@ -20,65 +20,37 @@
  */
 
 import {AdornmentType} from "./AdornmentType";
-import {FieldAdornment} from "./FieldAdornment";
-import {QFieldType} from "./QFieldType";
+import {QFieldMetaData} from "./QFieldMetaData";
 
 /*******************************************************************************
- ** Meta-data to represent a single field in a table.
+ ** Meta-data to represent an adornment for a field
  **
  *******************************************************************************/
-export class QFieldMetaData
+export class FieldAdornment
 {
-   name: string;
-   label: string;
-   type: QFieldType;
-   isRequired: boolean = false;
-   isEditable: boolean = true;
-   possibleValueSourceName: string;
-   displayFormat: string;
-   adornments?: FieldAdornment[];
+   type: AdornmentType;
+   values?: Map<string, any>;
 
    constructor(object: any)
    {
-      this.name = object.name;
-      this.label = object.label;
       this.type = object.type;
-      this.isRequired = object.isRequired;
-      this.isEditable = object.isEditable;
-      this.possibleValueSourceName = object.possibleValueSourceName;
-      this.displayFormat = object.displayFormat;
 
-      if (object.adornments)
+      if (object.values)
       {
-         this.adornments = [];
-         for(var i=0; i<object.adornments.length; i++)
+         this.values = new Map<string, any>();
+         for (const key in object.values)
          {
-            this.adornments.push(new FieldAdornment(object.adornments[i]));
+            this.values.set(key, object.values[key]);
          }
       }
    }
 
-
-   hasAdornment(type: AdornmentType): boolean
+   getValue(key: string): any
    {
-      const adornment = this.getAdornment(type);
-      return (adornment !== null);
-   }
-
-
-   getAdornment(type: AdornmentType): FieldAdornment | null
-   {
-      if(this.adornments)
+      if (this.values)
       {
-         for(let i=0; i<this.adornments.length; i++)
-         {
-            if(type === this.adornments[i].type)
-            {
-               return (this.adornments[i]);
-            }
-         }
+         return (this.values.get(key));
       }
-
       return (null);
    }
 }
