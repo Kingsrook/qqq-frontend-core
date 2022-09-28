@@ -99,13 +99,21 @@ export class QInstance
     *******************************************************************************/
    getTablePath(table: QTableMetaData): string | null
    {
-      return QInstance.searchAppTree(this.appTree, table, "");
+      return QInstance.searchAppTree(this.appTree, table.name, "");
+   }
+
+   /*******************************************************************************
+    ** Get the full path to a table
+    *******************************************************************************/
+   getTablePathByName(tableName: string): string | null
+   {
+      return QInstance.searchAppTree(this.appTree, tableName, "");
    }
 
    /*******************************************************************************
     **
     *******************************************************************************/
-   private static searchAppTree(nodes: QAppTreeNode[] | undefined, table: QTableMetaData, path: string): string | null
+   private static searchAppTree(nodes: QAppTreeNode[] | undefined, tableName: string, path: string): string | null
    {
       if (nodes === undefined)
       {
@@ -114,13 +122,13 @@ export class QInstance
 
       for (let i = 0; i < nodes.length; i++)
       {
-         if (nodes[i].type === QAppNodeType.TABLE && nodes[i].name === table.name)
+         if (nodes[i].type === QAppNodeType.TABLE && nodes[i].name === tableName)
          {
-            return (`${path}/${table.name}`);
+            return (`${path}/${tableName}`);
          }
          else if (nodes[i].type === QAppNodeType.APP)
          {
-            const result = this.searchAppTree(nodes[i].children, table, `${path}/${nodes[i].name}`);
+            const result = this.searchAppTree(nodes[i].children, tableName, `${path}/${nodes[i].name}`);
             if (result !== null)
             {
                return (result);
