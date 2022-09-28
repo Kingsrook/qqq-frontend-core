@@ -27,10 +27,12 @@ export class QJobError
 {
    processUUID: string;
    error: string;
+   userFacingError?: string;
 
    constructor(object: any)
    {
       this.processUUID = object.processUUID;
       this.error = object.error;
+      this.userFacingError = object.userFacingError;
    }
 }
