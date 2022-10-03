@@ -26,6 +26,7 @@ import {QBrandingMetaData} from "./QBrandingMetaData";
 import {QProcessMetaData} from "./QProcessMetaData";
 import {QReportMetaData} from "./QReportMetaData";
 import {QTableMetaData} from "./QTableMetaData";
+import {QWidgetMetaData} from "./QWidgetMetaData";
 
 /*******************************************************************************
  ** Meta-Data definition of a QQQ Instance
@@ -36,6 +37,7 @@ export class QInstance
    tables?: Map<string, QTableMetaData>;
    processes?: Map<string, QProcessMetaData>;
    reports?: Map<string, QReportMetaData>;
+   widgets?: Map<string, QWidgetMetaData>;
    apps?: Map<string, QAppMetaData>;
    appTree?: QAppTreeNode[];
    branding?: QBrandingMetaData;
@@ -75,6 +77,15 @@ export class QInstance
          for (const key in object.apps)
          {
             this.apps.set(key, new QAppMetaData(object.apps[key]));
+         }
+      }
+
+      if (object.widgets)
+      {
+         this.widgets = new Map<string, QWidgetMetaData>();
+         for (const key in object.widgets)
+         {
+            this.widgets.set(key, new QWidgetMetaData(object.widgets[key]));
          }
       }
 
