@@ -452,8 +452,6 @@ export class QController
          url += `?${urlParams}`;
       }
 
-      console.log(urlParams);
-
       return this.axiosInstance
          .get(url)
          .then((response: AxiosResponse) =>
