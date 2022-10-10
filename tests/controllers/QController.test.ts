@@ -38,6 +38,7 @@ import {QJobComplete} from "../../src/model/processes/QJobComplete";
 import {QJobError} from "../../src/model/processes/QJobError";
 import {QJobRunning} from "../../src/model/processes/QJobRunning";
 import {QJobStarted} from "../../src/model/processes/QJobStarted";
+import {QPossibleValue} from "../../src/model/QPossibleValue";
 import {QRecord} from "../../src/model/QRecord";
 const fs = require("fs");
 
@@ -603,4 +604,18 @@ describe("q controller test", () =>
       console.log(widget);
       expect(widget).not.toBeNull();
    });
+
+   it("should get options for a possible value", async () =>
+   {
+      mockGet("data/person/possibleValues-homeStateId.json");
+      const qController = new QController(baseURL);
+      const result = await qController.possibleValues("person", "homeStateId", "");
+      expect(result).not.toBeNull();
+      expect(result).toBeInstanceOf(Array);
+      expect(result.length).toBe(2);
+      expect(result[0]).toBeInstanceOf(QPossibleValue);
+      expect(result[0].id).toBe(1);
+      expect(result[0].label).toBe("IL");
+   });
+
 });

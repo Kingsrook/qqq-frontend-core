@@ -19,41 +19,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QFilterCriteria} from "./QFilterCriteria";
-import {QFilterOrderBy} from "./QFilterOrderBy";
 
 /*******************************************************************************
- ** Define a filter in a QQQ instance.
+ ** id/label pair - for a possible-value dropdown
  **
  *******************************************************************************/
-export class QQueryFilter
+export class QPossibleValue
 {
-   criteria?: QFilterCriteria[];
-   orderBys?: QFilterOrderBy[];
-   booleanOperator: "AND" | "OR";
+   id: number | string;
+   label: string;
 
-   constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[], booleanOperator: "AND" | "OR" = "AND")
+   constructor(object: any)
    {
-      this.criteria = criteria;
-      this.orderBys = orderBys;
-      this.booleanOperator = booleanOperator;
-   }
-
-   public addOrderBy(orderBy: QFilterOrderBy)
-   {
-      if (!this.orderBys)
-      {
-         this.orderBys = [] as QFilterOrderBy[];
-      }
-      this.orderBys.push(orderBy);
-   }
-
-   public addCriteria(criteria: QFilterCriteria)
-   {
-      if (!this.criteria)
-      {
-         this.criteria = [] as QFilterCriteria[];
-      }
-      this.criteria.push(criteria);
+      this.id = object.id;
+      this.label = object.label;
    }
 }
+

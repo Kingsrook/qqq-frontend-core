@@ -29,6 +29,7 @@ import {QJobComplete} from "../model/processes/QJobComplete";
 import {QJobError} from "../model/processes/QJobError";
 import {QJobRunning} from "../model/processes/QJobRunning";
 import {QJobStarted} from "../model/processes/QJobStarted";
+import {QPossibleValue} from "../model/QPossibleValue";
 import {QRecord} from "../model/QRecord";
 import {QQueryFilter} from "../model/query/QQueryFilter";
 const axios = require("axios").default;
@@ -457,6 +458,49 @@ export class QController
          .then((response: AxiosResponse) =>
          {
             return response.data;
+         })
+         .catch(this.handleException);
+   }
+
+
+
+   /*******************************************************************************
+    ** Fetch options for a possible-value drop down
+    *******************************************************************************/
+   async possibleValues(tableName: string, fieldName: string, searchTerm: string = "", ids: any[] = []): Promise<QPossibleValue[]>
+   {
+      let url = `/data/${tableName}/possibleValues/${fieldName}`;
+
+      let queryComponents = [];
+
+      if(searchTerm !== "")
+      {
+         queryComponents.push(`searchTerm=${encodeURIComponent(searchTerm)}`);
+      }
+
+      if(ids && ids.length)
+      {
+         queryComponents.push(`ids=${encodeURIComponent(ids.join(","))}`);
+      }
+
+      if(queryComponents.length > 0)
+      {
+         url += `?${queryComponents.join("&")}`;
+      }
+
+      return this.axiosInstance
+         .get(url)
+         .then((response: AxiosResponse) =>
+         {
+            const results: QPossibleValue[] = [];
+            if(response.data && response.data.options)
+            {
+               for (let i = 0; i < response.data.options.length; i++)
+               {
+                  results.push(new QPossibleValue(response.data.options[i]));
+               }
+            }
+            return results;
          })
          .catch(this.handleException);
    }
