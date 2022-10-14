@@ -123,13 +123,15 @@ export class QController
    async count(tableName: string, queryFilter?: QQueryFilter): Promise<number>
    {
       let countURL = `/data/${tableName}/count`;
+
+      const formData = new FormData();
       if (queryFilter)
       {
-         countURL += `?filter=${JSON.stringify(queryFilter)}`;
+         formData.append("filter", JSON.stringify(queryFilter));
       }
 
       return this.axiosInstance
-         .get(countURL)
+         .post(countURL, formData)
          .then((response: AxiosResponse) =>
          {
             return response.data.count;
@@ -150,17 +152,30 @@ export class QController
       skip?: number
    ): Promise<QRecord[]>
    {
-      let queryURL = `/data/${tableName}?1=1`;
-      queryURL += limit ? `&limit=${limit}` : "";
-      queryURL += skip ? `&skip=${skip}` : "";
+      let queryURL = `/data/${tableName}/query`;
+      const queryParts = [];
+      if (limit)
+      {
+         queryParts.push(`limit=${limit}`);
+      }
+      if (skip)
+      {
+         queryParts.push(`skip=${skip}`);
+      }
+      if (queryParts.length > 0)
+      {
+         queryURL += `?${queryParts.join("&")}`;
+      }
 
+      const formData = new FormData();
       if (queryFilter)
       {
-         queryURL += `&filter=${JSON.stringify(queryFilter)}`;
+         formData.append("filter", JSON.stringify(queryFilter));
       }
 
       return this.axiosInstance
-         .get(queryURL)
+         // .get(queryURL/*, {signal}*/)
+         .post(queryURL, formData)
          .then((response: AxiosResponse) =>
          {
             const records: QRecord[] = [];
@@ -463,7 +478,6 @@ export class QController
    }
 
 
-
    /*******************************************************************************
     ** Fetch options for a possible-value drop down
     *******************************************************************************/
@@ -473,17 +487,17 @@ export class QController
 
       let queryComponents = [];
 
-      if(searchTerm !== "")
+      if (searchTerm !== "")
       {
          queryComponents.push(`searchTerm=${encodeURIComponent(searchTerm)}`);
       }
 
-      if(ids && ids.length)
+      if (ids && ids.length)
       {
          queryComponents.push(`ids=${encodeURIComponent(ids.join(","))}`);
       }
 
-      if(queryComponents.length > 0)
+      if (queryComponents.length > 0)
       {
          url += `?${queryComponents.join("&")}`;
       }
@@ -493,7 +507,7 @@ export class QController
          .then((response: AxiosResponse) =>
          {
             const results: QPossibleValue[] = [];
-            if(response.data && response.data.options)
+            if (response.data && response.data.options)
             {
                for (let i = 0; i < response.data.options.length; i++)
                {

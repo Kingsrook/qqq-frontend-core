@@ -336,7 +336,7 @@ describe("q controller test", () =>
 
    it("should query for records", async () =>
    {
-      mockGet("data/person/query.json");
+      mockPost("data/person/query.json");
       const qController = new QController(baseURL);
       const personRecords: QRecord[] = await qController.query("person");
       expect(personRecords).toBeInstanceOf(Array);
@@ -345,7 +345,7 @@ describe("q controller test", () =>
 
    it("should query for a limited number of records", async () =>
    {
-      mockGet("data/person/queryLimit=2.json");
+      mockPost("data/person/queryLimit=2.json");
       const qController = new QController(baseURL);
       const personRecords: QRecord[] = await qController.query("person", undefined, 2);
       expect(personRecords).toBeInstanceOf(Array);
