@@ -19,6 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QIcon} from "./QIcon";
+
 /*******************************************************************************
  ** Meta-Data to define a section (of children) in an app in a QQQ instance.
  **
@@ -27,7 +29,7 @@ export class QAppSection
 {
    name: string;
    label: string;
-   iconName: string;
+   icon?: QIcon;
    tables?: string[];
    processes?: string[];
    reports?: string[];
@@ -36,7 +38,10 @@ export class QAppSection
    {
       this.name = object.name;
       this.label = object.label;
-      this.iconName = object.icon ? object.icon.name : null;
+      if (object.icon)
+      {
+         this.icon = new QIcon(object.icon);
+      }
       if (object.processes)
       {
          this.processes = object.processes;
