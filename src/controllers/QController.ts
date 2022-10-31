@@ -174,7 +174,6 @@ export class QController
       }
 
       return this.axiosInstance
-         // .get(queryURL/*, {signal}*/)
          .post(queryURL, formData)
          .then((response: AxiosResponse) =>
          {
@@ -205,6 +204,66 @@ export class QController
          .then((response: AxiosResponse) =>
          {
             return new QRecord(response.data);
+         })
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
+   }
+
+   /*******************************************************************************
+    ** Make a request to the backend for a single record's developer mode data
+    *******************************************************************************/
+   async getRecordDeveloperMode(tableName: string, primaryKey: any): Promise<any>
+   {
+      let getURL = `/data/${tableName}/${primaryKey}/developer`;
+      return this.axiosInstance
+         .get(getURL)
+         .then((response: AxiosResponse) =>
+         {
+            return response.data;
+         })
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
+   }
+
+   /*******************************************************************************
+    ** Make a request to the backend to save a new version of a record's associated script
+    *******************************************************************************/
+   async storeRecordAssociatedScript(tableName: string, primaryKey: any, fieldName: string, code: string, commitMessage: string): Promise<any>
+   {
+      let url = `/data/${tableName}/${primaryKey}/developer/associatedScript/${fieldName}`;
+
+      const formData = new FormData();
+      formData.append("contents", code);
+      formData.append("commitMessage", commitMessage);
+
+      return this.axiosInstance
+         .post(url, formData)
+         .then((response: AxiosResponse) =>
+         {
+            return response.data;
+         })
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
+   }
+
+   /*******************************************************************************
+    ** Make a request to the backend to get script logs for an associated script
+    *******************************************************************************/
+   async getRecordAssociatedScriptLogs(tableName: string, primaryKey: any, fieldName: string, scriptRevisionId: number): Promise<any>
+   {
+      let url = `/data/${tableName}/${primaryKey}/developer/associatedScript/${fieldName}/${scriptRevisionId}/logs`;
+
+      return this.axiosInstance
+         .get(url)
+         .then((response: AxiosResponse) =>
+         {
+            return response.data;
          })
          .catch((error: AxiosError) =>
          {
