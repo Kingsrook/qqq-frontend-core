@@ -20,15 +20,17 @@
  */
 
 /*******************************************************************************
- ** Possible data types for Q-fields.
+ ** Things that can be done to tables, fields.
  **
  *******************************************************************************/
-export enum AdornmentType {
-  LINK = "LINK",
-  CHIP = "CHIP",
-  SIZE = "SIZE",
-  CODE_EDITOR = "CODE_EDITOR",
-  ///////////////////////////////////////////////////////////////////////////
-  // keep these values in sync with AdornmentType.java in qqq-backend-core //
-  ///////////////////////////////////////////////////////////////////////////
+export enum Capability {
+  TABLE_QUERY = "TABLE_QUERY",
+  TABLE_GET = "TABLE_GET",
+  TABLE_COUNT = "TABLE_COUNT",
+  TABLE_INSERT = "TABLE_INSERT",
+  TABLE_UPDATE = "TABLE_UPDATE",
+  TABLE_DELETE = "TABLE_DELETE"
+  ////////////////////////////////////////////////////////////////////////
+  // keep these values in sync with Capability.java in qqq-backend-core //
+  ////////////////////////////////////////////////////////////////////////
 }

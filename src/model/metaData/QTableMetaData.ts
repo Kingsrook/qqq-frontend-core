@@ -36,6 +36,7 @@ export class QTableMetaData
    iconName?: string;
    sections?: QTableSection[];
    widgets?: string[];
+   capabilities: Set<string>
 
    constructor(object: any)
    {
@@ -61,6 +62,15 @@ export class QTableMetaData
          for (let i = 0; i < object.sections.length; i++)
          {
             this.sections.push(new QTableSection(object.sections[i]));
+         }
+      }
+
+      this.capabilities = new Set<string>();
+      if(object.capabilities)
+      {
+         for (var i = 0; i < object.capabilities.length; i++)
+         {
+            this.capabilities.add(object.capabilities[i]);
          }
       }
    }
