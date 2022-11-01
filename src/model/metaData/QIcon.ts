@@ -19,54 +19,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-import {AxiosError} from "axios";
-
 /*******************************************************************************
- ** Exception within qqq
+ ** Meta-Data to define an icon for use in a QQQ instance
  **
  *******************************************************************************/
-export class QException
+export class QIcon
 {
-   message: string;
-   status: string | undefined;
-   code: string | undefined;
-   errorObject: any;
+   name?: string;
+   path?: string;
 
-   constructor(error: AxiosError)
+   constructor(object: any)
    {
-      this.message = error.message;
-      this.code = error.code;
-
-      if (error.response !== undefined && error.response.status !== undefined)
-      {
-         this.status = error.response.status.toString();
-      }
-      else if (error.status !== undefined)
-      {
-         this.status = error.status;
-      }
-
-      if (error.response !== undefined && error.response.statusText !== undefined)
-      {
-         this.code = error.response.statusText;
-      }
-      else if (error.code !== undefined)
-      {
-         this.status = error.code;
-      }
-
-      const data = error?.response?.data as any;
-      if (data?.userFacingError)
-      {
-         this.message = data.userFacingError;
-      }
-      else if (data?.error)
-      {
-         this.message = data?.error;
-      }
-
-      this.errorObject = error;
+      this.name = object.name;
+      this.path = object.path;
    }
 }
-
