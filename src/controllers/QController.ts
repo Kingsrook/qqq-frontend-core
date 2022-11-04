@@ -32,6 +32,7 @@ import {QJobStarted} from "../model/processes/QJobStarted";
 import {QPossibleValue} from "../model/QPossibleValue";
 import {QRecord} from "../model/QRecord";
 import {QQueryFilter} from "../model/query/QQueryFilter";
+
 const axios = require("axios").default;
 
 /*******************************************************************************
@@ -52,6 +53,8 @@ export class QController
          baseURL: baseUrl,
          timeout: 60000, // todo - evaulate this!
       });
+
+      this.axiosInstance.defaults.headers.common["X-QQQ-UserTimezoneOffsetMinutes"] = new Date().getTimezoneOffset();
 
       if (exceptionHandler != null)
       {
