@@ -54,7 +54,11 @@ export class QController
          timeout: 60000, // todo - evaulate this!
       });
 
-      this.axiosInstance.defaults.headers.common["X-QQQ-UserTimezoneOffsetMinutes"] = new Date().getTimezoneOffset();
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // javascript timezone offset is positive for locations west of GMT (e.g., 300 for US/Central) - which seems //
+      // opposite of the convention (e.g., CST=-6, CDT=-5).  So, we'll use a negative version of this value.       //
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      this.axiosInstance.defaults.headers.common["X-QQQ-UserTimezoneOffsetMinutes"] = -new Date().getTimezoneOffset();
 
       if (exceptionHandler != null)
       {
