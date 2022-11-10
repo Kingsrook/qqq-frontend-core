@@ -279,6 +279,36 @@ export class QController
    }
 
    /*******************************************************************************
+    ** Make a request to the backend to test a script
+    *******************************************************************************/
+   async testScript(tableName: string, primaryKey: any, fieldName: string, code: string, inputValues: Map<string, any>): Promise<any>
+   {
+      let url = `/data/${tableName}/${primaryKey}/developer/associatedScript/${fieldName}/test`;
+      console.log(`url: ${url}`);
+
+      const formData = new FormData();
+      formData.append("code", code);
+
+
+      for (let key of Array.from(inputValues.keys()))
+      {
+         console.log(`form data: ${key}`);
+         formData.append(key, inputValues.get(key));
+      }
+
+      return this.axiosInstance
+         .post(url, formData)
+         .then((response: AxiosResponse) =>
+         {
+            return response.data;
+         })
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
+   }
+
+   /*******************************************************************************
     ** Make a backend call to create a single record
     **
     *******************************************************************************/
