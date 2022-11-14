@@ -35,8 +35,7 @@ export class QTableMetaData
    fields?: Map<string, QFieldMetaData>;
    iconName?: string;
    sections?: QTableSection[];
-   widgets?: string[];
-   capabilities: Set<string>
+   capabilities: Set<string>;
 
    constructor(object: any)
    {
@@ -45,7 +44,6 @@ export class QTableMetaData
       this.isHidden = object.isHidden;
       this.primaryKeyField = object.primaryKeyField;
       this.iconName = object.iconName;
-      this.widgets = object.widgets;
 
       if (object.fields)
       {
@@ -66,7 +64,7 @@ export class QTableMetaData
       }
 
       this.capabilities = new Set<string>();
-      if(object.capabilities)
+      if (object.capabilities)
       {
          for (var i = 0; i < object.capabilities.length; i++)
          {

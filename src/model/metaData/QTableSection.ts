@@ -30,6 +30,7 @@ export class QTableSection
    tier: string; // todo - enum
    iconName: string;
    fieldNames?: string[];
+   widgetName?: string;
    isHidden: boolean;
 
    constructor(object: any)
@@ -45,5 +46,6 @@ export class QTableSection
       }
 
       this.isHidden = object.isHidden;
+      this.widgetName = object.widgetName;
    }
 }
