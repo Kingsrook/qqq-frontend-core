@@ -22,6 +22,7 @@
 import {AxiosError, AxiosResponse} from "axios";
 import FormData from "form-data";
 import {QException} from "../exceptions/QException";
+import {QAuthenticationMetaData} from "../model/metaData/QAuthenticationMetaData";
 import {QInstance} from "../model/metaData/QInstance";
 import {QProcessMetaData} from "../model/metaData/QProcessMetaData";
 import {QTableMetaData} from "../model/metaData/QTableMetaData";
@@ -32,7 +33,6 @@ import {QJobStarted} from "../model/processes/QJobStarted";
 import {QPossibleValue} from "../model/QPossibleValue";
 import {QRecord} from "../model/QRecord";
 import {QQueryFilter} from "../model/query/QQueryFilter";
-
 const axios = require("axios").default;
 
 /*******************************************************************************
@@ -71,6 +71,59 @@ export class QController
             throw error;
          };
       }
+   }
+
+   private authenticationMetaDataLocalStorageKey = "qqq.authenticationMetaData.json";
+
+   /*******************************************************************************
+    ** Clear the authentication meta data from local storage
+    *******************************************************************************/
+   clearAuthenticationMetaDataLocalStorage(): void
+   {
+      localStorage.removeItem(this.authenticationMetaDataLocalStorageKey);
+   }
+
+   /*******************************************************************************
+    ** Fetch the authentication meta data from local storage or the server.
+    *******************************************************************************/
+   async getAuthenticationMetaData(): Promise<QAuthenticationMetaData>
+   {
+      try
+      {
+         const authenticationMetaDataJson = localStorage.getItem(this.authenticationMetaDataLocalStorageKey);
+         const authenticationMetaData = JSON.parse(authenticationMetaDataJson!);
+         if (authenticationMetaData && authenticationMetaData.timestamp)
+         {
+            const age = ((new Date().getTime()) - authenticationMetaData.timestamp) / 1000;
+            if (age < 24 * 60 * 60)
+            {
+               console.log(`Found authentication meta data in local storage (and it's ${age} seconds old) - using it.`);
+               return (new QAuthenticationMetaData(authenticationMetaData));
+            }
+         }
+      }
+      catch (e)
+      {
+         console.log(`Caught [${e}] reading authentication meta data from local storage - proceeding to get from backend.`);
+      }
+
+      //////////////////////////////////////////
+      // resume with a fetch from the backend //
+      //////////////////////////////////////////
+      return this.axiosInstance
+         .get("/metaData/authentication")
+         .then((response: AxiosResponse) =>
+         {
+            response.data.timestamp = new Date().getTime();
+            localStorage.setItem(this.authenticationMetaDataLocalStorageKey, JSON.stringify(response.data));
+            console.log("Fetched authentication meta data from backend.");
+            return new QAuthenticationMetaData(response.data);
+
+         })
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
    /*******************************************************************************
