@@ -23,12 +23,14 @@
  ** Possible data types for Q-fields.
  **
  *******************************************************************************/
-export enum AdornmentType {
-  LINK = "LINK",
-  CHIP = "CHIP",
-  SIZE = "SIZE",
-  CODE_EDITOR = "CODE_EDITOR",
-  ///////////////////////////////////////////////////////////////////////////
-  // keep these values in sync with AdornmentType.java in qqq-backend-core //
-  ///////////////////////////////////////////////////////////////////////////
+export enum AdornmentType
+{
+   LINK = "LINK",
+   CHIP = "CHIP",
+   SIZE = "SIZE",
+   ERROR = "ERROR",
+   CODE_EDITOR = "CODE_EDITOR",
+   ///////////////////////////////////////////////////////////////////////////
+   // keep these values in sync with AdornmentType.java in qqq-backend-core //
+   ///////////////////////////////////////////////////////////////////////////
 }

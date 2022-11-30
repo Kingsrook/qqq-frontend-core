@@ -31,6 +31,7 @@ export class QFieldMetaData
 {
    name: string;
    label: string;
+   defaultValue: string;
    type: QFieldType;
    isRequired: boolean = false;
    isEditable: boolean = true;
@@ -42,6 +43,7 @@ export class QFieldMetaData
    {
       this.name = object.name;
       this.label = object.label;
+      this.defaultValue = object.defaultValue;
       this.type = object.type;
       this.isRequired = object.isRequired;
       this.isEditable = object.isEditable;
@@ -51,7 +53,7 @@ export class QFieldMetaData
       if (object.adornments)
       {
          this.adornments = [];
-         for(var i=0; i<object.adornments.length; i++)
+         for (var i = 0; i < object.adornments.length; i++)
          {
             this.adornments.push(new FieldAdornment(object.adornments[i]));
          }
@@ -68,11 +70,11 @@ export class QFieldMetaData
 
    getAdornment(type: AdornmentType): FieldAdornment | null
    {
-      if(this.adornments)
+      if (this.adornments)
       {
-         for(let i=0; i<this.adornments.length; i++)
+         for (let i = 0; i < this.adornments.length; i++)
          {
-            if(type === this.adornments[i].type)
+            if (type === this.adornments[i].type)
             {
                return (this.adornments[i]);
             }
