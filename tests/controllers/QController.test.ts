@@ -26,6 +26,7 @@ import {QException} from "../../src/exceptions/QException";
 import {QAppMetaData} from "../../src/model/metaData/QAppMetaData";
 import {QAppNodeType} from "../../src/model/metaData/QAppNodeType";
 import {QAppTreeNode} from "../../src/model/metaData/QAppTreeNode";
+import {QAuthenticationMetaData} from "../../src/model/metaData/QAuthenticationMetaData";
 import {QBrandingMetaData} from "../../src/model/metaData/QBrandingMetaData";
 import {QFieldMetaData} from "../../src/model/metaData/QFieldMetaData";
 import {QFieldType} from "../../src/model/metaData/QFieldType";
@@ -41,6 +42,7 @@ import {QJobStarted} from "../../src/model/processes/QJobStarted";
 import {QPossibleValue} from "../../src/model/QPossibleValue";
 import {QRecord} from "../../src/model/QRecord";
 const fs = require("fs");
+require("jest-localstorage-mock");
 
 const baseURL = "http://localhost:8000";
 
@@ -164,6 +166,37 @@ function buildMockFailedPromise()
 
 describe("q controller test", () =>
 {
+
+   it("should load authentication meta data", async () =>
+   {
+      mockGet("metaData/authentication.json");
+      const qController = new QController(baseURL);
+
+      let authMetaData = await qController.getAuthenticationMetaData();
+      expect(authMetaData).toBeInstanceOf(QAuthenticationMetaData);
+      expect(authMetaData.type).toBe("MOCK");
+      expect(authMetaData.name).toBe("mock");
+
+      ///////////////////////////////////////////////////////////////////////////
+      // set the backend now to return the AUTH0 data, but, since it should be //
+      // cached in localstorage, make sure we still get back MOCK              //
+      ///////////////////////////////////////////////////////////////////////////
+      mockGet("metaData/authentication-auth0.json");
+      authMetaData = await qController.getAuthenticationMetaData();
+      expect(authMetaData.type).toBe("MOCK");
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // now clear the local storage, fetch again, and assert AUTH0                                                     //
+      // note, we'll only do this if we're using mocks, where we can actually get an AUTH0 response from the mocked GET //
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      if (useMock)
+      {
+         qController.clearAuthenticationMetaDataLocalStorage();
+         authMetaData = await qController.getAuthenticationMetaData();
+         expect(authMetaData.type).toBe("AUTH_0");
+      }
+   });
+
    it("should return meta data", async () =>
    {
       mockGet("metaData/index.json");

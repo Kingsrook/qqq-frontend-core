@@ -29,6 +29,7 @@ export enum AdornmentType
    CHIP = "CHIP",
    SIZE = "SIZE",
    ERROR = "ERROR",
+   RENDER_HTML = "RENDER_HTML",
    CODE_EDITOR = "CODE_EDITOR",
    ///////////////////////////////////////////////////////////////////////////
    // keep these values in sync with AdornmentType.java in qqq-backend-core //

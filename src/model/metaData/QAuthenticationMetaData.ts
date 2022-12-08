@@ -27,10 +27,25 @@ export class QAuthenticationMetaData
 {
    name: string;
    type: string;
+   data: any;
 
    constructor(object: any)
    {
       this.name = object.name;
       this.type = object.type;
+
+      ////////////////////////////////////////////////////////////////////////
+      // Copy all remaining keys in the input object into the 'data' object //
+      ////////////////////////////////////////////////////////////////////////
+      this.data = {};
+      let keys = Object.keys(object);
+      for (let i = 0; i < keys.length; i++)
+      {
+         const key = keys[i];
+         if (key !== "name" && key !== "type")
+         {
+            this.data[key] = object[key];
+         }
+      }
    }
 }
