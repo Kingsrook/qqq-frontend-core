@@ -29,6 +29,7 @@ export class QWidgetMetaData
    label: string;
    type: string;
    icon?: string;
+   isCard?: boolean;
    gridColumns?: number;
 
    constructor(object: any)
@@ -37,6 +38,7 @@ export class QWidgetMetaData
       this.label = object.label;
       this.type = object.type;
       this.icon = object.icon;
+      this.isCard = object.isCard;
       this.gridColumns = object.gridColumns;
    }
 }
