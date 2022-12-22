@@ -41,6 +41,7 @@ export class QInstance
    apps?: Map<string, QAppMetaData>;
    appTree?: QAppTreeNode[];
    branding?: QBrandingMetaData;
+   environmentValues?: Map<string, string>;
 
    constructor(object: any)
    {
@@ -101,6 +102,15 @@ export class QInstance
       if (object.branding)
       {
          this.branding = new QBrandingMetaData(object.branding);
+      }
+
+      if (object.environmentValues)
+      {
+         this.environmentValues = new Map<string, string>();
+         for (const key in object.environmentValues)
+         {
+            this.environmentValues.set(key, object.environmentValues[key]);
+         }
       }
    }
 

@@ -32,6 +32,7 @@ export class QTableSection
    fieldNames?: string[];
    widgetName?: string;
    isHidden: boolean;
+   gridColumns?: number;
 
    constructor(object: any)
    {
@@ -47,5 +48,6 @@ export class QTableSection
 
       this.isHidden = object.isHidden;
       this.widgetName = object.widgetName;
+      this.gridColumns = object.gridColumns;
    }
 }
