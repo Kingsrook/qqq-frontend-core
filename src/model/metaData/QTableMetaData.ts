@@ -36,6 +36,10 @@ export class QTableMetaData
    iconName?: string;
    sections?: QTableSection[];
    capabilities: Set<string>;
+   readPermission: boolean = false;
+   insertPermission: boolean = false;
+   editPermission: boolean = false;
+   deletePermission: boolean = false;
 
    constructor(object: any)
    {
@@ -44,6 +48,10 @@ export class QTableMetaData
       this.isHidden = object.isHidden;
       this.primaryKeyField = object.primaryKeyField;
       this.iconName = object.iconName;
+      this.readPermission = object.readPermission;
+      this.insertPermission = object.insertPermission;
+      this.editPermission = object.editPermission;
+      this.deletePermission = object.deletePermission;
 
       if (object.fields)
       {

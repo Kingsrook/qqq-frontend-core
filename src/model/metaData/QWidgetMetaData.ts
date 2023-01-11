@@ -31,6 +31,7 @@ export class QWidgetMetaData
    icon?: string;
    isCard?: boolean;
    gridColumns?: number;
+   hasPermission: boolean = false;
 
    constructor(object: any)
    {
@@ -40,5 +41,6 @@ export class QWidgetMetaData
       this.icon = object.icon;
       this.isCard = object.isCard;
       this.gridColumns = object.gridColumns;
+      this.hasPermission = object.hasPermission;
    }
 }

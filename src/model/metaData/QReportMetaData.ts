@@ -30,6 +30,7 @@ export class QReportMetaData
    tableName: string;
    processName: string;
    iconName?: string;
+   hasPermission: boolean = false;
 
    constructor(object: any)
    {
@@ -38,5 +39,6 @@ export class QReportMetaData
       this.tableName = object.tableName;
       this.processName = object.processName;
       this.iconName = object.iconName;
+      this.hasPermission = object.hasPermission;
    }
 }

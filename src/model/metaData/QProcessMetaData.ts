@@ -33,6 +33,7 @@ export class QProcessMetaData
    isHidden: boolean = false;
    iconName?: string;
    frontendSteps?: QFrontendStepMetaData[];
+   hasPermission: boolean = false;
 
    constructor(object: any)
    {
@@ -41,14 +42,17 @@ export class QProcessMetaData
       this.tableName = object.tableName;
       this.isHidden = object.isHidden;
       this.iconName = object.iconName;
+      this.hasPermission = object.hasPermission;
 
       if (object.frontendSteps)
       {
          this.frontendSteps = [];
          for (let i = 0; i < object.frontendSteps.length; i++)
+         {
             this.frontendSteps.push(
                new QFrontendStepMetaData(object.frontendSteps[i])
             );
+         }
       }
    }
 }

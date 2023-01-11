@@ -166,6 +166,10 @@ function buildMockFailedPromise()
 
 describe("q controller test", () =>
 {
+   beforeEach(() =>
+   {
+      QController.clearMemoization();
+   });
 
    it("should load authentication meta data", async () =>
    {
@@ -201,6 +205,7 @@ describe("q controller test", () =>
    {
       mockGet("metaData/index.json");
       const qController = new QController(baseURL);
+      qController.setAuthorizationHeaderValue("allowedToContinue");
 
       const metaData = await qController.loadMetaData();
       expect(metaData).toBeInstanceOf(QInstance);
@@ -254,6 +259,7 @@ describe("q controller test", () =>
       {
          mockGetError();
          const qController = new QController("http://notahost:123");
+         qController.setAuthorizationHeaderValue("allowedToContinue");
          const metaData = await qController.loadMetaData();
          expect(metaData).toBeNull();
       }
@@ -267,6 +273,8 @@ describe("q controller test", () =>
    {
       mockGet("metaData/table/carrier.json");
       const qController = new QController(baseURL);
+      qController.setAuthorizationHeaderValue("allowedToContinue");
+
       const tableMetaData = await qController.loadTableMetaData("carrier");
       expect(tableMetaData).toBeInstanceOf(QTableMetaData);
       expect(tableMetaData.fields).toBeInstanceOf(Map);
@@ -287,6 +295,14 @@ describe("q controller test", () =>
       expect(section?.iconName).toBeDefined();
       expect(section?.fieldNames).toBeDefined();
       expect(section?.fieldNames?.length).toBeGreaterThan(0);
+
+      //////////////////////////////////////////////////////////
+      // make sure it can be fetched again (from memoization) //
+      //////////////////////////////////////////////////////////
+      const tableMetaData2 = await qController.loadTableMetaData("carrier");
+      expect(tableMetaData2).toBeInstanceOf(QTableMetaData);
+      expect(tableMetaData2.fields).toBeInstanceOf(Map);
+      expect(tableMetaData2?.label).toBe("Carrier");
    });
 
    it("should fail table meta data for bad table name", async () =>
@@ -295,6 +311,8 @@ describe("q controller test", () =>
       {
          mockGetError();
          const qController = new QController(baseURL);
+         qController.setAuthorizationHeaderValue("allowedToContinue");
+
          const tableMetaData = await qController.loadTableMetaData("currier");
          expect(tableMetaData).toBeNull();
       }
@@ -308,6 +326,8 @@ describe("q controller test", () =>
    {
       mockGet("metaData/process/greetInteractive.json");
       const qController = new QController(baseURL);
+      qController.setAuthorizationHeaderValue("allowedToContinue");
+
       const processMetaData = await qController.loadProcessMetaData(
          "greetInteractive"
       );
@@ -331,6 +351,8 @@ describe("q controller test", () =>
          mockGetError();
          const qController = new QController(baseURL);
          const processMetaData = await qController.loadProcessMetaData("gort");
+         qController.setAuthorizationHeaderValue("allowedToContinue");
+
          expect(processMetaData).toBeNull();
       }
       catch (error)

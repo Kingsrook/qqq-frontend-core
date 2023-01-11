@@ -43,6 +43,17 @@ export class QController
    private axiosInstance;
    private exceptionHandler;
 
+   ////////////////////////////////////////////////////////////////////
+   // memoized promises for calls that don't generally need repeated //
+   ////////////////////////////////////////////////////////////////////
+   private static metaDataPromise?: Promise<QInstance>;
+   private static tableMetaDataPromises = new Map<string, Promise<QTableMetaData>>();
+   private static processMetaDataPromises = new Map<string, Promise<QProcessMetaData>>();
+
+   private static authenticationMetaDataLocalStorageKey = "qqq.authenticationMetaData.json";
+
+   private static awaitAuthenticationPromise: Promise<any>;
+   private static gotAuthentication = false;
 
    /*******************************************************************************
     **
@@ -51,7 +62,24 @@ export class QController
    {
       this.axiosInstance = axios.create({
          baseURL: baseUrl,
-         timeout: 60000, // todo - evaulate this!
+         timeout: 60000, // todo - evaluate this!
+      });
+
+      //////////////////////////////////////////////////////////////////////////////////////////////////////
+      // create a promise which will run a busy-loop until setAuthorizationHeaderValue is called.         //
+      // the idea being, to not fire off any other requests until we know that the user is authenticated, //
+      // and we know how to send that authentication to the backend.                                      //
+      //////////////////////////////////////////////////////////////////////////////////////////////////////
+      QController.awaitAuthenticationPromise = new Promise((resolve) =>
+      {
+         const interval = setInterval(() =>
+         {
+            if (QController.gotAuthentication)
+            {
+               resolve(true);
+               clearInterval(interval);
+            }
+         }, 50);
       });
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,14 +101,41 @@ export class QController
       }
    }
 
-   private authenticationMetaDataLocalStorageKey = "qqq.authenticationMetaData.json";
+
+   /*******************************************************************************
+    ** clear memoized promises
+    *******************************************************************************/
+   static clearMemoization()
+   {
+      QController.metaDataPromise = undefined;
+      QController.tableMetaDataPromises.clear();
+      QController.processMetaDataPromises.clear();
+   }
+
+
+   /*******************************************************************************
+    ** Function to be called by an app after it's authenticated the user.  This will
+    ** set an Authorization header to be included in all requests, and will allow
+    ** the awaitAuthenticationPromise to resolve, so that other requests can continue.
+    *******************************************************************************/
+   setAuthorizationHeaderValue(headerValue: string)
+   {
+      console.log("Setting Authorization header from call to: " + headerValue);
+      if (headerValue)
+      {
+         this.axiosInstance.defaults.headers.common["Authorization"] = headerValue;
+      }
+
+      QController.gotAuthentication = true;
+   }
+
 
    /*******************************************************************************
     ** Clear the authentication meta data from local storage
     *******************************************************************************/
    clearAuthenticationMetaDataLocalStorage(): void
    {
-      localStorage.removeItem(this.authenticationMetaDataLocalStorageKey);
+      localStorage.removeItem(QController.authenticationMetaDataLocalStorageKey);
    }
 
    /*******************************************************************************
@@ -90,7 +145,7 @@ export class QController
    {
       try
       {
-         const authenticationMetaDataJson = localStorage.getItem(this.authenticationMetaDataLocalStorageKey);
+         const authenticationMetaDataJson = localStorage.getItem(QController.authenticationMetaDataLocalStorageKey);
          const authenticationMetaData = JSON.parse(authenticationMetaDataJson!);
          if (authenticationMetaData && authenticationMetaData.timestamp)
          {
@@ -115,7 +170,7 @@ export class QController
          .then((response: AxiosResponse) =>
          {
             response.data.timestamp = new Date().getTime();
-            localStorage.setItem(this.authenticationMetaDataLocalStorageKey, JSON.stringify(response.data));
+            localStorage.setItem(QController.authenticationMetaDataLocalStorageKey, JSON.stringify(response.data));
             console.log("Fetched authentication meta data from backend.");
             return new QAuthenticationMetaData(response.data);
 
@@ -131,7 +186,14 @@ export class QController
     *******************************************************************************/
    async loadMetaData(): Promise<QInstance>
    {
-      return this.axiosInstance
+      await QController.awaitAuthenticationPromise;
+
+      if (QController.metaDataPromise)
+      {
+         return (QController.metaDataPromise!);
+      }
+
+      QController.metaDataPromise = this.axiosInstance
          .get("/metaData/")
          .then((response: AxiosResponse) =>
          {
@@ -141,6 +203,8 @@ export class QController
          {
             this.handleException(error);
          });
+
+      return QController.metaDataPromise!;
    }
 
    /*******************************************************************************
@@ -148,7 +212,14 @@ export class QController
     *******************************************************************************/
    async loadTableMetaData(tableName: string): Promise<QTableMetaData>
    {
-      return this.axiosInstance
+      await QController.awaitAuthenticationPromise;
+
+      if (QController.tableMetaDataPromises.has(tableName))
+      {
+         return (QController.tableMetaDataPromises.get(tableName)!);
+      }
+
+      const promise: Promise<QTableMetaData> = this.axiosInstance
          .get(`/metaData/table/${tableName}`)
          .then((response: AxiosResponse) =>
          {
@@ -158,23 +229,37 @@ export class QController
          {
             this.handleException(error);
          });
+
+      QController.tableMetaDataPromises.set(tableName, promise);
+      return (promise);
    }
 
    /*******************************************************************************
     ** Fetch the full meta data for a specific process.
     *******************************************************************************/
-   async loadProcessMetaData(tableName: string): Promise<QProcessMetaData>
+   async loadProcessMetaData(processName: string): Promise<QProcessMetaData>
    {
-      return this.axiosInstance
-         .get(`/metaData/process/${tableName}`)
+      await QController.awaitAuthenticationPromise;
+
+      if (QController.processMetaDataPromises.has(processName))
+      {
+         return (QController.processMetaDataPromises.get(processName)!);
+      }
+
+      const promise: Promise<QProcessMetaData> = this.axiosInstance
+         .get(`/metaData/process/${processName}`)
          .then((response: AxiosResponse) =>
          {
+            console.log(`Fetched process[${processName}] metaData`);
             return new QProcessMetaData(response.data.process);
          })
          .catch((error: AxiosError) =>
          {
             this.handleException(error);
          });
+
+      QController.processMetaDataPromises.set(processName, promise);
+      return (promise);
    }
 
    /*******************************************************************************
@@ -430,9 +515,7 @@ export class QController
    /*******************************************************************************
     ** Common logic to parse a process-related server response into an appropriate object.
     *******************************************************************************/
-   parseProcessResponse(
-      response: AxiosResponse
-   ): QJobStarted | QJobRunning | QJobComplete | QJobError
+   parseProcessResponse(response: AxiosResponse): QJobStarted | QJobRunning | QJobComplete | QJobError
    {
       //////////////////////////////////////////////////////////////////////////////////////
       // so, the order of these checks is critical (mostly because, complete & error have //
@@ -670,7 +753,7 @@ export class QController
 
 
    /*******************************************************************************
-    ** exception handler which will marshal axios error into a Qexception and
+    ** exception handler which will marshal axios error into a QException and
     *  send that the exception handler provided to this class
     *******************************************************************************/
    private handleException(error: AxiosError): void
