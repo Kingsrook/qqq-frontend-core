@@ -120,7 +120,6 @@ export class QController
     *******************************************************************************/
    setAuthorizationHeaderValue(headerValue: string)
    {
-      console.log("Setting Authorization header from call to: " + headerValue);
       if (headerValue)
       {
          this.axiosInstance.defaults.headers.common["Authorization"] = headerValue;
@@ -250,7 +249,6 @@ export class QController
          .get(`/metaData/process/${processName}`)
          .then((response: AxiosResponse) =>
          {
-            console.log(`Fetched process[${processName}] metaData`);
             return new QProcessMetaData(response.data.process);
          })
          .catch((error: AxiosError) =>
@@ -422,7 +420,6 @@ export class QController
    async testScript(tableName: string, primaryKey: any, fieldName: string, code: string, inputValues: Map<string, any>): Promise<any>
    {
       let url = `/data/${tableName}/${primaryKey}/developer/associatedScript/${fieldName}/test`;
-      console.log(`url: ${url}`);
 
       const formData = new FormData();
       formData.append("code", code);
@@ -430,7 +427,6 @@ export class QController
 
       for (let key of Array.from(inputValues.keys()))
       {
-         console.log(`form data: ${key}`);
          formData.append(key, inputValues.get(key));
       }
 
