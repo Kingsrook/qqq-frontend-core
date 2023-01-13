@@ -130,6 +130,15 @@ export class QController
 
 
    /*******************************************************************************
+    **
+    *******************************************************************************/
+   getAuthorizationHeaderValue()
+   {
+      return (this.axiosInstance.defaults.headers.common["Authorization"]);
+   }
+
+
+   /*******************************************************************************
     ** Clear the authentication meta data from local storage
     *******************************************************************************/
    clearAuthenticationMetaDataLocalStorage(): void
