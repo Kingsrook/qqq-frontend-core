@@ -158,7 +158,7 @@ export class QController
          if (authenticationMetaData && authenticationMetaData.timestamp)
          {
             const age = ((new Date().getTime()) - authenticationMetaData.timestamp) / 1000;
-            if (age < 24 * 60 * 60)
+            if (age < 60 * 60)
             {
                console.log(`Found authentication meta data in local storage (and it's ${age} seconds old) - using it.`);
                return (new QAuthenticationMetaData(authenticationMetaData));
