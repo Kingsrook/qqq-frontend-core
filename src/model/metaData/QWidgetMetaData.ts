@@ -32,6 +32,7 @@ export class QWidgetMetaData
    isCard?: boolean;
    gridColumns?: number;
    hasPermission: boolean = false;
+   storeDropdownSelections?: boolean;
 
    constructor(object: any)
    {
@@ -42,5 +43,6 @@ export class QWidgetMetaData
       this.isCard = object.isCard;
       this.gridColumns = object.gridColumns;
       this.hasPermission = object.hasPermission;
+      this.storeDropdownSelections = object.storeDropdownSelections;
    }
 }
