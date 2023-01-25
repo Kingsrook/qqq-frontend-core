@@ -551,10 +551,14 @@ export class QController
    /*******************************************************************************
     ** Initialize a process
     *******************************************************************************/
-   async processInit(processName: string, queryString: string = ""): Promise<QJobStarted | QJobComplete | QJobError>
+   async processInit(
+      processName: string,
+      formDataOrQueryString: string | FormData = "",
+      formDataHeaders?: FormData.Headers
+   ): Promise<QJobStarted | QJobComplete | QJobError>
    {
       let url = `/processes/${processName}/init`;
-      return this.postWithQueryStringToPossibleAsyncBackendJob(queryString, url);
+      return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders);
    }
 
    /*******************************************************************************
@@ -594,12 +598,24 @@ export class QController
       processName: string,
       processUUID: string,
       step: string,
-      formData: string | FormData = "",
+      formDataOrQueryString: string | FormData = "",
       formDataHeaders?: FormData.Headers
    ): Promise<QJobStarted | QJobComplete | QJobError>
    {
       let url = `/processes/${processName}/${processUUID}/step/${step}`;
-      if (formData instanceof FormData)
+      return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders);
+   }
+
+   /*******************************************************************************
+    ** Proceed to the next step in a process
+    *******************************************************************************/
+   async processStepOrInit(
+      url: string,
+      formDataOrQueryString: string | FormData = "",
+      formDataHeaders?: FormData.Headers
+   ): Promise<QJobStarted | QJobComplete | QJobError>
+   {
+      if (formDataOrQueryString instanceof FormData)
       {
          if (!formDataHeaders)
          {
@@ -607,11 +623,11 @@ export class QController
             // so, it looks like FormData is supplied by the browser, when running the browser, but by a form-data //
             // lib when running not in the browser.  The browser version doesn't have a getHeaders method...       //
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
-            formDataHeaders = formData.getHeaders();
+            formDataHeaders = formDataOrQueryString.getHeaders();
          }
 
          return this.axiosInstance
-            .post(url, formData, {headers: formDataHeaders})
+            .post(url, formDataOrQueryString, {headers: formDataHeaders})
             .then((response: AxiosResponse) =>
             {
                const responseObject = this.parseProcessResponse(response);
@@ -631,7 +647,7 @@ export class QController
       }
       else
       {
-         return this.postWithQueryStringToPossibleAsyncBackendJob(formData, url);
+         return this.postWithQueryStringToPossibleAsyncBackendJob(formDataOrQueryString, url);
       }
    }
 
