@@ -33,6 +33,10 @@ export class QWidgetMetaData
    gridColumns?: number;
    hasPermission: boolean = false;
    storeDropdownSelections?: boolean;
+   dropdowns?: [{
+      possibleValueSourceName?: string,
+      isRequired: boolean
+   }];
 
    constructor(object: any)
    {
@@ -44,5 +48,6 @@ export class QWidgetMetaData
       this.gridColumns = object.gridColumns;
       this.hasPermission = object.hasPermission;
       this.storeDropdownSelections = object.storeDropdownSelections;
+      this.dropdowns = object.dropdowns;
    }
 }
