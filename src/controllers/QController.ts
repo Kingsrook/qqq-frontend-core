@@ -43,6 +43,8 @@ export class QController
    private axiosInstance;
    private exceptionHandler;
 
+   public static STEP_TIMEOUT_MILLIS_PARAM_NAME = "_qStepTimeoutMillis";
+
    ////////////////////////////////////////////////////////////////////
    // memoized promises for calls that don't generally need repeated //
    ////////////////////////////////////////////////////////////////////
@@ -562,6 +564,19 @@ export class QController
    }
 
    /*******************************************************************************
+    ** Fully run a process (i.e., not stopping for frontend steps)
+    *******************************************************************************/
+   async processRun(
+      processName: string,
+      formDataOrQueryString: string | FormData = "",
+      formDataHeaders?: FormData.Headers
+   ): Promise<QJobStarted | QJobComplete | QJobError>
+   {
+      let url = `/processes/${processName}/run`;
+      return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders);
+   }
+
+   /*******************************************************************************
     ** Helper function for the process init & step functions, as well as bulk functions
     ** which may run async.
     *******************************************************************************/
@@ -772,6 +787,15 @@ export class QController
          .catch(this.handleException);
    }
 
+   /*******************************************************************************
+    **
+    *******************************************************************************/
+   public defaultMultipartFormDataHeaders(): FormData.Headers
+   {
+      return {
+         "content-type": "multipart/form-data; boundary=--------------------------320289315924586491558366",
+      };
+   }
 
    /*******************************************************************************
     ** exception handler which will marshal axios error into a QException and
