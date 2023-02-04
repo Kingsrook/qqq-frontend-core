@@ -26,12 +26,16 @@
 export class QBrandingMetaData
 {
    companyName?: string;
+   companyUrl?: string;
+   appName?: string;
    logo?: string;
    icon?: string;
 
    constructor(object: any)
    {
       this.companyName = object.companyName;
+      this.companyUrl = object.companyUrl;
+      this.appName = object.appName;
       this.logo = object.logo;
       this.icon = object.icon;
    }
