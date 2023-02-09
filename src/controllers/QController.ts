@@ -58,6 +58,8 @@ export class QController
    private static awaitAuthenticationPromise: Promise<any>;
    private static gotAuthentication = false;
 
+   private static widgetAbortControllerMap = new Map<string, AbortController | null>();
+
    /*******************************************************************************
     **
     *******************************************************************************/
@@ -754,13 +756,43 @@ export class QController
          url += `?${urlParams}`;
       }
 
+      /////////////////////////////////////////////////////////////////
+      // see if an abort controller was created for this widget name //
+      /////////////////////////////////////////////////////////////////
+      console.log("Looking for controller for widget [" + widgetName + "]");
+      let controller = QController.widgetAbortControllerMap.get(widgetName);
+      if (controller)
+      {
+         console.log(`Found existing abort controller for widget '${widgetName}', aborting...`);
+         controller.abort();
+      }
+
+      /////////////////////////////////////////
+      // keep track of this widget's request //
+      /////////////////////////////////////////
+      controller = new AbortController();
+      const signal = controller.signal;
+      QController.widgetAbortControllerMap.set(widgetName, controller);
+
       return this.axiosInstance
-         .get(url)
+         .get(url, {signal})
          .then((response: AxiosResponse) =>
          {
+            ///////////////////////////////////////////////////
+            // make sure to clear out the request controller //
+            ///////////////////////////////////////////////////
+            QController.widgetAbortControllerMap.set(widgetName, null);
             return response.data;
          })
-         .catch(this.handleException);
+         .catch((e: any) =>
+         {
+            if (e.code && e.code === "ERR_CANCELED")
+            {
+               console.log("Controller request cancellation sucessful!");
+               return;
+            }
+            this.handleException(e);
+         });
    }
 
 
