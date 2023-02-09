@@ -33,6 +33,7 @@ import {QJobStarted} from "../model/processes/QJobStarted";
 import {QPossibleValue} from "../model/QPossibleValue";
 import {QRecord} from "../model/QRecord";
 import {QQueryFilter} from "../model/query/QQueryFilter";
+import {QueryJoin} from "../model/query/QueryJoin";
 const axios = require("axios").default;
 
 /*******************************************************************************
@@ -274,9 +275,20 @@ export class QController
    /*******************************************************************************
     ** Make a count request to the backend
     *******************************************************************************/
-   async count(tableName: string, queryFilter?: QQueryFilter): Promise<number>
+   async count(tableName: string, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null): Promise<number>
    {
       let countURL = `/data/${tableName}/count`;
+
+      const queryStringParts = [];
+      if(queryJoins)
+      {
+         queryStringParts.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
+      }
+
+      if (queryStringParts.length > 0)
+      {
+         countURL += `?${queryStringParts.join("&")}`;
+      }
 
       const formData = new FormData();
       if (queryFilter)
@@ -303,22 +315,28 @@ export class QController
       tableName: string,
       queryFilter?: QQueryFilter,
       limit?: number,
-      skip?: number
+      skip?: number,
+      queryJoins: QueryJoin[] | null = null
    ): Promise<QRecord[]>
    {
       let queryURL = `/data/${tableName}/query`;
-      const queryParts = [];
+      const queryStringParts = [];
       if (limit)
       {
-         queryParts.push(`limit=${limit}`);
+         queryStringParts.push(`limit=${limit}`);
       }
       if (skip)
       {
-         queryParts.push(`skip=${skip}`);
+         queryStringParts.push(`skip=${skip}`);
       }
-      if (queryParts.length > 0)
+      if(queryJoins)
       {
-         queryURL += `?${queryParts.join("&")}`;
+         queryStringParts.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
+      }
+
+      if (queryStringParts.length > 0)
+      {
+         queryURL += `?${queryStringParts.join("&")}`;
       }
 
       const formData = new FormData();
