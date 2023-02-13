@@ -30,6 +30,7 @@ export class QBrandingMetaData
    appName?: string;
    logo?: string;
    icon?: string;
+   accentColor?: string;
 
    constructor(object: any)
    {
@@ -38,5 +39,6 @@ export class QBrandingMetaData
       this.appName = object.appName;
       this.logo = object.logo;
       this.icon = object.icon;
+      this.accentColor = object.accentColor;
    }
 }
