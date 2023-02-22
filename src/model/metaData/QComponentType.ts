@@ -34,6 +34,7 @@ export enum QComponentType
    RECORD_LIST = "RECORD_LIST",
    PROCESS_SUMMARY_RESULTS = "PROCESS_SUMMARY_RESULTS",
    GOOGLE_DRIVE_SELECT_FOLDER = "GOOGLE_DRIVE_SELECT_FOLDER",
+   HTML = "HTML"
    ////////////////////////////////////////////////////////////////////////////
    // keep these values in sync with QComponentType.java in qqq-backend-core //
    ////////////////////////////////////////////////////////////////////////////

@@ -282,7 +282,7 @@ export class QController
       let countURL = `/data/${tableName}/count`;
 
       const queryStringParts = [];
-      if(queryJoins)
+      if (queryJoins)
       {
          queryStringParts.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
       }
@@ -331,7 +331,7 @@ export class QController
       {
          queryStringParts.push(`skip=${skip}`);
       }
-      if(queryJoins)
+      if (queryJoins)
       {
          queryStringParts.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
       }
@@ -799,9 +799,9 @@ export class QController
    /*******************************************************************************
     ** Fetch options for a possible-value drop down
     *******************************************************************************/
-   async possibleValues(tableName: string, fieldName: string, searchTerm: string = "", ids: any[] = []): Promise<QPossibleValue[]>
+   async possibleValues(tableName: string, processName: string, fieldName: string, searchTerm: string = "", ids: any[] = []): Promise<QPossibleValue[]>
    {
-      let url = `/data/${tableName}/possibleValues/${fieldName}`;
+      let url = tableName ? `/data/${tableName}/possibleValues/${fieldName}` : `/processes/${processName}/possibleValues/${fieldName}`;
 
       let queryComponents = [];
 

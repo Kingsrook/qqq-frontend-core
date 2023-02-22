@@ -664,7 +664,7 @@ describe("q controller test", () =>
    {
       mockGet("data/person/possibleValues-homeStateId.json");
       const qController = new QController(baseURL);
-      const result = await qController.possibleValues("person", "homeStateId", "");
+      const result = await qController.possibleValues("person", null, "homeStateId", "");
       expect(result).not.toBeNull();
       expect(result).toBeInstanceOf(Array);
       expect(result.length).toBe(2);
