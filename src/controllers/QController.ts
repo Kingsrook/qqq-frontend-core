@@ -34,6 +34,7 @@ import {QPossibleValue} from "../model/QPossibleValue";
 import {QRecord} from "../model/QRecord";
 import {QQueryFilter} from "../model/query/QQueryFilter";
 import {QueryJoin} from "../model/query/QueryJoin";
+
 const axios = require("axios").default;
 
 /*******************************************************************************
@@ -799,7 +800,7 @@ export class QController
    /*******************************************************************************
     ** Fetch options for a possible-value drop down
     *******************************************************************************/
-   async possibleValues(tableName: string, processName: string, fieldName: string, searchTerm: string = "", ids: any[] = []): Promise<QPossibleValue[]>
+   async possibleValues(tableName: string | null, processName: string | null, fieldName: string, searchTerm: string = "", ids: any[] = []): Promise<QPossibleValue[]>
    {
       let url = tableName ? `/data/${tableName}/possibleValues/${fieldName}` : `/processes/${processName}/possibleValues/${fieldName}`;
 
