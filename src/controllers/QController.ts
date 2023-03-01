@@ -34,7 +34,6 @@ import {QPossibleValue} from "../model/QPossibleValue";
 import {QRecord} from "../model/QRecord";
 import {QQueryFilter} from "../model/query/QQueryFilter";
 import {QueryJoin} from "../model/query/QueryJoin";
-
 const axios = require("axios").default;
 
 /*******************************************************************************
@@ -590,11 +589,12 @@ export class QController
    async processRun(
       processName: string,
       formDataOrQueryString: string | FormData = "",
-      formDataHeaders?: FormData.Headers
+      formDataHeaders?: FormData.Headers,
+      dontGoAsyncOnBackend: boolean = false
    ): Promise<QJobStarted | QJobComplete | QJobError>
    {
       let url = `/processes/${processName}/run`;
-      return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders);
+      return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders, dontGoAsyncOnBackend);
    }
 
    /*******************************************************************************
@@ -648,7 +648,8 @@ export class QController
    async processStepOrInit(
       url: string,
       formDataOrQueryString: string | FormData = "",
-      formDataHeaders?: FormData.Headers
+      formDataHeaders?: FormData.Headers,
+      dontGoAsyncOnBackend: boolean = false
    ): Promise<QJobStarted | QJobComplete | QJobError>
    {
       if (formDataOrQueryString instanceof FormData)
@@ -659,7 +660,19 @@ export class QController
             // so, it looks like FormData is supplied by the browser, when running the browser, but by a form-data //
             // lib when running not in the browser.  The browser version doesn't have a getHeaders method...       //
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
-            formDataHeaders = formDataOrQueryString.getHeaders();
+            if (formDataOrQueryString.getHeaders)
+            {
+               formDataHeaders = formDataOrQueryString.getHeaders();
+            }
+            else
+            {
+               formDataHeaders = {"content-type": "multipart/form-data; boundary=--------------------------320289315924586491558366"};
+            }
+         }
+
+         if (dontGoAsyncOnBackend)
+         {
+            formDataOrQueryString.append("_qStepTimeoutMillis", 300 * 1000);
          }
 
          return this.axiosInstance
@@ -683,6 +696,11 @@ export class QController
       }
       else
       {
+         if (dontGoAsyncOnBackend)
+         {
+            formDataOrQueryString += `&_qStepTimeoutMillis=${300 * 1000}`;
+         }
+
          return this.postWithQueryStringToPossibleAsyncBackendJob(formDataOrQueryString, url);
       }
    }
