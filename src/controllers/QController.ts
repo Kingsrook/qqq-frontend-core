@@ -818,7 +818,7 @@ export class QController
    /*******************************************************************************
     ** Fetch options for a possible-value drop down
     *******************************************************************************/
-   async possibleValues(tableName: string | null, processName: string | null, fieldName: string, searchTerm: string = "", ids: any[] = []): Promise<QPossibleValue[]>
+   async possibleValues(tableName: string | null, processName: string | null, fieldName: string, searchTerm: string = "", ids: any[] = [], values: Map<string, any> = new Map()): Promise<QPossibleValue[]>
    {
       let url = tableName ? `/data/${tableName}/possibleValues/${fieldName}` : `/processes/${processName}/possibleValues/${fieldName}`;
 
@@ -839,8 +839,11 @@ export class QController
          url += `?${queryComponents.join("&")}`;
       }
 
+      const postBody = new FormData();
+      postBody.append("values", JSON.stringify(Object.fromEntries(values)));
+
       return this.axiosInstance
-         .get(url)
+         .post(url, postBody)
          .then((response: AxiosResponse) =>
          {
             const results: QPossibleValue[] = [];
