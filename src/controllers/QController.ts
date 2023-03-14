@@ -87,6 +87,17 @@ export class QController
          }, 50);
       });
 
+      try
+      {
+         this.axiosInstance.defaults.headers.common["X-QQQ-UserTimezone"] = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      }
+      catch (e)
+      {
+         ////////////
+         // ignore //
+         ////////////
+      }
+
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // javascript timezone offset is positive for locations west of GMT (e.g., 300 for US/Central) - which seems //
       // opposite of the convention (e.g., CST=-6, CDT=-5).  So, we'll use a negative version of this value.       //
