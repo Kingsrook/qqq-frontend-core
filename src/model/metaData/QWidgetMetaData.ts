@@ -32,6 +32,7 @@ export class QWidgetMetaData
    isCard?: boolean;
    minHeight?: string;
    gridColumns?: number;
+   footerHTML?: string;
    hasPermission: boolean = false;
    storeDropdownSelections?: boolean;
    dropdowns?: [{
@@ -48,6 +49,7 @@ export class QWidgetMetaData
       this.isCard = object.isCard;
       this.minHeight = object.minHeight;
       this.gridColumns = object.gridColumns;
+      this.footerHTML = object.footerHTML;
       this.hasPermission = object.hasPermission;
       this.storeDropdownSelections = object.storeDropdownSelections;
       this.dropdowns = object.dropdowns;
