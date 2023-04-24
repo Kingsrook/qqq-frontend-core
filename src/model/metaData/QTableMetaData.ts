@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QExposedJoin} from "./QExposedJoin";
 import {QFieldMetaData} from "./QFieldMetaData";
 import {QTableSection} from "./QTableSection";
 
@@ -35,6 +36,7 @@ export class QTableMetaData
    fields?: Map<string, QFieldMetaData>;
    iconName?: string;
    sections?: QTableSection[];
+   exposedJoins?: QExposedJoin[];
    capabilities: Set<string>;
    readPermission: boolean = false;
    insertPermission: boolean = false;
@@ -68,6 +70,15 @@ export class QTableMetaData
          for (let i = 0; i < object.sections.length; i++)
          {
             this.sections.push(new QTableSection(object.sections[i]));
+         }
+      }
+
+      if (object.exposedJoins)
+      {
+         this.exposedJoins = [];
+         for (let i = 0; i < object.exposedJoins.length; i++)
+         {
+            this.exposedJoins.push(new QExposedJoin(object.exposedJoins[i]));
          }
       }
 

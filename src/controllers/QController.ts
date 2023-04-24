@@ -288,7 +288,7 @@ export class QController
    /*******************************************************************************
     ** Make a count request to the backend
     *******************************************************************************/
-   async count(tableName: string, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null): Promise<number>
+   async count(tableName: string, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null, includeDistinct = false): Promise<[number, number]>
    {
       let countURL = `/data/${tableName}/count`;
 
@@ -303,6 +303,11 @@ export class QController
          countURL += `?${queryStringParts.join("&")}`;
       }
 
+      if (includeDistinct)
+      {
+         countURL += "&includeDistinct=true";
+      }
+
       const formData = new FormData();
       if (queryFilter)
       {
@@ -313,7 +318,7 @@ export class QController
          .post(countURL, formData)
          .then((response: AxiosResponse) =>
          {
-            return response.data.count;
+            return [response.data.count, response.data.distinctCount];
          })
          .catch((error: AxiosError) =>
          {
