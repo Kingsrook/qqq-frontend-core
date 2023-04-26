@@ -31,12 +31,16 @@ export class QQueryFilter
    criteria?: QFilterCriteria[];
    orderBys?: QFilterOrderBy[];
    booleanOperator: "AND" | "OR";
+   skip?: number;
+   limit?: number;
 
-   constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[], booleanOperator: "AND" | "OR" = "AND")
+   constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[], booleanOperator: "AND" | "OR" = "AND", skip?: number, limit?: number)
    {
       this.criteria = criteria;
       this.orderBys = orderBys;
       this.booleanOperator = booleanOperator;
+      this.skip = skip;
+      this.limit = limit;
    }
 
    public addOrderBy(orderBy: QFilterOrderBy)

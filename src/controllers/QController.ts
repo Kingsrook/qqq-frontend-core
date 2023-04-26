@@ -332,21 +332,11 @@ export class QController
    async query(
       tableName: string,
       queryFilter?: QQueryFilter,
-      limit?: number,
-      skip?: number,
       queryJoins: QueryJoin[] | null = null
    ): Promise<QRecord[]>
    {
       let queryURL = `/data/${tableName}/query`;
       const queryStringParts = [];
-      if (limit)
-      {
-         queryStringParts.push(`limit=${limit}`);
-      }
-      if (skip)
-      {
-         queryStringParts.push(`skip=${skip}`);
-      }
       if (queryJoins)
       {
          queryStringParts.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);

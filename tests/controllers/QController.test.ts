@@ -402,7 +402,7 @@ describe("q controller test", () =>
    {
       mockPost("data/person/queryLimit=2.json");
       const qController = new QController(baseURL);
-      const personRecords: QRecord[] = await qController.query("person", undefined, 2);
+      const personRecords: QRecord[] = await qController.query("person", undefined);
       expect(personRecords).toBeInstanceOf(Array);
       expect(personRecords.length).toBe(2);
    });
