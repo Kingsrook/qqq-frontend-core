@@ -527,16 +527,34 @@ export class QController
          {
             if (response.data.deletedRecordCount === 1)
             {
+               if (response.data.recordsWithWarnings && response.data.recordsWithWarnings.length > 0)
+               {
+                  const recordWithWarnings = response.data.recordsWithWarnings[0];
+                  if (recordWithWarnings && recordWithWarnings.warnings && recordWithWarnings.warnings.length > 0)
+                  {
+                     const warning = recordWithWarnings.warnings[0];
+                     if (warning)
+                     {
+                        this.exceptionHandler(new QException(new AxiosError(`Warning: ${warning.message ?? warning}`)));
+                        return (0);
+                     }
+                  }
+               }
+
                return (1);
             }
             else
             {
+               let qException = new QException(new AxiosError("Unknown error deleting record"));
+
                const error = response.data?.recordsWithErrors[0]?.errors[0];
                if (error)
                {
-                  throw (new Error(error));
+                  qException = new QException(error);
                }
-               throw (new Error("Unknown error deleting record."));
+
+               this.exceptionHandler(qException);
+               return (0);
             }
          })
          .catch((error: AxiosError) =>
@@ -757,9 +775,12 @@ export class QController
          .then((response: AxiosResponse) =>
          {
             const records: QRecord[] = [];
-            for (let i = 0; i < response.data.records.length; i++)
+            if (response.data && response.data.records && response.data.records.length)
             {
-               records.push(new QRecord(response.data.records[i]));
+               for (let i = 0; i < response.data.records.length; i++)
+               {
+                  records.push(new QRecord(response.data.records[i]));
+               }
             }
             return {totalRecords: response.data.totalRecords, records: records};
          })
