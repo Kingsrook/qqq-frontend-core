@@ -32,6 +32,9 @@ export class QBrandingMetaData
    icon?: string;
    accentColor?: string;
 
+   environmentBannerText?: string;
+   environmentBannerColor?: string;
+
    constructor(object: any)
    {
       this.companyName = object.companyName;
@@ -40,5 +43,7 @@ export class QBrandingMetaData
       this.logo = object.logo;
       this.icon = object.icon;
       this.accentColor = object.accentColor;
+      this.environmentBannerText = object.environmentBannerText;
+      this.environmentBannerColor = object.environmentBannerColor;
    }
 }
