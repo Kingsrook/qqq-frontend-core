@@ -39,6 +39,8 @@ export class QWidgetMetaData
       possibleValueSourceName?: string,
       isRequired: boolean
    }];
+   showReloadButton: boolean = true;
+   showExportButton: boolean = true;
 
    constructor(object: any)
    {
@@ -53,5 +55,7 @@ export class QWidgetMetaData
       this.hasPermission = object.hasPermission;
       this.storeDropdownSelections = object.storeDropdownSelections;
       this.dropdowns = object.dropdowns;
+      this.showReloadButton = object.showReloadButton;
+      this.showExportButton = object.showExportButton;
    }
 }
