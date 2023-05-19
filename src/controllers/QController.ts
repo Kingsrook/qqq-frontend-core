@@ -298,14 +298,14 @@ export class QController
          queryStringParts.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
       }
 
+      if (includeDistinct)
+      {
+         queryStringParts.push("includeDistinct=true");
+      }
+
       if (queryStringParts.length > 0)
       {
          countURL += `?${queryStringParts.join("&")}`;
-      }
-
-      if (includeDistinct)
-      {
-         countURL += "&includeDistinct=true";
       }
 
       const formData = new FormData();
