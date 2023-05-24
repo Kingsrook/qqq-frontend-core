@@ -35,6 +35,7 @@ export class QFieldMetaData
    type: QFieldType;
    isRequired: boolean = false;
    isEditable: boolean = true;
+   isHeavy: boolean = false;
    possibleValueSourceName: string;
    displayFormat: string;
    adornments?: FieldAdornment[];
@@ -47,6 +48,7 @@ export class QFieldMetaData
       this.type = object.type;
       this.isRequired = object.isRequired;
       this.isEditable = object.isEditable;
+      this.isHeavy = object.isHeavy;
       this.possibleValueSourceName = object.possibleValueSourceName;
       this.displayFormat = object.displayFormat;
 
