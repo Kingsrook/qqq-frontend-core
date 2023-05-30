@@ -119,6 +119,17 @@ export class QController
 
 
    /*******************************************************************************
+    ** Useful for development (e.g., to be able to use the axios instance, to test
+    ** things we probably want to keep in this class, without having to re-install
+    ** this module for the testing cycle), but probably not meant for main-line usage.
+    *******************************************************************************/
+   getAxiosInstance()
+   {
+      return (this.axiosInstance);
+   }
+
+
+   /*******************************************************************************
     ** clear memoized promises
     *******************************************************************************/
    static clearMemoization()
@@ -483,10 +494,12 @@ export class QController
     ** Make a backend call to create a single record
     **
     *******************************************************************************/
-   async create(tableName: string, data: {}): Promise<QRecord>
+   async create(tableName: string, data: { [key: string]: any }): Promise<QRecord>
    {
+      const formData = this.dataObjectToFormData(data);
+
       return this.axiosInstance
-         .post(`/data/${tableName}`, data)
+         .post(`/data/${tableName}`, formData, this.defaultMultipartFormDataHeaders())
          .then((response: AxiosResponse) =>
          {
             return new QRecord(response.data.records[0]);
@@ -498,13 +511,35 @@ export class QController
    }
 
    /*******************************************************************************
+    ** Convert a javascript object of form data to a "FormData" object for multipart posting.
+    *******************************************************************************/
+   private dataObjectToFormData(data: { [p: string]: any })
+   {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) =>
+      {
+         if (data[key] == null)
+         {
+            formData.append(key, "");
+         }
+         else
+         {
+            formData.append(key, data[key]);
+         }
+      });
+      return formData;
+   }
+
+   /*******************************************************************************
     ** Make a backend call to update a single record
     **
     *******************************************************************************/
-   async update(tableName: string, id: any, data: {}): Promise<QRecord>
+   async update(tableName: string, id: any, data: { [key: string]: any }): Promise<QRecord>
    {
+      const formData = this.dataObjectToFormData(data);
+
       return this.axiosInstance
-         .put(`/data/${tableName}/${id}`, data)
+         .put(`/data/${tableName}/${id}`, formData, this.defaultMultipartFormDataHeaders())
          .then((response: AxiosResponse) =>
          {
             return new QRecord(response.data.records[0]);
