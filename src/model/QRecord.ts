@@ -30,6 +30,7 @@ export class QRecord
    recordLabel: string;
    values: Map<string, any>;
    displayValues: Map<string, string>;
+   associatedRecords?: Map<string, QRecord[]>;
 
    constructor(object: any)
    {
@@ -39,13 +40,27 @@ export class QRecord
       this.values = new Map<string, any>();
       for (const key in object.values)
       {
-         this.values.set(key, object.values[key])
+         this.values.set(key, object.values[key]);
       }
 
       this.displayValues = new Map<string, any>();
       for (const key in object.displayValues)
       {
-         this.displayValues.set(key, object.displayValues[key])
+         this.displayValues.set(key, object.displayValues[key]);
+      }
+
+      if (object.associatedRecords)
+      {
+         this.associatedRecords = new Map<string, QRecord[]>();
+         for (const key in object.associatedRecords)
+         {
+            const list: QRecord[] = [];
+            this.associatedRecords.set(key, list);
+            for (let i = 0; i < object.associatedRecords[key].length; i++)
+            {
+               list.push(new QRecord(object.associatedRecords[key][i]));
+            }
+         }
       }
    }
 }
