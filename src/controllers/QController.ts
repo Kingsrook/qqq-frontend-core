@@ -387,9 +387,15 @@ export class QController
    /*******************************************************************************
     ** Make a request to the backend for a single record
     *******************************************************************************/
-   async get(tableName: string, primaryKey: any): Promise<QRecord>
+   async get(tableName: string, primaryKey: any, includeAssociations: boolean = false): Promise<QRecord>
    {
       let getURL = `/data/${tableName}/${primaryKey}`;
+
+      if(includeAssociations)
+      {
+         getURL += "?includeAssociations=true"
+      }
+
       return this.axiosInstance
          .get(getURL)
          .then((response: AxiosResponse) =>
