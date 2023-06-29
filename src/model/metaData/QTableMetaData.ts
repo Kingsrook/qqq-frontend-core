@@ -42,6 +42,8 @@ export class QTableMetaData
    insertPermission: boolean = false;
    editPermission: boolean = false;
    deletePermission: boolean = false;
+   usesVariants: boolean = false;
+   variantTableLabel: string = "";
 
    constructor(object: any)
    {
@@ -54,6 +56,8 @@ export class QTableMetaData
       this.insertPermission = object.insertPermission;
       this.editPermission = object.editPermission;
       this.deletePermission = object.deletePermission;
+      this.usesVariants = object.usesVariants;
+      this.variantTableLabel = object.variantTableLabel;
 
       if (object.fields)
       {
