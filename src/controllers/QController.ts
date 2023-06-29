@@ -26,6 +26,7 @@ import {QAuthenticationMetaData} from "../model/metaData/QAuthenticationMetaData
 import {QInstance} from "../model/metaData/QInstance";
 import {QProcessMetaData} from "../model/metaData/QProcessMetaData";
 import {QTableMetaData} from "../model/metaData/QTableMetaData";
+import {QTableVariant} from "../model/metaData/QTableVariant";
 import {QJobComplete} from "../model/processes/QJobComplete";
 import {QJobError} from "../model/processes/QJobError";
 import {QJobRunning} from "../model/processes/QJobRunning";
@@ -299,7 +300,7 @@ export class QController
    /*******************************************************************************
     ** Make a count request to the backend
     *******************************************************************************/
-   async count(tableName: string, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null, includeDistinct = false): Promise<[number, number]>
+   async count(tableName: string, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null, includeDistinct = false, tableVariant: QTableVariant | null = null): Promise<[number, number]>
    {
       let countURL = `/data/${tableName}/count`;
 
@@ -324,6 +325,10 @@ export class QController
       {
          formData.append("filter", JSON.stringify(queryFilter));
       }
+      if (tableVariant)
+      {
+         formData.append("tableVariant", JSON.stringify(tableVariant));
+      }
 
       return this.axiosInstance
          .post(countURL, formData)
@@ -343,7 +348,8 @@ export class QController
    async query(
       tableName: string,
       queryFilter?: QQueryFilter,
-      queryJoins: QueryJoin[] | null = null
+      queryJoins: QueryJoin[] | null = null,
+      tableVariant: QTableVariant | null = null
    ): Promise<QRecord[]>
    {
       let queryURL = `/data/${tableName}/query`;
@@ -362,6 +368,10 @@ export class QController
       if (queryFilter)
       {
          formData.append("filter", JSON.stringify(queryFilter));
+      }
+      if (tableVariant)
+      {
+         formData.append("tableVariant", JSON.stringify(tableVariant));
       }
 
       return this.axiosInstance
@@ -387,9 +397,14 @@ export class QController
    /*******************************************************************************
     ** Make a request to the backend for a single record
     *******************************************************************************/
-   async get(tableName: string, primaryKey: any): Promise<QRecord>
+   async get(tableName: string, primaryKey: any, tableVariant: QTableVariant | null = null): Promise<QRecord>
    {
       let getURL = `/data/${tableName}/${primaryKey}`;
+      if (tableVariant)
+      {
+         getURL = `${getURL}?tableVariant=${encodeURIComponent(JSON.stringify(tableVariant))}`;
+      }
+
       return this.axiosInstance
          .get(getURL)
          .then((response: AxiosResponse) =>
@@ -822,6 +837,40 @@ export class QController
          .catch((error: AxiosError) =>
          {
             this.handleException(error);
+         });
+   }
+
+
+   /*******************************************************************************
+    ** Fetch the data for a specific widget.
+    *******************************************************************************/
+   async tableVariants(tableName: string): Promise<QTableVariant[]>
+   {
+      let url = `/data/${tableName}/variants`;
+      console.log("Looking for variants for table [" + tableName + "]");
+
+      return this.axiosInstance
+         .get(url)
+         .then((response: AxiosResponse) =>
+         {
+            const variants: QTableVariant[] = [];
+            if (response.data && response.data.length)
+            {
+               for (let i = 0; i < response.data.length; i++)
+               {
+                  variants.push(new QTableVariant(response.data[i]));
+               }
+            }
+            return variants;
+         })
+         .catch((e: any) =>
+         {
+            if (e.code && e.code === "ERR_CANCELED")
+            {
+               console.log("Controller request cancellation sucessful!");
+               return;
+            }
+            this.handleException(e);
          });
    }
 
