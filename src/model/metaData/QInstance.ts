@@ -116,11 +116,20 @@ export class QInstance
 
 
    /*******************************************************************************
+    ** Get the full path to an app
+    *******************************************************************************/
+   getAppPath(app: QAppMetaData): string | null
+   {
+      return QInstance.searchAppTreeForPath(this.appTree, app.name, QAppNodeType.APP, 1, "");
+   }
+
+
+   /*******************************************************************************
     ** Get the full path to a table
     *******************************************************************************/
    getTablePath(table: QTableMetaData): string | null
    {
-      return QInstance.searchAppTree(this.appTree, table.name, "");
+      return QInstance.searchAppTreeForPath(this.appTree, table.name, QAppNodeType.TABLE, 1, "");
    }
 
    /*******************************************************************************
@@ -128,13 +137,13 @@ export class QInstance
     *******************************************************************************/
    getTablePathByName(tableName: string): string | null
    {
-      return QInstance.searchAppTree(this.appTree, tableName, "");
+      return QInstance.searchAppTreeForPath(this.appTree, tableName, QAppNodeType.TABLE, 1, "");
    }
 
    /*******************************************************************************
     **
     *******************************************************************************/
-   private static searchAppTree(nodes: QAppTreeNode[] | undefined, tableName: string, path: string): string | null
+   private static searchAppTreeForPath(nodes: QAppTreeNode[] | undefined, name: string, appNodeType: QAppNodeType, depth: number, path: string): string | null
    {
       if (nodes === undefined)
       {
@@ -143,13 +152,20 @@ export class QInstance
 
       for (let i = 0; i < nodes.length; i++)
       {
-         if (nodes[i].type === QAppNodeType.TABLE && nodes[i].name === tableName)
+         if (nodes[i].type === appNodeType && nodes[i].name === name)
          {
-            return (`${path}/${tableName}`);
+            //////////////////////////////
+            // dont show top level apps //
+            //////////////////////////////
+            if (appNodeType === QAppNodeType.APP && depth === 1)
+            {
+               return (null);
+            }
+            return (`${path}/${name}`);
          }
          else if (nodes[i].type === QAppNodeType.APP)
          {
-            const result = this.searchAppTree(nodes[i].children, tableName, `${path}/${nodes[i].name}`);
+            const result = this.searchAppTreeForPath(nodes[i].children, name, appNodeType, depth + 1, `${path}/${nodes[i].name}`);
             if (result !== null)
             {
                return (result);
