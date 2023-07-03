@@ -44,6 +44,7 @@ export class QTableMetaData
    deletePermission: boolean = false;
    usesVariants: boolean = false;
    variantTableLabel: string = "";
+   supplementalTableMetaData: Map<String, any> = new Map();
 
    constructor(object: any)
    {
@@ -92,6 +93,14 @@ export class QTableMetaData
          for (var i = 0; i < object.capabilities.length; i++)
          {
             this.capabilities.add(object.capabilities[i]);
+         }
+      }
+
+      if(object.supplementalTableMetaData)
+      {
+         for (const key in object.supplementalTableMetaData)
+         {
+            this.supplementalTableMetaData.set(key, object.supplementalTableMetaData[key]);
          }
       }
    }
