@@ -154,12 +154,24 @@ export class QInstance
       {
          if (nodes[i].type === appNodeType && nodes[i].name === name)
          {
-            //////////////////////////////
-            // dont show top level apps //
-            //////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////
+            // dont show top level apps, unless they don't have any children that are apps //
+            /////////////////////////////////////////////////////////////////////////////////
             if (appNodeType === QAppNodeType.APP && depth === 1)
             {
-               return (null);
+               let appChildren = null;
+               if(nodes[i] && nodes[i].children)
+               {
+                  appChildren = nodes[i].children?.filter((child) =>
+                  {
+                     return child.type == QAppNodeType.APP
+                  })
+               }
+
+               if(appChildren && appChildren.length > 0)
+               {
+                  return (null);
+               }
             }
             return (`${path}/${name}`);
          }
