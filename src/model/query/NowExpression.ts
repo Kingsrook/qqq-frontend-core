@@ -19,23 +19,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QCriteriaOperator} from "./QCriteriaOperator";
 
 /*******************************************************************************
- ** Define a filter criteria in a QQQ instance.
+ ** Define a "now" type expression, as part of a criteria in a QQQ instance.
  **
  *******************************************************************************/
-export class QFilterCriteria
+export class NowExpression
 {
-   fieldName: string;
-   operator: QCriteriaOperator;
-   values!: any[];
-   otherFieldName?: string;
+   type: "Now";
 
-   constructor(fieldName: string, operator: QCriteriaOperator, values: any[])
+   constructor(_object?: any)
    {
-      this.fieldName = fieldName;
-      this.operator = operator;
-      this.values = values;
+      this.type = "Now";
+   }
+
+   toString()
+   {
+      return "now";
    }
 }

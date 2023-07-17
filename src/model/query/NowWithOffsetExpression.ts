@@ -19,23 +19,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QCriteriaOperator} from "./QCriteriaOperator";
+
+export type NowWithOffsetOperator = "PLUS" | "MINUS";
+export type NowWithOffsetUnit = "SECONDS" | "MINUTES" | "HOURS" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
 
 /*******************************************************************************
- ** Define a filter criteria in a QQQ instance.
+ ** Define a "now with offset" type expression, as part of a criteria in a QQQ instance.
  **
  *******************************************************************************/
-export class QFilterCriteria
+export class NowWithOffsetExpression
 {
-   fieldName: string;
-   operator: QCriteriaOperator;
-   values!: any[];
-   otherFieldName?: string;
+   operator?: NowWithOffsetOperator;
+   amount?: number;
+   timeUnit?: NowWithOffsetUnit;
+   type: "NowWithOffset";
 
-   constructor(fieldName: string, operator: QCriteriaOperator, values: any[])
+   constructor(object?: any)
    {
-      this.fieldName = fieldName;
-      this.operator = operator;
-      this.values = values;
+      this.operator = object?.operator;
+      this.amount = object?.amount;
+      this.timeUnit = object?.timeUnit;
+      this.type = "NowWithOffset";
+   }
+
+   toString()
+   {
+      let timeUnitString = this.timeUnit?.toLowerCase() ?? "";
+      if(this.amount == 1 && timeUnitString.endsWith("s"))
+      {
+         timeUnitString = timeUnitString.substring(0, timeUnitString.length - 1);
+      }
+      return `${this.amount} ${timeUnitString} ${this.operator == "PLUS" ? "from now" : "ago"}`;
    }
 }

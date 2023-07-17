@@ -19,23 +19,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QCriteriaOperator} from "./QCriteriaOperator";
+
+export type ThisOrLastPeriodOperator = "THIS" | "LAST";
+export type ThisOrLastPeriodUnit = "HOURS" | "DAYS" | "WEEKS" | "MONTHS" | "YEARS";
 
 /*******************************************************************************
- ** Define a filter criteria in a QQQ instance.
+ ** Define a "this or last period" type expression, as part of a criteria in a QQQ instance.
  **
  *******************************************************************************/
-export class QFilterCriteria
+export class ThisOrLastPeriodExpression
 {
-   fieldName: string;
-   operator: QCriteriaOperator;
-   values!: any[];
-   otherFieldName?: string;
+   operator?: ThisOrLastPeriodOperator;
+   timeUnit?: ThisOrLastPeriodUnit;
+   type: "ThisOrLastPeriod";
 
-   constructor(fieldName: string, operator: QCriteriaOperator, values: any[])
+   constructor(object?: any)
    {
-      this.fieldName = fieldName;
-      this.operator = operator;
-      this.values = values;
+      this.operator = object?.operator;
+      this.timeUnit = object?.timeUnit;
+      this.type = "ThisOrLastPeriod";
+   }
+
+   toString()
+   {
+      if(this.timeUnit == "DAYS")
+      {
+         return this.operator == "THIS" ? "today" : "yesterday";
+      }
+
+      let operatorString = this.operator?.toLowerCase() ?? "";
+      let timeUnitString = (this.timeUnit?.toLowerCase() ?? "").replace(/s$/, "");
+      return `${operatorString} ${timeUnitString}`;
    }
 }
