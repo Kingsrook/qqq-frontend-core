@@ -148,11 +148,17 @@ export class QController
     *******************************************************************************/
    setAuthorizationHeaderValue(headerValue: string)
    {
+      // todo - do we turn this whole thing off?
       if (headerValue)
       {
-         this.axiosInstance.defaults.headers.common["Authorization"] = headerValue;
+         // this.axiosInstance.defaults.headers.common["Authorization"] = headerValue;
       }
 
+      QController.gotAuthentication = true;
+   }
+
+   setGotAuthentication()
+   {
       QController.gotAuthentication = true;
    }
 
@@ -162,6 +168,7 @@ export class QController
     *******************************************************************************/
    getAuthorizationHeaderValue()
    {
+      // todo - probably delete this?  anyone who was using it shoudl use cookie now.
       return (this.axiosInstance.defaults.headers.common["Authorization"]);
    }
 
@@ -210,6 +217,28 @@ export class QController
             console.log("Fetched authentication meta data from backend.");
             return new QAuthenticationMetaData(response.data);
 
+         })
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
+   }
+
+   /*******************************************************************************
+    ** create or update a user session
+    *******************************************************************************/
+   async manageSession(accessToken: string, uuid?: string): Promise<string>
+   {
+      const data = {
+         accessToken: accessToken,
+         uuid: uuid
+      };
+
+      return this.axiosInstance
+         .post("/manageSession", data)
+         .then((response: AxiosResponse) =>
+         {
+            return response.data.uuid;
          })
          .catch((error: AxiosError) =>
          {
