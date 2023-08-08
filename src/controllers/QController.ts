@@ -397,7 +397,7 @@ export class QController
    /*******************************************************************************
     ** Make a request to the backend for a single record
     *******************************************************************************/
-   async get(tableName: string, primaryKey: any, tableVariant: QTableVariant | null = null, includeAssociations: boolean = false): Promise<QRecord>
+   async get(tableName: string, primaryKey: any, tableVariant: QTableVariant | null = null, includeAssociations: boolean = false, queryJoins: QueryJoin[] | null = null): Promise<QRecord>
    {
       let getURL = `/data/${tableName}/${primaryKey}`;
 
@@ -409,6 +409,10 @@ export class QController
       if (includeAssociations)
       {
          queryString.push("includeAssociations=true");
+      }
+      if (queryJoins)
+      {
+         queryString.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
       }
 
       if(queryString.length > 0)
