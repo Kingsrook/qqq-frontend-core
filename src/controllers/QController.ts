@@ -291,7 +291,7 @@ export class QController
       }
 
       const promise: Promise<QTableMetaData> = this.axiosInstance
-         .get(`/metaData/table/${tableName}`)
+         .get(`/metaData/table/${encodeURIComponent(tableName)}`)
          .then((response: AxiosResponse) =>
          {
             return new QTableMetaData(response.data.table);
@@ -318,7 +318,7 @@ export class QController
       }
 
       const promise: Promise<QProcessMetaData> = this.axiosInstance
-         .get(`/metaData/process/${processName}`)
+         .get(`/metaData/process/${encodeURIComponent(processName)}`)
          .then((response: AxiosResponse) =>
          {
             return new QProcessMetaData(response.data.process);
@@ -337,7 +337,7 @@ export class QController
     *******************************************************************************/
    async count(tableName: string, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null, includeDistinct = false, tableVariant: QTableVariant | null = null): Promise<[number, number]>
    {
-      let countURL = `/data/${tableName}/count`;
+      let countURL = `/data/${encodeURIComponent(tableName)}/count`;
 
       const queryStringParts = [];
       if (queryJoins)
@@ -387,7 +387,7 @@ export class QController
       tableVariant: QTableVariant | null = null
    ): Promise<QRecord[]>
    {
-      let queryURL = `/data/${tableName}/query`;
+      let queryURL = `/data/${encodeURIComponent(tableName)}/query`;
       const queryStringParts = [];
       if (queryJoins)
       {
@@ -434,7 +434,7 @@ export class QController
     *******************************************************************************/
    async get(tableName: string, primaryKey: any, tableVariant: QTableVariant | null = null, includeAssociations: boolean = false, queryJoins: QueryJoin[] | null = null): Promise<QRecord>
    {
-      let getURL = `/data/${tableName}/${primaryKey}`;
+      let getURL = `/data/${encodeURIComponent(tableName)}/${encodeURIComponent(primaryKey)}`;
 
       let queryString: string[] = [];
       if (tableVariant)
@@ -472,7 +472,7 @@ export class QController
     *******************************************************************************/
    async getRecordDeveloperMode(tableName: string, primaryKey: any): Promise<any>
    {
-      let getURL = `/data/${tableName}/${primaryKey}/developer`;
+      let getURL = `/data/${encodeURIComponent(tableName)}/${encodeURIComponent(primaryKey)}/developer`;
       return this.axiosInstance
          .get(getURL)
          .then((response: AxiosResponse) =>
@@ -490,7 +490,7 @@ export class QController
     *******************************************************************************/
    async storeRecordAssociatedScript(tableName: string, primaryKey: any, fieldName: string, code: string, commitMessage: string): Promise<any>
    {
-      let url = `/data/${tableName}/${primaryKey}/developer/associatedScript/${fieldName}`;
+      let url = `/data/${encodeURIComponent(tableName)}/${encodeURIComponent(primaryKey)}/developer/associatedScript/${encodeURIComponent(fieldName)}`;
 
       const formData = new FormData();
       formData.append("contents", code);
@@ -513,7 +513,7 @@ export class QController
     *******************************************************************************/
    async getRecordAssociatedScriptLogs(tableName: string, primaryKey: any, fieldName: string, scriptRevisionId: number): Promise<any>
    {
-      let url = `/data/${tableName}/${primaryKey}/developer/associatedScript/${fieldName}/${scriptRevisionId}/logs`;
+      let url = `/data/${encodeURIComponent(tableName)}/${encodeURIComponent(primaryKey)}/developer/associatedScript/${encodeURIComponent(fieldName)}/${encodeURIComponent(scriptRevisionId)}/logs`;
 
       return this.axiosInstance
          .get(url)
@@ -532,7 +532,7 @@ export class QController
     *******************************************************************************/
    async testScript(tableName: string, primaryKey: any, fieldName: string, code: string, inputValues: Map<string, any>): Promise<any>
    {
-      let url = `/data/${tableName}/${primaryKey}/developer/associatedScript/${fieldName}/test`;
+      let url = `/data/${encodeURIComponent(tableName)}/${encodeURIComponent(primaryKey)}/developer/associatedScript/${encodeURIComponent(fieldName)}/test`;
 
       const formData = new FormData();
       formData.append("code", code);
@@ -564,7 +564,7 @@ export class QController
       const formData = this.dataObjectToFormData(data);
 
       return this.axiosInstance
-         .post(`/data/${tableName}`, formData, this.defaultMultipartFormDataHeaders())
+         .post(`/data/${encodeURIComponent(tableName)}`, formData, this.defaultMultipartFormDataHeaders())
          .then((response: AxiosResponse) =>
          {
             return new QRecord(response.data.records[0]);
@@ -604,7 +604,7 @@ export class QController
       const formData = this.dataObjectToFormData(data);
 
       return this.axiosInstance
-         .put(`/data/${tableName}/${id}`, formData, this.defaultMultipartFormDataHeaders())
+         .put(`/data/${encodeURIComponent(tableName)}/${encodeURIComponent(id)}`, formData, this.defaultMultipartFormDataHeaders())
          .then((response: AxiosResponse) =>
          {
             return new QRecord(response.data.records[0]);
@@ -622,7 +622,7 @@ export class QController
    async delete(tableName: string, id: any): Promise<number>
    {
       return this.axiosInstance
-         .delete(`/data/${tableName}/${id}`)
+         .delete(`/data/${encodeURIComponent(tableName)}/${encodeURIComponent(id)}`)
          .then((response: AxiosResponse) =>
          {
             if (response.data.deletedRecordCount === 1)
@@ -703,7 +703,7 @@ export class QController
       formDataHeaders?: FormData.Headers
    ): Promise<QJobStarted | QJobComplete | QJobError>
    {
-      let url = `/processes/${processName}/init`;
+      let url = `/processes/${encodeURIComponent(processName)}/init`;
       return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders);
    }
 
@@ -717,7 +717,7 @@ export class QController
       dontGoAsyncOnBackend: boolean = false
    ): Promise<QJobStarted | QJobComplete | QJobError>
    {
-      let url = `/processes/${processName}/run`;
+      let url = `/processes/${encodeURIComponent(processName)}/run`;
       return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders, dontGoAsyncOnBackend);
    }
 
@@ -762,7 +762,7 @@ export class QController
       formDataHeaders?: FormData.Headers
    ): Promise<QJobStarted | QJobComplete | QJobError>
    {
-      let url = `/processes/${processName}/${processUUID}/step/${step}`;
+      let url = `/processes/${encodeURIComponent(processName)}/${encodeURIComponent(processUUID)}/step/${encodeURIComponent(step)}`;
       return this.processStepOrInit(url, formDataOrQueryString, formDataHeaders);
    }
 
@@ -839,7 +839,7 @@ export class QController
    ): Promise<QJobRunning | QJobComplete | QJobError>
    {
       return this.axiosInstance
-         .get(`/processes/${processName}/${processUUID}/status/${jobUUID}`)
+         .get(`/processes/${encodeURIComponent(processName)}/${encodeURIComponent(processUUID)}/status/${encodeURIComponent(jobUUID)}`)
          .then((response: AxiosResponse) =>
          {
             const responseObject = this.parseProcessResponse(response);
@@ -870,7 +870,7 @@ export class QController
    {
       return this.axiosInstance
          .get(
-            `/processes/${processName}/${processUUID}/records?skip=${skip}&limit=${limit}`
+            `/processes/${encodeURIComponent(processName)}/${encodeURIComponent(processUUID)}/records?skip=${encodeURIComponent(skip)}&limit=${encodeURIComponent(limit)}`
          )
          .then((response: AxiosResponse) =>
          {
@@ -896,7 +896,7 @@ export class QController
     *******************************************************************************/
    async tableVariants(tableName: string): Promise<QTableVariant[]>
    {
-      let url = `/data/${tableName}/variants`;
+      let url = `/data/${encodeURIComponent(tableName)}/variants`;
       console.log("Looking for variants for table [" + tableName + "]");
 
       return this.axiosInstance
@@ -917,7 +917,7 @@ export class QController
          {
             if (e.code && e.code === "ERR_CANCELED")
             {
-               console.log("Controller request cancellation sucessful!");
+               console.log("Controller request cancellation successful!");
                return;
             }
             this.handleException(e);
@@ -930,7 +930,7 @@ export class QController
     *******************************************************************************/
    async widget(widgetName: string, urlParams?: string): Promise<any>
    {
-      let url = `/widget/${widgetName}`;
+      let url = `/widget/${encodeURIComponent(widgetName)}`;
       if (urlParams)
       {
          url += `?${urlParams}`;
@@ -968,7 +968,7 @@ export class QController
          {
             if (e.code && e.code === "ERR_CANCELED")
             {
-               console.log("Controller request cancellation sucessful!");
+               console.log("Controller request cancellation successful!");
                return;
             }
             this.handleException(e);
@@ -981,7 +981,19 @@ export class QController
     *******************************************************************************/
    async possibleValues(tableName: string | null, processName: string | null, fieldName: string, searchTerm: string = "", ids: any[] = [], values: Map<string, any> = new Map()): Promise<QPossibleValue[]>
    {
-      let url = tableName ? `/data/${tableName}/possibleValues/${fieldName}` : `/processes/${processName}/possibleValues/${fieldName}`;
+      let url;
+      if(tableName)
+      {
+         url = `/data/${encodeURIComponent(tableName)}/possibleValues/${encodeURIComponent(fieldName)}`;
+      }
+      else if(processName)
+      {
+         url = `/processes/${encodeURIComponent(processName)}/possibleValues/${encodeURIComponent(fieldName)}`;
+      }
+      else
+      {
+         throw ("Did not receive tableName or processName as input");
+      }
 
       let queryComponents = [];
 
