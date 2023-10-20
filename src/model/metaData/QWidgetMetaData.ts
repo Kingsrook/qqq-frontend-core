@@ -19,6 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QIcon} from "./QIcon";
+
 /*******************************************************************************
  ** Meta-Data to define a widget in a QQQ instance.
  **
@@ -27,6 +29,7 @@ export class QWidgetMetaData
 {
    name: string;
    label: string;
+   tooltip: string;
    type: string;
    icon?: string;
    isCard?: boolean;
@@ -42,10 +45,13 @@ export class QWidgetMetaData
    showReloadButton: boolean = true;
    showExportButton: boolean = true;
 
+   icons?: Map<string, QIcon>;
+
    constructor(object: any)
    {
       this.name = object.name;
       this.label = object.label;
+      this.tooltip = object.tooltip;
       this.type = object.type;
       this.icon = object.icon;
       this.isCard = object.isCard;
@@ -57,5 +63,14 @@ export class QWidgetMetaData
       this.dropdowns = object.dropdowns;
       this.showReloadButton = object.showReloadButton;
       this.showExportButton = object.showExportButton;
+
+      if(object.icons)
+      {
+         this.icons = new Map<string, QIcon>()
+         for (const key in object.icons)
+         {
+            this.icons.set(key, new QIcon(object.icons[key]));
+         }
+      }
    }
 }
