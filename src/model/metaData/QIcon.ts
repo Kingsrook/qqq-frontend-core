@@ -27,10 +27,12 @@ export class QIcon
 {
    name?: string;
    path?: string;
+   color?: string;
 
    constructor(object: any)
    {
       this.name = object.name;
       this.path = object.path;
+      this.color = object.color;
    }
 }
