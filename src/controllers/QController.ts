@@ -143,39 +143,11 @@ export class QController
 
    /*******************************************************************************
     ** Function to be called by an app after it's authenticated the user.  This will
-    ** set an Authorization header to be included in all requests, and will allow
-    ** the awaitAuthenticationPromise to resolve, so that other requests can continue.
-    *******************************************************************************/
-   setAuthorizationHeaderValue(headerValue: string)
-   {
-      ////////////////////////////////////////////////////////
-      // todo#authHeader - this whole method can be removed //
-      ////////////////////////////////////////////////////////
-      if (headerValue)
-      {
-         this.axiosInstance.defaults.headers.common["Authorization"] = headerValue;
-      }
-
-      QController.gotAuthentication = true;
-   }
-
-   /*******************************************************************************
-    ** Function to be called by an app after it's authenticated the user.  This will
     ** allow the awaitAuthenticationPromise to resolve, so that other requests can continue.
     *******************************************************************************/
    setGotAuthentication()
    {
       QController.gotAuthentication = true;
-   }
-
-
-   /*******************************************************************************
-    **
-    *******************************************************************************/
-   getAuthorizationHeaderValue()
-   {
-      // todo#authHeader - deprecated; remove.
-      return (this.axiosInstance.defaults.headers.common["Authorization"]);
    }
 
 

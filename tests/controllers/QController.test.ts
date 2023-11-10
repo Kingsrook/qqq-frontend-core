@@ -205,7 +205,7 @@ describe("q controller test", () =>
    {
       mockGet("metaData/index.json");
       const qController = new QController(baseURL);
-      qController.setAuthorizationHeaderValue("allowedToContinue");
+      qController.setGotAuthentication();
 
       const metaData = await qController.loadMetaData();
       expect(metaData).toBeInstanceOf(QInstance);
@@ -259,7 +259,7 @@ describe("q controller test", () =>
       {
          mockGetError();
          const qController = new QController("http://notahost:123");
-         qController.setAuthorizationHeaderValue("allowedToContinue");
+         qController.setGotAuthentication();
          const metaData = await qController.loadMetaData();
          expect(metaData).toBeNull();
       }
@@ -273,7 +273,7 @@ describe("q controller test", () =>
    {
       mockGet("metaData/table/carrier.json");
       const qController = new QController(baseURL);
-      qController.setAuthorizationHeaderValue("allowedToContinue");
+      qController.setGotAuthentication();
 
       const tableMetaData = await qController.loadTableMetaData("carrier");
       expect(tableMetaData).toBeInstanceOf(QTableMetaData);
@@ -311,7 +311,7 @@ describe("q controller test", () =>
       {
          mockGetError();
          const qController = new QController(baseURL);
-         qController.setAuthorizationHeaderValue("allowedToContinue");
+         qController.setGotAuthentication();
 
          const tableMetaData = await qController.loadTableMetaData("currier");
          expect(tableMetaData).toBeNull();
@@ -326,7 +326,7 @@ describe("q controller test", () =>
    {
       mockGet("metaData/process/greetInteractive.json");
       const qController = new QController(baseURL);
-      qController.setAuthorizationHeaderValue("allowedToContinue");
+      qController.setGotAuthentication();
 
       const processMetaData = await qController.loadProcessMetaData(
          "greetInteractive"
@@ -351,7 +351,7 @@ describe("q controller test", () =>
          mockGetError();
          const qController = new QController(baseURL);
          const processMetaData = await qController.loadProcessMetaData("gort");
-         qController.setAuthorizationHeaderValue("allowedToContinue");
+         qController.setGotAuthentication();
 
          expect(processMetaData).toBeNull();
       }
