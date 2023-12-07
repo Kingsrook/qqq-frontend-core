@@ -19,23 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QHelpContent} from "./QHelpContent";
-
 /*******************************************************************************
- ** Meta-Data to define a section (of fields) in a table in a QQQ instance.
+ ** Meta-Data to define HelpContent
  **
  *******************************************************************************/
-export class QTableSection
+export class QHelpContent
 {
-   name: string;
-   label: string;
-   tier: string; // todo - enum
-   iconName: string;
-   fieldNames?: string[];
-   widgetName?: string;
-   isHidden: boolean;
-   gridColumns?: number;
-   helpContents?: QHelpContent[];
+   content: string;
+   format: string;
+   roles = new Set<string>();
 
 
    /*******************************************************************************
@@ -43,21 +35,37 @@ export class QTableSection
     *******************************************************************************/
    constructor(object: any)
    {
-      this.name = object.name;
-      this.label = object.label;
-      this.tier = object.tier;
-      this.iconName = object.icon ? object.icon.name : null;
+      this.content = object.content;
+      this.format = object.format;
 
-      if (object.fieldNames)
+      if (object.roles)
       {
-         this.fieldNames = object.fieldNames;
+         for (let i = 0; i < object.roles.length; i++)
+         {
+            this.roles.add(object.roles[i]);
+         }
+      }
+   }
+
+
+   /*******************************************************************************
+    ** factory method, for building an array of QHelpContent objects from array of
+    ** unstructured data (e.g., as it would come from the backend)
+    *******************************************************************************/
+   static buildArray(helpContents: any[]): QHelpContent[] | undefined
+   {
+      let rs: QHelpContent[] | undefined;
+
+      if (helpContents)
+      {
+         rs = [];
+         for (let i = 0; i < helpContents.length; i++)
+         {
+            rs.push(new QHelpContent(helpContents[i]));
+         }
       }
 
-      this.isHidden = object.isHidden;
-      this.widgetName = object.widgetName;
-      this.gridColumns = object.gridColumns;
-
-      this.helpContents = QHelpContent.buildArray(object.helpContents)
+      return (rs);
    }
 
 }

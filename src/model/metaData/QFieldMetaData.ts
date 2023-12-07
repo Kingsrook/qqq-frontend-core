@@ -22,6 +22,7 @@
 import {AdornmentType} from "./AdornmentType";
 import {FieldAdornment} from "./FieldAdornment";
 import {QFieldType} from "./QFieldType";
+import {QHelpContent} from "./QHelpContent";
 
 /*******************************************************************************
  ** Meta-data to represent a single field in a table.
@@ -39,7 +40,12 @@ export class QFieldMetaData
    possibleValueSourceName: string;
    displayFormat: string;
    adornments?: FieldAdornment[];
+   helpContents?: QHelpContent[];
 
+
+   /*******************************************************************************
+    **
+    *******************************************************************************/
    constructor(object: any)
    {
       this.name = object.name;
@@ -55,14 +61,19 @@ export class QFieldMetaData
       if (object.adornments)
       {
          this.adornments = [];
-         for (var i = 0; i < object.adornments.length; i++)
+         for (let i = 0; i < object.adornments.length; i++)
          {
             this.adornments.push(new FieldAdornment(object.adornments[i]));
          }
       }
+
+      this.helpContents = QHelpContent.buildArray(object.helpContents)
    }
 
 
+   /*******************************************************************************
+    ** test if this field has an adornment of a given type
+    *******************************************************************************/
    hasAdornment(type: AdornmentType): boolean
    {
       const adornment = this.getAdornment(type);
@@ -70,6 +81,9 @@ export class QFieldMetaData
    }
 
 
+   /*******************************************************************************
+    ** get the adornment of a given type from this field
+    *******************************************************************************/
    getAdornment(type: AdornmentType): FieldAdornment | null
    {
       if (this.adornments)
@@ -85,4 +99,5 @@ export class QFieldMetaData
 
       return (null);
    }
+
 }
