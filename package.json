@@ -14,7 +14,7 @@
       "yalc-watch": "yalc-watch"
    },
    "dependencies": {
-      "axios": "0.27.2",
+      "axios": "1.6.0",
       "form-data": "4.0.0"
    },
    "keywords": [],
