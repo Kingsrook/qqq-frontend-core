@@ -35,6 +35,7 @@ export class QAppMetaData
    iconName?: string;
    widgets?: string[];
    sections?: QAppSection[];
+   supplementalAppMetaData: Map<String, any> = new Map();
 
    constructor(object: any)
    {
@@ -60,6 +61,14 @@ export class QAppMetaData
          for (let i = 0; i < object.sections.length; i++)
          {
             this.sections.push(new QAppSection(object.sections[i]));
+         }
+      }
+
+      if(object.supplementalAppMetaData)
+      {
+         for (const key in object.supplementalAppMetaData)
+         {
+            this.supplementalAppMetaData.set(key, object.supplementalAppMetaData[key]);
          }
       }
    }
