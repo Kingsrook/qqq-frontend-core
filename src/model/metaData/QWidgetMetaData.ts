@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QHelpContent} from "./QHelpContent";
 import {QIcon} from "./QIcon";
 
 /*******************************************************************************
@@ -47,6 +48,8 @@ export class QWidgetMetaData
 
    icons?: Map<string, QIcon>;
 
+   helpContent?: Map<string, QHelpContent>;
+
    constructor(object: any)
    {
       this.name = object.name;
@@ -70,6 +73,15 @@ export class QWidgetMetaData
          for (const key in object.icons)
          {
             this.icons.set(key, new QIcon(object.icons[key]));
+         }
+      }
+
+      if(object.helpContent)
+      {
+         this.helpContent = new Map<string, QHelpContent>()
+         for (const key in object.helpContent)
+         {
+            this.helpContent.set(key, new QHelpContent(object.helpContent[key]));
          }
       }
    }
