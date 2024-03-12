@@ -30,14 +30,16 @@ export class QQueryFilter
 {
    criteria?: QFilterCriteria[];
    orderBys?: QFilterOrderBy[];
+   subFilters?: QQueryFilter[];
    booleanOperator: "AND" | "OR";
    skip?: number;
    limit?: number;
 
-   constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[], booleanOperator: "AND" | "OR" = "AND", skip?: number, limit?: number)
+   constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[], subFilters?: QQueryFilter[], booleanOperator: "AND" | "OR" = "AND", skip?: number, limit?: number)
    {
       this.criteria = criteria;
       this.orderBys = orderBys;
+      this.subFilters = subFilters;
       this.booleanOperator = booleanOperator;
       this.skip = skip;
       this.limit = limit;
@@ -59,5 +61,14 @@ export class QQueryFilter
          this.criteria = [] as QFilterCriteria[];
       }
       this.criteria.push(criteria);
+   }
+
+   public addSubFilter(subFilter: QQueryFilter)
+   {
+      if (!this.subFilters)
+      {
+         this.subFilters = [] as QQueryFilter[];
+      }
+      this.subFilters.push(subFilter);
    }
 }
