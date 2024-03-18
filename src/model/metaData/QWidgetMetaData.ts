@@ -49,6 +49,7 @@ export class QWidgetMetaData
    icons?: Map<string, QIcon>;
 
    helpContent?: Map<string, QHelpContent>;
+   defaultValues?: Map<string, any>;
 
    constructor(object: any)
    {
@@ -84,5 +85,15 @@ export class QWidgetMetaData
             this.helpContent.set(key, new QHelpContent(object.helpContent[key]));
          }
       }
+
+      if(object.defaultValues)
+      {
+         this.defaultValues = new Map<string, any>()
+         for (const key in object.defaultValues)
+         {
+            this.defaultValues.set(key, object.defaultValues[key]);
+         }
+      }
+
    }
 }
