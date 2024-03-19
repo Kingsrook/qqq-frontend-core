@@ -31,6 +31,8 @@ export class QRecord
    values: Map<string, any>;
    displayValues: Map<string, string>;
    associatedRecords?: Map<string, QRecord[]>;
+   errors?: string[];
+   warnings?: string[];
 
    constructor(object: any)
    {
@@ -60,6 +62,24 @@ export class QRecord
             {
                list.push(new QRecord(object.associatedRecords[key][i]));
             }
+         }
+      }
+
+      if(object.errors)
+      {
+         this.errors = [];
+         for (let i = 0; i < object.errors.length; i++)
+         {
+            this.errors.push(object.errors[i].message ?? object.errors[i])
+         }
+      }
+
+      if(object.warnings)
+      {
+         this.warnings = [];
+         for (let i = 0; i < object.warnings.length; i++)
+         {
+            this.warnings.push(object.warnings[i].message ?? object.warnings[i])
          }
       }
    }
