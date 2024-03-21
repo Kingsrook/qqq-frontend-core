@@ -8,13 +8,14 @@
       "delete-modules": "rm -rf node_modules; rm package-lock.json",
       "lint": "eslint . --ext .ts",
       "npm-install": "npm install",
+      "clean-and-install": "rm -rf node_modules/ && rm -rf package-lock.json && rm -rf lib/ && npm install",
       "prepublishOnly": "rm -rf lib/ && tsc -p ./ --outDir lib/",
       "test": "jest",
       "yalc-push": "yalc push --private",
       "yalc-watch": "yalc-watch"
    },
    "dependencies": {
-      "axios": "0.27.2",
+      "axios": "0.28.0",
       "form-data": "4.0.0"
    },
    "keywords": [],

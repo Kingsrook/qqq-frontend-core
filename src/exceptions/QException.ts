@@ -29,7 +29,7 @@ import {AxiosError} from "axios";
 export class QException
 {
    message: string;
-   status: string | undefined;
+   status: number | undefined;
    code: string | undefined;
    errorObject: any;
 
@@ -40,7 +40,7 @@ export class QException
 
       if (error.response !== undefined && error.response.status !== undefined)
       {
-         this.status = error.response.status.toString();
+         this.status = error.response.status;
       }
       else if (error.status !== undefined)
       {
@@ -53,7 +53,7 @@ export class QException
       }
       else if (error.code !== undefined)
       {
-         this.status = error.code;
+         this.code = error.code;
       }
 
       const data = error?.response?.data as any;
