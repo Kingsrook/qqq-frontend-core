@@ -48,7 +48,7 @@ export class QWidgetMetaData
 
    icons?: Map<string, QIcon>;
 
-   helpContent?: Map<string, QHelpContent>;
+   helpContent?: Map<string, QHelpContent[]>;
    defaultValues?: Map<string, any>;
 
    constructor(object: any)
@@ -79,10 +79,26 @@ export class QWidgetMetaData
 
       if(object.helpContent)
       {
-         this.helpContent = new Map<string, QHelpContent>()
+         this.helpContent = new Map<string, QHelpContent[]>()
          for (const key in object.helpContent)
          {
-            this.helpContent.set(key, new QHelpContent(object.helpContent[key]));
+            const list: QHelpContent[] = [];
+            this.helpContent.set(key, list);
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            // allow object from backend to either be an array or a scalar (for migration from scalar to array) //
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            if(object.helpContent[key].length)
+            {
+               for (let i = 0; i < object.helpContent[key].length; i++)
+               {
+                  list.push(new QHelpContent(object.helpContent[key][i]));
+               }
+            }
+            else
+            {
+               list.push(new QHelpContent(object.helpContent[key]));
+            }
          }
       }
 
