@@ -1,6 +1,6 @@
 {
    "name": "@kingsrook/qqq-frontend-core",
-   "version": "1.0.93",
+   "version": "1.0.94",
    "description": "",
    "main": "qqq-frontend-core.js",
    "module": "lib/qqq-frontend-core.esm.js",

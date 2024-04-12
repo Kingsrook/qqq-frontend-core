@@ -40,6 +40,7 @@ export class QWidgetMetaData
    hasPermission: boolean = false;
    storeDropdownSelections?: boolean;
    dropdowns?: [{
+      name?: string,
       possibleValueSourceName?: string,
       isRequired: boolean
    }];
@@ -68,18 +69,18 @@ export class QWidgetMetaData
       this.showReloadButton = object.showReloadButton;
       this.showExportButton = object.showExportButton;
 
-      if(object.icons)
+      if (object.icons)
       {
-         this.icons = new Map<string, QIcon>()
+         this.icons = new Map<string, QIcon>();
          for (const key in object.icons)
          {
             this.icons.set(key, new QIcon(object.icons[key]));
          }
       }
 
-      if(object.helpContent)
+      if (object.helpContent)
       {
-         this.helpContent = new Map<string, QHelpContent[]>()
+         this.helpContent = new Map<string, QHelpContent[]>();
          for (const key in object.helpContent)
          {
             const list: QHelpContent[] = [];
@@ -88,7 +89,7 @@ export class QWidgetMetaData
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             // allow object from backend to either be an array or a scalar (for migration from scalar to array) //
             //////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(object.helpContent[key].length)
+            if (object.helpContent[key].length)
             {
                for (let i = 0; i < object.helpContent[key].length; i++)
                {
@@ -102,9 +103,9 @@ export class QWidgetMetaData
          }
       }
 
-      if(object.defaultValues)
+      if (object.defaultValues)
       {
-         this.defaultValues = new Map<string, any>()
+         this.defaultValues = new Map<string, any>();
          for (const key in object.defaultValues)
          {
             this.defaultValues.set(key, object.defaultValues[key]);
