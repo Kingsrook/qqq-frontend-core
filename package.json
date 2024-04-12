@@ -1,6 +1,6 @@
 {
    "name": "@kingsrook/qqq-frontend-core",
-   "version": "1.0.92",
+   "version": "1.0.93",
    "description": "",
    "main": "qqq-frontend-core.js",
    "module": "lib/qqq-frontend-core.esm.js",
@@ -15,7 +15,7 @@
       "yalc-watch": "yalc-watch"
    },
    "dependencies": {
-      "axios": "0.28.0",
+      "axios": "0.28.1",
       "form-data": "4.0.0"
    },
    "keywords": [],
