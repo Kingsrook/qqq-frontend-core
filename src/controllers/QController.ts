@@ -205,7 +205,7 @@ export class QController
    /*******************************************************************************
     ** create or update a user session
     *******************************************************************************/
-   async manageSession(accessToken: string, uuid?: string): Promise<string>
+   async manageSession(accessToken: string, uuid?: string): Promise<{uuid: string, values: {[key: string]: any}}>
    {
       const data = {
          accessToken: accessToken,
@@ -216,7 +216,7 @@ export class QController
          .post("/manageSession", data)
          .then((response: AxiosResponse) =>
          {
-            return response.data.uuid;
+            return response.data;
          })
          .catch((error: AxiosError) =>
          {
