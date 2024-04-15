@@ -27,6 +27,7 @@ export enum QFieldType {
   BOOLEAN = "BOOLEAN",
   STRING = "STRING",
   INTEGER = "INTEGER",
+  LONG = "LONG",
   DECIMAL = "DECIMAL",
   DATE = "DATE",
   TIME = "TIME",
