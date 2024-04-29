@@ -949,22 +949,27 @@ export class QController
 
 
    /*******************************************************************************
-    ** Fetch options for a possible-value drop down
+    ** Fetch options for a possible-value drop down.
+    **
+    ** This method operates in 3 modes:
+    ** - for a PVS field on a table (pass (tableName, null, fieldName, ...)
+    ** - for a PVS field on a process (pass (null, processName, fieldName, ...)
+    ** - for a standalone PVS (pass (null, null, process, ...)
     *******************************************************************************/
-   async possibleValues(tableName: string | null, processName: string | null, fieldName: string, searchTerm: string = "", ids: any[] = [], values: Map<string, any> = new Map()): Promise<QPossibleValue[]>
+   async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm: string = "", ids: any[] = [], values: Map<string, any> = new Map()): Promise<QPossibleValue[]>
    {
       let url;
       if(tableName)
       {
-         url = `/data/${encodeURIComponent(tableName)}/possibleValues/${encodeURIComponent(fieldName)}`;
+         url = `/data/${encodeURIComponent(tableName)}/possibleValues/${encodeURIComponent(fieldNameOrPossibleValueSourceName)}`;
       }
       else if(processName)
       {
-         url = `/processes/${encodeURIComponent(processName)}/possibleValues/${encodeURIComponent(fieldName)}`;
+         url = `/processes/${encodeURIComponent(processName)}/possibleValues/${encodeURIComponent(fieldNameOrPossibleValueSourceName)}`;
       }
       else
       {
-         throw ("Did not receive tableName or processName as input");
+         url = `/possibleValues/${encodeURIComponent(fieldNameOrPossibleValueSourceName)}`;
       }
 
       let queryComponents = [];
