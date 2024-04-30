@@ -45,6 +45,8 @@ export class QTableMetaData
    usesVariants: boolean = false;
    variantTableLabel: string = "";
    supplementalTableMetaData: Map<String, any> = new Map();
+   shareableTableMetaData: any;
+
 
    constructor(object: any)
    {
@@ -103,5 +105,7 @@ export class QTableMetaData
             this.supplementalTableMetaData.set(key, object.supplementalTableMetaData[key]);
          }
       }
+
+      this.shareableTableMetaData = object.shareableTableMetaData;
    }
 }
