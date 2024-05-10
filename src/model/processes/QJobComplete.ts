@@ -19,6 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QFrontendStepMetaData} from "../metaData/QFrontendStepMetaData";
+
 /*******************************************************************************
  ** Indication that a process step has successfully finished running.
  **
@@ -28,11 +30,21 @@ export class QJobComplete
    processUUID: string;
    values?: any;
    nextStep: string;
+   updatedFrontendStepList?: QFrontendStepMetaData[];
 
    constructor(object: any)
    {
       this.processUUID = object.processUUID;
       this.values = object.values || {};
       this.nextStep = object.nextStep;
+
+      if (object.updatedFrontendStepList)
+      {
+         this.updatedFrontendStepList = [];
+         for (let i = 0; i < object.updatedFrontendStepList.length; i++)
+         {
+            this.updatedFrontendStepList.push(new QFrontendStepMetaData(object.updatedFrontendStepList[i]));
+         }
+      }
    }
 }
