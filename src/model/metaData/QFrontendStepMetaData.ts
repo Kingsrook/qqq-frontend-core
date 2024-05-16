@@ -21,6 +21,7 @@
 
 import {QFieldMetaData} from "./QFieldMetaData";
 import {QFrontendComponent} from "./QFrontendComponent";
+import {QHelpContent} from "./QHelpContent";
 
 /*******************************************************************************
  ** Meta-Data to define a step (for the frontend) in a QQQ process.
@@ -35,6 +36,7 @@ export class QFrontendStepMetaData
    formFields?: QFieldMetaData[];
    viewFields?: QFieldMetaData[];
    recordListFields?: QFieldMetaData[];
+   helpContents?: QHelpContent[];
 
    constructor(object: any)
    {
@@ -76,5 +78,7 @@ export class QFrontendStepMetaData
             this.recordListFields.push(new QFieldMetaData(object.recordListFields[i]));
          }
       }
+
+      this.helpContents = QHelpContent.buildArray(object.helpContents)
    }
 }
