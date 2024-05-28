@@ -205,7 +205,7 @@ export class QController
    /*******************************************************************************
     ** create or update a user session
     *******************************************************************************/
-   async manageSession(accessToken: string, uuid?: string): Promise<{uuid: string, values: {[key: string]: any}}>
+   async manageSession(accessToken: string, uuid?: string): Promise<{ uuid: string, values: { [key: string]: any } }>
    {
       const data = {
          accessToken: accessToken,
@@ -422,7 +422,7 @@ export class QController
          queryString.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
       }
 
-      if(queryString.length > 0)
+      if (queryString.length > 0)
       {
          getURL += "?" + queryString.join("&");
       }
@@ -864,6 +864,24 @@ export class QController
 
 
    /*******************************************************************************
+    ** Handle a user clicking cancel on a process
+    *******************************************************************************/
+   async processCancel(processName: string, processUUID: string): Promise<boolean>
+   {
+      return this.axiosInstance
+         .get(`/processes/${encodeURIComponent(processName)}/${encodeURIComponent(processUUID)}/cancel`)
+         .then(() =>
+         {
+            return true;
+         })
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
+   }
+
+
+   /*******************************************************************************
     ** Fetch the data for a specific widget.
     *******************************************************************************/
    async tableVariants(tableName: string): Promise<QTableVariant[]>
@@ -959,11 +977,11 @@ export class QController
    async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm: string = "", ids: any[] = [], values: Map<string, any> = new Map()): Promise<QPossibleValue[]>
    {
       let url;
-      if(tableName)
+      if (tableName)
       {
          url = `/data/${encodeURIComponent(tableName)}/possibleValues/${encodeURIComponent(fieldNameOrPossibleValueSourceName)}`;
       }
-      else if(processName)
+      else if (processName)
       {
          url = `/processes/${encodeURIComponent(processName)}/possibleValues/${encodeURIComponent(fieldNameOrPossibleValueSourceName)}`;
       }
