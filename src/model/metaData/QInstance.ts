@@ -23,6 +23,7 @@ import {QAppMetaData} from "./QAppMetaData";
 import {QAppNodeType} from "./QAppNodeType";
 import {QAppTreeNode} from "./QAppTreeNode";
 import {QBrandingMetaData} from "./QBrandingMetaData";
+import {QHelpContent} from "./QHelpContent";
 import {QProcessMetaData} from "./QProcessMetaData";
 import {QReportMetaData} from "./QReportMetaData";
 import {QTableMetaData} from "./QTableMetaData";
@@ -42,6 +43,7 @@ export class QInstance
    appTree?: QAppTreeNode[];
    branding?: QBrandingMetaData;
    environmentValues?: Map<string, string>;
+   helpContent?: Map<string, QHelpContent[]>;
 
    constructor(object: any)
    {
@@ -112,6 +114,8 @@ export class QInstance
             this.environmentValues.set(key, object.environmentValues[key]);
          }
       }
+
+      this.helpContent = QHelpContent.buildMap(object.helpContents);
    }
 
 
@@ -160,15 +164,15 @@ export class QInstance
             if (appNodeType === QAppNodeType.APP && depth === 1)
             {
                let appChildren = null;
-               if(nodes[i] && nodes[i].children)
+               if (nodes[i] && nodes[i].children)
                {
                   appChildren = nodes[i].children?.filter((child) =>
                   {
-                     return child.type == QAppNodeType.APP
-                  })
+                     return child.type == QAppNodeType.APP;
+                  });
                }
 
-               if(appChildren && appChildren.length > 0)
+               if (appChildren && appChildren.length > 0)
                {
                   return (null);
                }

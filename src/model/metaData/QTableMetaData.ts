@@ -21,6 +21,7 @@
 
 import {QExposedJoin} from "./QExposedJoin";
 import {QFieldMetaData} from "./QFieldMetaData";
+import {QHelpContent} from "./QHelpContent";
 import {QTableSection} from "./QTableSection";
 
 /*******************************************************************************
@@ -46,7 +47,7 @@ export class QTableMetaData
    variantTableLabel: string = "";
    supplementalTableMetaData: Map<String, any> = new Map();
    shareableTableMetaData: any;
-
+   helpContent?: Map<string, QHelpContent[]>;
 
    constructor(object: any)
    {
@@ -98,7 +99,7 @@ export class QTableMetaData
          }
       }
 
-      if(object.supplementalTableMetaData)
+      if (object.supplementalTableMetaData)
       {
          for (const key in object.supplementalTableMetaData)
          {
@@ -107,5 +108,7 @@ export class QTableMetaData
       }
 
       this.shareableTableMetaData = object.shareableTableMetaData;
+
+      this.helpContent = QHelpContent.buildMap(object.helpContents);
    }
 }

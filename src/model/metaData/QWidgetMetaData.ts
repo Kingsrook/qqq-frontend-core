@@ -78,30 +78,7 @@ export class QWidgetMetaData
          }
       }
 
-      if (object.helpContent)
-      {
-         this.helpContent = new Map<string, QHelpContent[]>();
-         for (const key in object.helpContent)
-         {
-            const list: QHelpContent[] = [];
-            this.helpContent.set(key, list);
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////
-            // allow object from backend to either be an array or a scalar (for migration from scalar to array) //
-            //////////////////////////////////////////////////////////////////////////////////////////////////////
-            if (object.helpContent[key].length)
-            {
-               for (let i = 0; i < object.helpContent[key].length; i++)
-               {
-                  list.push(new QHelpContent(object.helpContent[key][i]));
-               }
-            }
-            else
-            {
-               list.push(new QHelpContent(object.helpContent[key]));
-            }
-         }
-      }
+      this.helpContent = QHelpContent.buildMap(object.helpContent);
 
       if (object.defaultValues)
       {

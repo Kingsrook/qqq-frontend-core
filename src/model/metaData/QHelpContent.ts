@@ -68,4 +68,41 @@ export class QHelpContent
       return (rs);
    }
 
+
+   /*******************************************************************************
+    ** factory method, for building an map of QHelpContent objects from map of
+    ** unstructured data (e.g., as it would come from the backend)
+    *******************************************************************************/
+   static buildMap(object: any): Map<string, QHelpContent[]> | undefined
+   {
+      let rs = undefined;
+
+      if (object)
+      {
+         rs = new Map<string, QHelpContent[]>();
+         for (const key in object)
+         {
+            const list: QHelpContent[] = [];
+            rs.set(key, list);
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            // allow object from backend to either be an array or a scalar (for migration from scalar to array) //
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (object[key].length)
+            {
+               for (let i = 0; i < object[key].length; i++)
+               {
+                  list.push(new QHelpContent(object[key][i]));
+               }
+            }
+            else
+            {
+               list.push(new QHelpContent(object[key]));
+            }
+         }
+      }
+
+      return (rs);
+   }
+
 }
