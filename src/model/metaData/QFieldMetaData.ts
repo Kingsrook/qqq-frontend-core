@@ -41,7 +41,7 @@ export class QFieldMetaData
    displayFormat: string;
    adornments?: FieldAdornment[];
    helpContents?: QHelpContent[];
-   fieldBehaviors?: any[];
+   behaviors?: any[];
 
 
    /*******************************************************************************
@@ -68,8 +68,8 @@ export class QFieldMetaData
          }
       }
 
-      this.helpContents = QHelpContent.buildArray(object.helpContents)
-      this.fieldBehaviors = object.fieldBehaviors;
+      this.helpContents = QHelpContent.buildArray(object.helpContents);
+      this.behaviors = object.behaviors;
    }
 
 
