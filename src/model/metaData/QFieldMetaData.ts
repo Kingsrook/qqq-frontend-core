@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {QPossibleValue} from "../../model/QPossibleValue";
 import {AdornmentType} from "./AdornmentType";
 import {FieldAdornment} from "./FieldAdornment";
 import {QFieldType} from "./QFieldType";
@@ -38,6 +39,7 @@ export class QFieldMetaData
    isEditable: boolean = true;
    isHeavy: boolean = false;
    possibleValueSourceName: string;
+   inlinePossibleValueSource?: QPossibleValue[];
    displayFormat: string;
    adornments?: FieldAdornment[];
    helpContents?: QHelpContent[];
@@ -65,6 +67,15 @@ export class QFieldMetaData
          for (let i = 0; i < object.adornments.length; i++)
          {
             this.adornments.push(new FieldAdornment(object.adornments[i]));
+         }
+      }
+
+      if (object.inlinePossibleValueSource)
+      {
+         this.inlinePossibleValueSource = [];
+         for (let i = 0; i < object.inlinePossibleValueSource.enumValues?.length; i++)
+         {
+            this.inlinePossibleValueSource.push(new QPossibleValue(object.inlinePossibleValueSource.enumValues[i]));
          }
       }
 
