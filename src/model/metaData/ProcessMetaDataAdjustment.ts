@@ -19,35 +19,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ProcessMetaDataAdjustment} from "../metaData/ProcessMetaDataAdjustment";
-import {QFrontendStepMetaData} from "../metaData/QFrontendStepMetaData";
+import {QFieldMetaData} from "./QFieldMetaData";
+import {QFrontendStepMetaData} from "./QFrontendStepMetaData";
 
 /*******************************************************************************
- ** Indication that a process step has successfully finished running.
+ ** Meta-Data to define a ProcessMetaDataAdjustment
  **
  *******************************************************************************/
-export class QJobComplete
+export class ProcessMetaDataAdjustment
 {
-   processUUID: string;
-   values?: any;
-   nextStep: string;
-   processMetaDataAdjustment?: ProcessMetaDataAdjustment;
-
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   // this field is deprecated - but leaving it here for a few minor versions for some degree of backward compatibility //
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    updatedFrontendStepList?: QFrontendStepMetaData[];
+   updatedFields?: Map<string, QFieldMetaData>;
+
 
    constructor(object: any)
    {
-      this.processUUID = object.processUUID;
-      this.values = object.values || {};
-      this.nextStep = object.nextStep;
-
-      if (object.processMetaDataAdjustment)
+      if (object.updatedFrontendStepList)
       {
-         this.processMetaDataAdjustment = new ProcessMetaDataAdjustment(object.processMetaDataAdjustment);
+         this.updatedFrontendStepList = [];
+         for (let i = 0; i < object.updatedFrontendStepList.length; i++)
+         {
+            this.updatedFrontendStepList.push(new QFrontendStepMetaData(object.updatedFrontendStepList[i]));
+         }
       }
+
+      if(object.updatedFields)
+      {
+         this.updatedFields = new Map<string, QFieldMetaData>();
+         for (const key in object.updatedFields)
+         {
+            this.updatedFields.set(key, new QFieldMetaData(object.updatedFields[key]));
+         }
+      }
+
    }
 
 }
