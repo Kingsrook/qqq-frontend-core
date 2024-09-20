@@ -34,7 +34,7 @@ export class QProcessMetaData
    iconName?: string;
    frontendSteps?: QFrontendStepMetaData[];
    hasPermission: boolean = false;
-   stepFlow: string;
+   stepFlow: string = "LINEAR";
 
    constructor(object: any)
    {
@@ -44,7 +44,11 @@ export class QProcessMetaData
       this.isHidden = object.isHidden;
       this.iconName = object.iconName;
       this.hasPermission = object.hasPermission;
-      this.stepFlow = object.stepFlow;
+
+      if(object.stepFlow)
+      {
+         this.stepFlow = object.stepFlow;
+      }
 
       if (object.frontendSteps)
       {
