@@ -32,6 +32,7 @@ export enum AdornmentType
    RENDER_HTML = "RENDER_HTML",
    REVEAL = "REVEAL",
    CODE_EDITOR = "CODE_EDITOR",
+   FILE_DOWNLOAD = "FILE_DOWNLOAD",
    ///////////////////////////////////////////////////////////////////////////
    // keep these values in sync with AdornmentType.java in qqq-backend-core //
    ///////////////////////////////////////////////////////////////////////////
