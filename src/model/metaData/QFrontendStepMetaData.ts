@@ -31,6 +31,7 @@ export class QFrontendStepMetaData
 {
    name: string;
    label: string;
+   format: string;
 
    components?: QFrontendComponent[];
    formFields?: QFieldMetaData[];
@@ -42,6 +43,7 @@ export class QFrontendStepMetaData
    {
       this.name = object.name;
       this.label = object.label;
+      this.format = object.format;
 
       if (object.components)
       {
