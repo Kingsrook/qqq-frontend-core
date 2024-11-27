@@ -31,6 +31,7 @@ export class QJobComplete
    processUUID: string;
    values?: any;
    nextStep: string;
+   backStep: string;
    processMetaDataAdjustment?: ProcessMetaDataAdjustment;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +44,7 @@ export class QJobComplete
       this.processUUID = object.processUUID;
       this.values = object.values || {};
       this.nextStep = object.nextStep;
+      this.backStep = object.backStep;
 
       if (object.processMetaDataAdjustment)
       {
