@@ -41,6 +41,7 @@ export class QFieldMetaData
    possibleValueSourceName: string;
    inlinePossibleValueSource?: QPossibleValue[];
    displayFormat: string;
+   gridColumns?: number;
    adornments?: FieldAdornment[];
    helpContents?: QHelpContent[];
    behaviors?: any[];
@@ -60,6 +61,7 @@ export class QFieldMetaData
       this.isHeavy = object.isHeavy;
       this.possibleValueSourceName = object.possibleValueSourceName;
       this.displayFormat = object.displayFormat;
+      this.gridColumns = object.gridColumns;
 
       if (object.adornments)
       {
