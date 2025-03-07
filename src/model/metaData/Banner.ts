@@ -19,47 +19,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Banner} from "./Banner";
-
 /*******************************************************************************
- ** Meta-Data to define branding in a QQQ instance.
+ ** Meta-Data to define a Banner (e.g., used in branding)
  **
  *******************************************************************************/
-export class QBrandingMetaData
+export class Banner
 {
-   companyName?: string;
-   companyUrl?: string;
-   appName?: string;
-   logo?: string;
-   icon?: string;
-   accentColor?: string;
-
-   // Deprecated
-   environmentBannerText?: string;
-
-   // Deprecated
-   environmentBannerColor?: string;
-
-   banners?: Map<string, Banner>;
+   severity?: string;
+   textColor?: string;
+   backgroundColor?: string
+   messageText?: string;
+   messageHTML?: string;
+   additionalStyles?: {[name: string]: string | number | boolean}
 
    constructor(object: any)
    {
-      this.companyName = object.companyName;
-      this.companyUrl = object.companyUrl;
-      this.appName = object.appName;
-      this.logo = object.logo;
-      this.icon = object.icon;
-      this.accentColor = object.accentColor;
-      this.environmentBannerText = object.environmentBannerText;
-      this.environmentBannerColor = object.environmentBannerColor;
-
-      this.banners = new Map<string, Banner>();
-      if(object.banners)
-      {
-         for (let i in object.banners)
-         {
-            this.banners.set(i, new Banner(object.banners[i]));
-         }
-      }
+      this.severity = object.severity;
+      this.textColor = object.textColor;
+      this.backgroundColor = object.backgroundColor;
+      this.messageText = object.messageText;
+      this.messageHTML = object.messageHTML;
+      this.additionalStyles = object.additionalStyles;
    }
 }
