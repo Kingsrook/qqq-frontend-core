@@ -205,11 +205,12 @@ export class QController
    /*******************************************************************************
     ** create or update a user session
     *******************************************************************************/
-   async manageSession(accessToken: string, uuid?: string): Promise<{ uuid: string, values: { [key: string]: any } }>
+   async manageSession(accessToken: string, uuid?: string, more?: {[name: string]: any}): Promise<{ uuid: string, values: { [key: string]: any } }>
    {
       const data = {
          accessToken: accessToken,
-         uuid: uuid
+         uuid: uuid,
+         ...(more ?? {})
       };
 
       return this.axiosInstance
