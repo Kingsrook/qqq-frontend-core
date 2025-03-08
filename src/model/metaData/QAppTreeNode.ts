@@ -20,6 +20,7 @@
  */
 
 import {QAppNodeType} from "./QAppNodeType";
+import {QIcon} from "./QIcon";
 
 /*******************************************************************************
  ** Meta-Data to define an object that is part of the app-hierarchy/tree.
@@ -33,6 +34,7 @@ export class QAppTreeNode
    type: QAppNodeType;
    children?: QAppTreeNode[];
    iconName?: string;
+   icon?: QIcon;
 
    constructor(object: any)
    {
@@ -40,6 +42,11 @@ export class QAppTreeNode
       this.label = object.label;
       this.type = object.type;
       this.iconName = object.iconName;
+
+      if (object.icon)
+      {
+         this.icon = new QIcon(object.icon);
+      }
 
       if (object.children)
       {
