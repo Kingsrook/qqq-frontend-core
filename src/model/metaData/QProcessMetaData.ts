@@ -35,6 +35,8 @@ export class QProcessMetaData
    frontendSteps?: QFrontendStepMetaData[];
    hasPermission: boolean = false;
    stepFlow: string = "LINEAR";
+   minInputRecords?: number;
+   maxInputRecords?: number;
 
    constructor(object: any)
    {
@@ -44,6 +46,8 @@ export class QProcessMetaData
       this.isHidden = object.isHidden;
       this.iconName = object.iconName;
       this.hasPermission = object.hasPermission;
+      this.minInputRecords = object.minInputRecords;
+      this.maxInputRecords = object.maxInputRecords;
 
       if(object.stepFlow)
       {

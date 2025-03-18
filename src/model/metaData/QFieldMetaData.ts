@@ -45,6 +45,7 @@ export class QFieldMetaData
    adornments?: FieldAdornment[];
    helpContents?: QHelpContent[];
    behaviors?: any[];
+   maxLength?: number;
 
 
    /*******************************************************************************
@@ -62,6 +63,7 @@ export class QFieldMetaData
       this.possibleValueSourceName = object.possibleValueSourceName;
       this.displayFormat = object.displayFormat;
       this.gridColumns = object.gridColumns;
+      this.maxLength = object.maxLength;
 
       if (object.adornments)
       {
