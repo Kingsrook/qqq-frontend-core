@@ -45,6 +45,7 @@ export class QFieldMetaData
    adornments?: FieldAdornment[];
    helpContents?: QHelpContent[];
    behaviors?: any[];
+   supplementalFieldMetaData: Map<String, any> = new Map();
    maxLength?: number;
 
 
@@ -85,6 +86,14 @@ export class QFieldMetaData
 
       this.helpContents = QHelpContent.buildArray(object.helpContents);
       this.behaviors = object.behaviors;
+
+      if (object.supplementalFieldMetaData)
+      {
+         for (const key in object.supplementalFieldMetaData)
+         {
+            this.supplementalFieldMetaData.set(key, object.supplementalFieldMetaData[key]);
+         }
+      }
    }
 
 
