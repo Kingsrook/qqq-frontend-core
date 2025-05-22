@@ -205,7 +205,7 @@ export class QController
    /*******************************************************************************
     ** create or update a user session
     *******************************************************************************/
-   async manageSession(accessToken: string, uuid?: string, more?: {[name: string]: any}): Promise<{ uuid: string, values: { [key: string]: any } }>
+   async manageSession(accessToken: string, uuid?: string, more?: { [name: string]: any }): Promise<{ uuid: string, values: { [key: string]: any } }>
    {
       const data = {
          accessToken: accessToken,
@@ -1032,6 +1032,23 @@ export class QController
          })
          .catch(this.handleException);
    }
+
+
+   /***************************************************************************
+    ** Let an app piggyback on our axiosInstance and handleException methods
+    ** to issue ad-hock requests.
+    ***************************************************************************/
+   public async axiosRequest(config: any): Promise<any>
+   {
+      return this.axiosInstance
+         .request(config)
+         .then((response: AxiosResponse) =>
+         {
+            return (response.data);
+         })
+         .catch(this.handleException);
+   }
+
 
    /*******************************************************************************
     **
