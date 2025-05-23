@@ -44,6 +44,7 @@ export class QInstance
    branding?: QBrandingMetaData;
    environmentValues?: Map<string, string>;
    helpContent?: Map<string, QHelpContent[]>;
+   supplementalInstanceMetaData: Map<String, any> = new Map();
 
    constructor(object: any)
    {
@@ -112,6 +113,14 @@ export class QInstance
          for (const key in object.environmentValues)
          {
             this.environmentValues.set(key, object.environmentValues[key]);
+         }
+      }
+
+      if (object.supplementalInstanceMetaData)
+      {
+         for (const key in object.supplementalInstanceMetaData)
+         {
+            this.supplementalInstanceMetaData.set(key, object.supplementalInstanceMetaData[key]);
          }
       }
 
