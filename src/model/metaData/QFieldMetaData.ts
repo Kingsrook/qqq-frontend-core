@@ -38,6 +38,7 @@ export class QFieldMetaData
    isRequired: boolean = false;
    isEditable: boolean = true;
    isHeavy: boolean = false;
+   isHidden: boolean = false;
    possibleValueSourceName: string;
    inlinePossibleValueSource?: QPossibleValue[];
    displayFormat: string;
@@ -61,6 +62,7 @@ export class QFieldMetaData
       this.isRequired = object.isRequired;
       this.isEditable = object.isEditable;
       this.isHeavy = object.isHeavy;
+      this.isHidden = object.isHidden;
       this.possibleValueSourceName = object.possibleValueSourceName;
       this.displayFormat = object.displayFormat;
       this.gridColumns = object.gridColumns;
