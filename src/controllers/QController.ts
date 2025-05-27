@@ -975,7 +975,7 @@ export class QController
     ** - for a PVS field on a process (pass (null, processName, fieldName, ...)
     ** - for a standalone PVS (pass (null, null, process, ...)
     *******************************************************************************/
-   async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm: string = "", ids: any[] = [], values: Map<string, any> = new Map(), useCase: string = ""): Promise<QPossibleValue[]>
+   async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm: string = "", ids: any[] = [], labels: any[] = [], values: Map<string, any> = new Map(), useCase: string = ""): Promise<QPossibleValue[]>
    {
       let url;
       if (tableName)
@@ -1006,6 +1006,11 @@ export class QController
       if (ids && ids.length)
       {
          queryComponents.push(`ids=${encodeURIComponent(ids.join(","))}`);
+      }
+
+      if (labels && labels.length)
+      {
+         queryComponents.push(`labels=${encodeURIComponent(labels.join(","))}`);
       }
 
       if (queryComponents.length > 0)
