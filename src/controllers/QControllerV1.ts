@@ -346,38 +346,33 @@ export class QControllerV1
    /*******************************************************************************
     ** Make a count request to the backend
     *******************************************************************************/
-   async count(tableName: string, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null, includeDistinct = false, tableVariant: QTableVariant | null = null): Promise<[number, number]>
+   async count(tableName: string, version: Version, queryFilter?: QQueryFilter, queryJoins: QueryJoin[] | null = null, includeDistinct = false, tableVariant: QTableVariant | null = null): Promise<[number, number]>
    {
-      let countURL = `/data/${encodeURIComponent(tableName)}/count`;
+      let countURL = `${this.getVersionPrefix(version)}/table/${encodeURIComponent(tableName)}/count`;
 
-      const queryStringParts = [];
+      const body: any = {};
+      if (queryFilter)
+      {
+         body.filter = queryFilter;
+      }
+
       if (queryJoins)
       {
-         queryStringParts.push(`queryJoins=${encodeURIComponent(JSON.stringify(queryJoins))}`);
+         body.joins = queryJoins;
+      }
+
+      if (tableVariant)
+      {
+         body.tableVariant = tableVariant;
       }
 
       if (includeDistinct)
       {
-         queryStringParts.push("includeDistinct=true");
-      }
-
-      if (queryStringParts.length > 0)
-      {
-         countURL += `?${queryStringParts.join("&")}`;
-      }
-
-      const formData = new FormData();
-      if (queryFilter)
-      {
-         formData.append("filter", JSON.stringify(queryFilter));
-      }
-      if (tableVariant)
-      {
-         formData.append("tableVariant", JSON.stringify(tableVariant));
+         countURL += "?includeDistinct=true";
       }
 
       return this.axiosInstance
-         .post(countURL, formData)
+         .post(countURL, body, {"content-type": "application/json"})
          .then((response: AxiosResponse) =>
          {
             return [response.data.count, response.data.distinctCount];
