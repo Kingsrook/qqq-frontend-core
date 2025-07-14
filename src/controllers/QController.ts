@@ -37,6 +37,22 @@ import {QQueryFilter} from "../model/query/QQueryFilter";
 import {QueryJoin} from "../model/query/QueryJoin";
 const axios = require("axios").default;
 
+
+
+// Params object for the possibleValues method
+export type PossibleValueParams =
+   {
+      tableName?: string | null;
+      processName?: string | null;
+      fieldNameOrPossibleValueSourceName: string;
+      searchTerm?: string | null;
+      ids?: any[] | null;
+      labels?: any[] | null;
+      values?: Map<string, any> | null;
+      useCase?: string | null;
+      possibleValueSourceFilter?: QQueryFilter | null
+   }
+
 /*******************************************************************************
  ** Controller for interacting with a QQQ backend.
  *******************************************************************************/
@@ -967,6 +983,21 @@ export class QController
    }
 
 
+
+   /***************************************************************************
+    * overload 1 of possibleValues function - this is its "original" signature
+    * that took several params, many optional, and kept evolving and getting
+    * messier and messier.
+    ***************************************************************************/
+   async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm?: string, ids?: any[], labels?: any[] , values?: Map<string, any>, useCase?: string): Promise<QPossibleValue[]>;
+
+   /***************************************************************************
+    * overload 2 of possibleValues function - this is a "new" signature
+    * that takes an object, to make evolution (addition of new params) easier
+    * over time (e.g., backward compatible).
+    ***************************************************************************/
+   async possibleValues(params: PossibleValueParams): Promise<QPossibleValue[]>;
+
    /*******************************************************************************
     ** Fetch options for a possible-value drop down.
     **
@@ -974,9 +1005,53 @@ export class QController
     ** - for a PVS field on a table (pass (tableName, null, fieldName, ...)
     ** - for a PVS field on a process (pass (null, processName, fieldName, ...)
     ** - for a standalone PVS (pass (null, null, process, ...)
+    **
+    ** For the standalone use-case, the backend doesn't know what QFieldMetaData
+    ** is being used (e.g,. it can't find it on a table or process), so, for that
+    ** case, a possibleValueSourceFilter can be passed along to provide that function.
     *******************************************************************************/
-   async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm: string = "", ids: any[] = [], labels: any[] = [], values: Map<string, any> = new Map(), useCase: string = ""): Promise<QPossibleValue[]>
+   async possibleValues(...args: [tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm?: string, ids?: any[], labels?: any[], values?: Map<string, any>, useCase?: string] | [PossibleValueParams]): Promise<QPossibleValue[]>
    {
+      let tableName: string | null | undefined;
+      let processName: string | null | undefined;
+      let fieldNameOrPossibleValueSourceName: string;
+      let searchTerm: string | null | undefined;
+      let ids: any[] | null | undefined;
+      let labels: any[] | null | undefined;
+      let values: Map<string, any> | null | undefined;
+      let useCase: string | null | undefined;
+      let possibleValueSourceFilter: QQueryFilter | null | undefined = null;
+
+      if (args[0] != null && typeof args[0] === "object")
+      {
+         ({tableName, processName, fieldNameOrPossibleValueSourceName, searchTerm, ids, labels, values, useCase, possibleValueSourceFilter} = args[0]);
+      }
+      else 
+      {
+         [tableName, processName, fieldNameOrPossibleValueSourceName, searchTerm, ids, labels, values, useCase] = args as [string | null, string | null, string, string, any[], any[], Map<string, any>, string];
+      }
+
+      if(searchTerm == null)
+      {
+         searchTerm = "";
+      }
+      if(ids == null)
+      {
+         ids = [];
+      }
+      if(labels == null)
+      {
+         labels = [];
+      }
+      if(values == null)
+      {
+         values = new Map();
+      }
+      if(useCase == null)
+      {
+         useCase = "";
+      }
+
       let url;
       if (tableName)
       {
@@ -1020,6 +1095,11 @@ export class QController
 
       const postBody = new FormData();
       postBody.append("values", JSON.stringify(Object.fromEntries(values)));
+
+      if(possibleValueSourceFilter)
+      {
+         postBody.append("filter", JSON.stringify(possibleValueSourceFilter));
+      }
 
       return this.axiosInstance
          .post(url, postBody)
