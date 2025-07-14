@@ -35,6 +35,9 @@ export class QQueryFilter
    skip?: number;
    limit?: number;
 
+   /***************************************************************************
+    *
+    ***************************************************************************/
    constructor(criteria?: QFilterCriteria[], orderBys?: QFilterOrderBy[], subFilters?: QQueryFilter[], booleanOperator: "AND" | "OR" = "AND", skip?: number, limit?: number)
    {
       this.criteria = criteria;
@@ -43,6 +46,39 @@ export class QQueryFilter
       this.booleanOperator = booleanOperator;
       this.skip = skip;
       this.limit = limit;
+   }
+
+   /***************************************************************************
+    * factory method to build a QQueryFilter from an object containing all of
+    * its component parts.
+    ***************************************************************************/
+   public static makeFromObject(object: any): QQueryFilter
+   {
+      const criteria: QFilterCriteria[] = [];
+      const orderBys: QFilterOrderBy[] = [];
+      const subFilters: QQueryFilter[] = [];
+      const booleanOperator = object.booleanOperator ?? "AND"
+      const skip: number | undefined = object.skip;
+      const limit: number | undefined = object.limit;
+
+      for (let i = 0; i < object.criteria?.length; i++)
+      {
+         const subObject = object.criteria[i];
+         criteria.push(new QFilterCriteria(subObject.fieldName, subObject.operator, subObject.values));
+      }
+
+      for (let i = 0; i < object.orderBys?.length; i++)
+      {
+         const subObject = object.orderBys[i];
+         orderBys.push(new QFilterOrderBy(subObject.fieldName, subObject.isAscending));
+      }
+
+      for (let i = 0; i < object.subFilters?.length; i++)
+      {
+         subFilters.push(QQueryFilter.makeFromObject(object.subFilters[i]));
+      }
+
+      return (new QQueryFilter(criteria, orderBys, subFilters, booleanOperator, skip, limit));
    }
 
    public addOrderBy(orderBy: QFilterOrderBy)

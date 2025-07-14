@@ -19,7 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {QPossibleValue} from "../../model/QPossibleValue";
+import {QPossibleValue} from "../QPossibleValue";
+import {QQueryFilter} from "../query/QQueryFilter";
 import {AdornmentType} from "./AdornmentType";
 import {FieldAdornment} from "./FieldAdornment";
 import {QFieldType} from "./QFieldType";
@@ -47,6 +48,7 @@ export class QFieldMetaData
    helpContents?: QHelpContent[];
    behaviors?: any[];
    supplementalFieldMetaData: Map<String, any> = new Map();
+   possibleValueSourceFilter?: QQueryFilter;
    maxLength?: number;
 
 
@@ -95,6 +97,11 @@ export class QFieldMetaData
          {
             this.supplementalFieldMetaData.set(key, object.supplementalFieldMetaData[key]);
          }
+      }
+
+      if (object.possibleValueSourceFilter)
+      {
+         this.possibleValueSourceFilter = QQueryFilter.makeFromObject(object.possibleValueSourceFilter);
       }
    }
 
