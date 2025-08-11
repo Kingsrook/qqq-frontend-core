@@ -1131,7 +1131,10 @@ export class QController
          {
             return (response.data);
          })
-         .catch(this.handleException);
+         .catch((error: AxiosError) =>
+         {
+            this.handleException(error);
+         });
    }
 
 
