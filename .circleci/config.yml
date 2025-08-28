@@ -140,6 +140,7 @@ commands:
   ## What it does:
   ## - Determines appropriate version based on branch type and current version
   ## - Updates package.json version automatically using sync-npm-version.sh
+  ## - Commits and pushes version changes back to the branch
   ## - Handles GitFlow versioning strategy automatically
   ## - Ensures version consistency across the project
   ##
@@ -151,9 +152,27 @@ commands:
   ###############################################################################
   manage_version:
     steps:
+      - add_ssh_keys   # injects the CircleCI User Key (write-capable)
+      - run:
+          name: Set up Git identity for version commits
+          command: |
+            git config user.email "ci@kingsrook.com"
+            git config user.name "CircleCI"
       - run:
           name: "Synchronize NPM version"
           command: .circleci/sync-npm-version.sh
+      - run:
+          name: Commit version changes if modified
+          command: |
+            if [[ -n "$(git status --porcelain package.json)" ]]; then
+              NEW_VERSION=$(grep '"version"' package.json | sed 's/.*"version": "//;s/".*//')
+              git add package.json
+              git commit -m "Bump version to $NEW_VERSION [skip ci]"
+              git push origin "HEAD:${CIRCLE_BRANCH}"
+              echo "Version updated to: $NEW_VERSION and pushed"
+            else
+              echo "No version change needed"
+            fi
 
   ###############################################################################
   ## 📦 BUILD AND PACKAGE COMMAND
