@@ -32,9 +32,9 @@
 ##
 ## 🔐 AUTHENTICATION & SECURITY:
 ## -----------------------------
-## - NPM Registry: NPM_TOKEN (for publishing to public npmjs.org)
-## - All packages published with public access
-## - Credentials stored securely as environment variables
+## - NPM Registry: NPM_TOKEN (from qqq-maven-registry-credentials context)
+## - All packages published with public access to npmjs.org
+## - Credentials stored securely in shared CircleCI context
 ## - Direct publishing to public registry for maximum visibility
 ##
 ## 🛠️ BUILD TOOLS & DEPENDENCIES:
@@ -409,6 +409,7 @@ workflows:
               only: develop
     jobs:
       - test_only:
+          context: [ qqq-maven-registry-credentials, build-qqq-sample-app ]
           filters:
             # Only run on feature branches, ignore main workflow branches
             branches:
@@ -434,6 +435,7 @@ workflows:
     description: "Deploy snapshot version to public NPM registry from develop branch"
     jobs:
       - deploy_snapshot:
+          context: [ qqq-maven-registry-credentials, build-qqq-sample-app ]
           filters:
             branches:
               only: develop
@@ -458,6 +460,7 @@ workflows:
     description: "Publish release candidate to public NPM registry from release branches"
     jobs:
       - publish_rc:
+          context: [ qqq-maven-registry-credentials, build-qqq-sample-app ]
           filters:
             branches:
               only: /release\/.*/
@@ -482,6 +485,7 @@ workflows:
     description: "Publish release version to public NPM registry from main branch"
     jobs:
       - publish_release:
+          context: [ qqq-maven-registry-credentials, build-qqq-sample-app ]
           filters:
             branches:
               only: main
@@ -506,6 +510,7 @@ workflows:
     description: "Publish hotfix version to public NPM registry from hotfix branches"
     jobs:
       - publish_hotfix:
+          context: [ qqq-maven-registry-credentials, build-qqq-sample-app ]
           filters:
             branches:
               only: /hotfix\/.*/
