@@ -33,7 +33,7 @@
 ## 🔐 AUTHENTICATION & SECURITY:
 ## -----------------------------
 ## - NPM Registry: NPM_TOKEN (from qqq-maven-registry-credentials context)
-## - All packages published with public access to npmjs.org
+## - All packages published with public access to npmjs.org under @qrunio organization
 ## - Credentials stored securely in shared CircleCI context
 ## - Direct publishing to public registry for maximum visibility
 ##
@@ -54,10 +54,10 @@
 ## ------------------------------
 ## | Branch Type | Version Pattern | Example | Repository |
 ## |-------------|----------------|---------|------------|
-## | main        | X.Y.Z          | 1.0.0   | Public NPM (npmjs.org) |
-## | develop     | X.Y.Z-SNAPSHOT | 1.0.127-SNAPSHOT | Public NPM (npmjs.org) |
-## | release/*   | X.Y.0-RC.n     | 1.0.0-RC.1 | Public NPM (npmjs.org) |
-## | hotfix/*    | X.Y.(Z+1)      | 1.0.1   | Public NPM (npmjs.org) |
+## | main        | X.Y.Z          | 1.0.0   | Public NPM (@qrunio on npmjs.org) |
+## | develop     | X.Y.Z-SNAPSHOT | 1.0.127-SNAPSHOT | Public NPM (@qrunio on npmjs.org) |
+## | release/*   | X.Y.0-RC.n     | 1.0.0-RC.1 | Public NPM (@qrunio on npmjs.org) |
+## | hotfix/*    | X.Y.(Z+1)      | 1.0.1   | Public NPM (@qrunio on npmjs.org) |
 ## | feature/*   | Inherits from develop | 1.0.127-SNAPSHOT | No publishing |
 ##
 ###############################################################################
