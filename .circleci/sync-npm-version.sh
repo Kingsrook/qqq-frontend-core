@@ -1,32 +1,82 @@
 #!/bin/bash
 set -e
 
-# NPM Version Synchronization Script for qqq-frontend-core
-# This script updates package.json version based on the current GitFlow branch and versioning policy
+#######################################################
+## NPM Version Synchronization Script for qqq-frontend-core
+## 
+## This script automatically updates package.json version based on the
+## current GitFlow branch and versioning policy. It ensures version
+## consistency across different branch types.
+## 
+## Branch Versioning Rules:
+## • main      → Release version (e.g., 1.0.0)
+## • develop   → Snapshot version (e.g., 1.0.127-SNAPSHOT)
+## • release/* → Release candidate (e.g., 1.0.0-RC.1)
+## • hotfix/*  → Patch version (e.g., 1.0.1)
+## • feature/* → Snapshot version (e.g., 1.0.128-SNAPSHOT)
+## 
+## Usage:
+##   ./sync-npm-version.sh          # Update version normally
+##   ./sync-npm-version.sh --dry-run # Preview changes without applying
+## 
+## Author: Kingsrook Development Team
+## Version: 1.0.0
+#######################################################
 
+#######################################################
+## CONFIGURATION
+#######################################################
 PACKAGE_JSON="package.json"
 DRY_RUN=false
 
+#######################################################
+## ARGUMENT PARSING
+#######################################################
 if [[ "$1" == "--dry-run" ]]; then
     DRY_RUN=true
     echo "DRY RUN MODE - No changes will be made"
 fi
 
+#######################################################
+## BRANCH DETECTION
+#######################################################
 # Get current branch
 CURRENT_BRANCH=$(git branch --show-current)
 echo "Current branch: $CURRENT_BRANCH"
 
+#######################################################
+## VERSION EXTRACTION
+#######################################################
 # Get current NPM version
 NPM_VERSION=$(grep '"version"' $PACKAGE_JSON | sed 's/.*"version": "//;s/".*//')
 echo "Current NPM version: $NPM_VERSION"
 
+#######################################################
+## VERSION CALCULATION
+#######################################################
 # Determine target version based on GitFlow branch
 if [[ "$CURRENT_BRANCH" == "main" ]]; then
-    # Main branch - should be a release version (e.g., 1.0.0)
-    # Extract major.minor from current version
-    MAJOR_MINOR=$(echo "$NPM_VERSION" | sed 's/\.[0-9]*$//')
-    TARGET_VERSION="$MAJOR_MINOR.0"
-    echo "Main branch detected - targeting release version: $TARGET_VERSION"
+    # Main branch - check if we just merged a release branch
+    # Look for recent release branch merges
+    RECENT_RELEASE_MERGE=$(git log --oneline -5 --grep="Merge.*release.*into.*main" --grep="Merge.*release.*into.*master" || true)
+    
+    if [[ -n "$RECENT_RELEASE_MERGE" ]]; then
+        # We just merged a release branch, extract the version from the merge
+        RELEASE_VERSION=$(echo "$RECENT_RELEASE_MERGE" | grep -o 'release/[0-9]\+\.[0-9]\+\.[0-9]\+' | head -1 | sed 's/release\///')
+        if [[ -n "$RELEASE_VERSION" ]]; then
+            TARGET_VERSION="$RELEASE_VERSION"
+            echo "Main branch detected - using release version from merge: $TARGET_VERSION"
+        else
+            # Fallback to current version
+            TARGET_VERSION="$NPM_VERSION"
+            echo "Main branch detected - preserving current version: $TARGET_VERSION"
+        fi
+    else
+        # No recent release merge, create new major/minor release
+        MAJOR_MINOR=$(echo "$NPM_VERSION" | sed 's/\.[0-9]*$//')
+        TARGET_VERSION="$MAJOR_MINOR.0"
+        echo "Main branch detected - creating new release version: $TARGET_VERSION"
+    fi
 elif [[ "$CURRENT_BRANCH" == "develop" ]]; then
     # Develop branch - should be a snapshot version (e.g., 1.0.127-SNAPSHOT)
     # Increment patch version for develop
@@ -58,17 +108,26 @@ fi
 
 echo "Target version: $TARGET_VERSION"
 
+#######################################################
+## VERSION COMPARISON
+#######################################################
 if [[ "$NPM_VERSION" == "$TARGET_VERSION" ]]; then
     echo "✅ Versions are already synchronized"
     exit 0
 fi
 
+#######################################################
+## DRY RUN HANDLING
+#######################################################
 if [[ "$DRY_RUN" == "true" ]]; then
     echo "DRY RUN: Would update package.json version from '$NPM_VERSION' to '$TARGET_VERSION'"
     echo "Command: sed -i 's/\"version\": \"$NPM_VERSION\"/\"version\": \"$TARGET_VERSION\"/' $PACKAGE_JSON"
     exit 0
 fi
 
+#######################################################
+## VERSION UPDATE
+#######################################################
 echo "Updating package.json version from '$NPM_VERSION' to '$TARGET_VERSION'"
 
 # Update version in package.json (macOS compatible)
@@ -78,6 +137,9 @@ else
     sed -i "s/\"version\": \"$NPM_VERSION\"/\"version\": \"$TARGET_VERSION\"/" $PACKAGE_JSON
 fi
 
+#######################################################
+## VERIFICATION
+#######################################################
 # Verify the update
 ACTUAL_NPM_VERSION=$(grep '"version"' $PACKAGE_JSON | sed 's/.*"version": "//;s/".*//')
 if [[ "$ACTUAL_NPM_VERSION" == "$TARGET_VERSION" ]]; then
@@ -87,6 +149,9 @@ else
     exit 1
 fi
 
+#######################################################
+## COMPLETION SUMMARY
+#######################################################
 echo ""
 echo "=== NPM version synchronization complete ==="
 echo "Previous: $NPM_VERSION"
