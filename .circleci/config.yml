@@ -8,8 +8,7 @@ orbs:
 
 # 🔐 AUTHENTICATION & SECURITY
 # Required environment variables:
-# - NPM_TOKEN: NPM authentication token for publishing packages
-# - GITHUB_TOKEN: GitHub token for creating releases and managing branches
+# - NPM_TOKEN: NPM authentication token for publishing packages to public registry
 
 # 🛠️ COMMANDS
 commands:
@@ -72,18 +71,7 @@ commands:
           name: "Publish to NPM"
           command: npm publish --access public
 
-  # Create GitHub release
-  create_github_release:
-    description: "Create GitHub release with changelog"
-    steps:
-      - run:
-          name: "Create GitHub release"
-          command: |
-            VERSION=$(node -p "require('./package.json').version")
-            gh release create "v$VERSION" \
-              --title "Release v$VERSION" \
-              --notes "Release v$VERSION of qqq-frontend-core" \
-              --repo Kingsrook/qqq-frontend-core
+  # Note: GitHub releases are no longer created - packages go directly to public NPM registry
 
 # 🏗️ JOBS
 jobs:
@@ -129,7 +117,6 @@ jobs:
       - manage_version
       - build_package
       - publish_npm
-      - create_github_release
 
   # Publish release
   publish_release:
@@ -142,7 +129,6 @@ jobs:
       - manage_version
       - build_package
       - publish_npm
-      - create_github_release
 
   # Publish hotfix
   publish_hotfix:
@@ -155,7 +141,6 @@ jobs:
       - manage_version
       - build_package
       - publish_npm
-      - create_github_release
 
 # 🔄 WORKFLOWS
 workflows:
@@ -194,7 +179,7 @@ workflows:
 
   # Publish release candidate workflow - runs on release branches
   publish_rc:
-    description: "Publish release candidate to NPM from release branches"
+    description: "Publish release candidate to public NPM registry from release branches"
     jobs:
       - publish_rc:
           filters:
@@ -203,7 +188,7 @@ workflows:
 
   # Publish release workflow - runs on main branch
   publish_release:
-    description: "Publish release version to NPM from main branch"
+    description: "Publish release version to public NPM registry from main branch"
     jobs:
       - publish_release:
           filters:
@@ -212,7 +197,7 @@ workflows:
 
   # Publish hotfix workflow - runs on hotfix branches
   publish_hotfix:
-    description: "Publish hotfix version to NPM from hotfix branches"
+    description: "Publish hotfix version to public NPM registry from hotfix branches"
     jobs:
       - publish_hotfix:
           filters:
