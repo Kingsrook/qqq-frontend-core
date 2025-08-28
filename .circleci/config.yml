@@ -1,11 +1,220 @@
 version: 2.1
 
+# 🚀 QQQ Frontend Core - CircleCI Configuration
+# This configuration implements the GitFlow branching strategy and automated publishing to NPM
+
 orbs:
   node: circleci/node@4.7
 
-workflows:
-  test:
-    jobs:
-      - node/test:
-          version: '16.10'
+# 🔐 AUTHENTICATION & SECURITY
+# Required environment variables:
+# - NPM_TOKEN: NPM authentication token for publishing packages
+# - GITHUB_TOKEN: GitHub token for creating releases and managing branches
+
+# 🛠️ COMMANDS
+commands:
+  # Install dependencies with NPM
+  install_dependencies:
+    description: "Install Node.js dependencies and build the project"
+    steps:
+      - checkout
+      - node/install-packages:
           pkg-manager: npm
+          cache-path: node_modules
+      - run:
+          name: "Build TypeScript project"
+          command: npm run prepublishOnly
+
+  # Run tests
+  run_tests:
+    description: "Execute the test suite"
+    steps:
+      - run:
+          name: "Run tests"
+          command: npm test
+      - run:
+          name: "Run linting"
+          command: npm run lint
+
+  # Manage version based on GitFlow branch
+  manage_version:
+    description: "Update package.json version based on current GitFlow branch"
+    steps:
+      - run:
+          name: "Synchronize NPM version"
+          command: .circleci/sync-npm-version.sh
+
+  # Build and package for distribution
+  build_package:
+    description: "Build the package for distribution"
+    steps:
+      - run:
+          name: "Clean and build"
+          command: npm run clean-and-install
+      - persist_to_workspace:
+          root: .
+          paths:
+            - lib/
+            - package.json
+            - README.md
+            - LICENSE
+
+  # Publish to NPM
+  publish_npm:
+    description: "Publish package to NPM registry"
+    steps:
+      - run:
+          name: "Setup NPM authentication"
+          command: |
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            npm whoami
+      - run:
+          name: "Publish to NPM"
+          command: npm publish --access public
+
+  # Create GitHub release
+  create_github_release:
+    description: "Create GitHub release with changelog"
+    steps:
+      - run:
+          name: "Create GitHub release"
+          command: |
+            VERSION=$(node -p "require('./package.json').version")
+            gh release create "v$VERSION" \
+              --title "Release v$VERSION" \
+              --notes "Release v$VERSION of qqq-frontend-core" \
+              --repo Kingsrook/qqq-frontend-core
+
+# 🏗️ JOBS
+jobs:
+  # Build and test the project
+  build:
+    description: "Build and test the frontend core package"
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - install_dependencies
+      - run_tests
+      - build_package
+
+  # Test only (for feature branches)
+  test_only:
+    description: "Run tests without building package"
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - install_dependencies
+      - run_tests
+
+  # Deploy snapshot to NPM
+  deploy_snapshot:
+    description: "Deploy snapshot version to NPM"
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - install_dependencies
+      - run_tests
+      - manage_version
+      - build_package
+      - publish_npm
+
+  # Publish release candidate
+  publish_rc:
+    description: "Publish release candidate to NPM"
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - install_dependencies
+      - run_tests
+      - manage_version
+      - build_package
+      - publish_npm
+      - create_github_release
+
+  # Publish release
+  publish_release:
+    description: "Publish release version to NPM"
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - install_dependencies
+      - run_tests
+      - manage_version
+      - build_package
+      - publish_npm
+      - create_github_release
+
+  # Publish hotfix
+  publish_hotfix:
+    description: "Publish hotfix version to NPM"
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - install_dependencies
+      - run_tests
+      - manage_version
+      - build_package
+      - publish_npm
+      - create_github_release
+
+# 🔄 WORKFLOWS
+workflows:
+  # Test workflow - runs on all branches
+  test_only:
+    description: "Test workflow for feature branches and PRs"
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only: develop
+    jobs:
+      - test_only:
+          filters:
+            branches:
+              ignore: [main, develop, /release\/.*/, /hotfix\/.*/]
+
+  # Build workflow - runs on develop branch
+  build:
+    description: "Build and test workflow for develop branch"
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: develop
+
+  # Deploy snapshot workflow - runs on develop branch
+  deploy_snapshot:
+    description: "Deploy snapshot version to NPM from develop branch"
+    jobs:
+      - deploy_snapshot:
+          filters:
+            branches:
+              only: develop
+
+  # Publish release candidate workflow - runs on release branches
+  publish_rc:
+    description: "Publish release candidate to NPM from release branches"
+    jobs:
+      - publish_rc:
+          filters:
+            branches:
+              only: /release\/.*/
+
+  # Publish release workflow - runs on main branch
+  publish_release:
+    description: "Publish release version to NPM from main branch"
+    jobs:
+      - publish_release:
+          filters:
+            branches:
+              only: main
+
+  # Publish hotfix workflow - runs on hotfix branches
+  publish_hotfix:
+    description: "Publish hotfix version to NPM from hotfix branches"
+    jobs:
+      - publish_hotfix:
+          filters:
+            branches:
+              only: /hotfix\/.*/
