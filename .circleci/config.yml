@@ -1,32 +1,69 @@
 version: 2.1
 
 # 🚀 QQQ Frontend Core - CircleCI Configuration
-# This configuration implements the GitFlow branching strategy and automated publishing to NPM
+# =============================================
+# This configuration implements the GitFlow branching strategy and automated publishing 
+# to the public NPM registry. The system automatically manages versions based on 
+# branch type and publishes packages directly to npmjs.org without creating GitHub releases.
+#
+# 📋 OVERVIEW:
+# - GitFlow branching: main, develop, release/*, hotfix/*, feature/*
+# - Automated version management with semantic versioning
+# - Direct publishing to public NPM registry
+# - Comprehensive testing and build validation
+# - Branch-specific workflows for different publishing scenarios
+#
+# 🔄 BRANCH STRATEGY:
+# - main: Production releases (e.g., 1.0.0)
+# - develop: Development snapshots (e.g., 1.0.127-SNAPSHOT)
+# - release/*: Release candidates (e.g., 1.0.0-RC.1)
+# - hotfix/*: Emergency patches (e.g., 1.0.1)
+# - feature/*: Feature development (e.g., 1.0.127-SNAPSHOT)
+#
+# 📦 PUBLISHING STRATEGY:
+# - All packages published to public NPM registry (npmjs.org)
+# - No GitHub releases created - direct NPM publishing
+# - Automatic version management based on branch type
+# - Public access for all published packages
 
 orbs:
+  # Node.js orb for dependency management and caching
   node: circleci/node@4.7
 
 # 🔐 AUTHENTICATION & SECURITY
+# ============================
 # Required environment variables:
 # - NPM_TOKEN: NPM authentication token for publishing packages to public registry
+#   This token must have publish permissions for the @kingsrook organization
+#
+# Optional environment variables:
+# - NPM_REGISTRY: Override default NPM registry (defaults to npmjs.org)
 
 # 🛠️ COMMANDS
+# ============
+# Reusable command definitions that can be referenced by multiple jobs
+# Each command encapsulates a specific build or deployment step
+
 commands:
   # Install dependencies with NPM
+  # This command handles the complete setup of the Node.js environment
   install_dependencies:
     description: "Install Node.js dependencies and build the project"
     steps:
       - checkout
+      # Install packages with NPM, using CircleCI's optimized caching
       - node/install-packages:
           pkg-manager: npm
           cache-path: node_modules
+      # Build TypeScript project after dependencies are installed
       - run:
           name: "Build TypeScript project"
           command: npm run prepublishOnly
 
   # Run tests
+  # Executes the complete test suite including linting
   run_tests:
-    description: "Execute the test suite"
+    description: "Execute the test suite and code quality checks"
     steps:
       - run:
           name: "Run tests"
@@ -36,6 +73,7 @@ commands:
           command: npm run lint
 
   # Manage version based on GitFlow branch
+  # Automatically updates package.json version based on current branch
   manage_version:
     description: "Update package.json version based on current GitFlow branch"
     steps:
@@ -44,122 +82,146 @@ commands:
           command: .circleci/sync-npm-version.sh
 
   # Build and package for distribution
+  # Creates the distributable package and persists it for later jobs
   build_package:
-    description: "Build the package for distribution"
+    description: "Build the package for distribution and persist artifacts"
     steps:
       - run:
           name: "Clean and build"
           command: npm run clean-and-install
+      # Persist build artifacts to workspace for use in publishing jobs
       - persist_to_workspace:
           root: .
           paths:
-            - lib/
-            - package.json
-            - README.md
-            - LICENSE
+            - lib/              # Compiled TypeScript output
+            - package.json      # Updated package manifest
+            - README.md         # Documentation
+            - LICENSE           # License file
 
   # Publish to NPM
+  # Handles authentication and publishing to the public NPM registry
   publish_npm:
-    description: "Publish package to NPM registry"
+    description: "Publish package to public NPM registry (npmjs.org)"
     steps:
       - run:
           name: "Setup NPM authentication"
           command: |
+            # Configure NPM authentication for public registry
             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            # Verify authentication by checking current user
             npm whoami
       - run:
           name: "Publish to NPM"
           command: npm publish --access public
 
   # Note: GitHub releases are no longer created - packages go directly to public NPM registry
+  # This simplifies the workflow and ensures all packages are publicly accessible
 
 # 🏗️ JOBS
+# ========
+# Job definitions that combine commands to create complete workflows
+# Each job represents a specific build or deployment scenario
+
 jobs:
   # Build and test the project
+  # This job runs on develop branch and validates the complete build process
   build:
     description: "Build and test the frontend core package"
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/node:16.10  # Use CircleCI's optimized Node.js image
     steps:
-      - install_dependencies
-      - run_tests
-      - build_package
+      - install_dependencies    # Install deps and build TypeScript
+      - run_tests              # Run tests and linting
+      - build_package          # Create distributable package
 
   # Test only (for feature branches)
+  # Lightweight job for feature branches that only needs validation
   test_only:
-    description: "Run tests without building package"
+    description: "Run tests without building package (for feature branches)"
     docker:
       - image: cimg/node:16.10
     steps:
-      - install_dependencies
-      - run_tests
+      - install_dependencies    # Install deps and build TypeScript
+      - run_tests              # Run tests and linting only
 
   # Deploy snapshot to NPM
+  # Publishes development versions from develop branch
   deploy_snapshot:
-    description: "Deploy snapshot version to NPM"
+    description: "Deploy snapshot version to public NPM registry"
     docker:
       - image: cimg/node:16.10
     steps:
-      - install_dependencies
-      - run_tests
-      - manage_version
-      - build_package
-      - publish_npm
+      - install_dependencies    # Install deps and build TypeScript
+      - run_tests              # Validate code quality
+      - manage_version         # Update to SNAPSHOT version
+      - build_package          # Create distributable package
+      - publish_npm            # Publish to public NPM registry
 
   # Publish release candidate
+  # Publishes RC versions from release branches
   publish_rc:
-    description: "Publish release candidate to NPM"
+    description: "Publish release candidate to public NPM registry"
     docker:
       - image: cimg/node:16.10
     steps:
-      - install_dependencies
-      - run_tests
-      - manage_version
-      - build_package
-      - publish_npm
+      - install_dependencies    # Install deps and build TypeScript
+      - run_tests              # Validate code quality
+      - manage_version         # Update to RC version
+      - build_package          # Create distributable package
+      - publish_npm            # Publish to public NPM registry
 
   # Publish release
+  # Publishes production versions from main branch
   publish_release:
-    description: "Publish release version to NPM"
+    description: "Publish release version to public NPM registry"
     docker:
       - image: cimg/node:16.10
     steps:
-      - install_dependencies
-      - run_tests
-      - manage_version
-      - build_package
-      - publish_npm
+      - install_dependencies    # Install deps and build TypeScript
+      - run_tests              # Validate code quality
+      - manage_version         # Update to release version
+      - build_package          # Create distributable package
+      - publish_npm            # Publish to public NPM registry
 
   # Publish hotfix
+  # Publishes emergency patches from hotfix branches
   publish_hotfix:
-    description: "Publish hotfix version to NPM"
+    description: "Publish hotfix version to public NPM registry"
     docker:
       - image: cimg/node:16.10
     steps:
-      - install_dependencies
-      - run_tests
-      - manage_version
-      - build_package
-      - publish_npm
+      - install_dependencies    # Install deps and build TypeScript
+      - run_tests              # Validate code quality
+      - manage_version         # Update to hotfix version
+      - build_package          # Create distributable package
+      - publish_npm            # Publish to public NPM registry
 
 # 🔄 WORKFLOWS
+# ============
+# Workflow definitions that orchestrate jobs based on branch triggers
+# Each workflow represents a different development or deployment scenario
+
 workflows:
   # Test workflow - runs on all branches
+  # Provides basic validation for feature branches and PRs
   test_only:
     description: "Test workflow for feature branches and PRs"
     triggers:
+      # Daily scheduled trigger for develop branch to ensure code quality
       - schedule:
-          cron: "0 0 * * *"
+          cron: "0 0 * * *"    # Run daily at midnight UTC
           filters:
             branches:
               only: develop
     jobs:
       - test_only:
           filters:
+            # Only run on feature branches, ignore main workflow branches
             branches:
               ignore: [main, develop, /release\/.*/, /hotfix\/.*/]
 
   # Build workflow - runs on develop branch
+  # Comprehensive build and test for the main development branch
   build:
     description: "Build and test workflow for develop branch"
     jobs:
@@ -169,8 +231,9 @@ workflows:
               only: develop
 
   # Deploy snapshot workflow - runs on develop branch
+  # Publishes development versions to NPM for testing and integration
   deploy_snapshot:
-    description: "Deploy snapshot version to NPM from develop branch"
+    description: "Deploy snapshot version to public NPM registry from develop branch"
     jobs:
       - deploy_snapshot:
           filters:
@@ -178,6 +241,7 @@ workflows:
               only: develop
 
   # Publish release candidate workflow - runs on release branches
+  # Publishes RC versions for pre-release testing and validation
   publish_rc:
     description: "Publish release candidate to public NPM registry from release branches"
     jobs:
@@ -187,6 +251,7 @@ workflows:
               only: /release\/.*/
 
   # Publish release workflow - runs on main branch
+  # Publishes production versions for general availability
   publish_release:
     description: "Publish release version to public NPM registry from main branch"
     jobs:
@@ -196,6 +261,7 @@ workflows:
               only: main
 
   # Publish hotfix workflow - runs on hotfix branches
+  # Publishes emergency patches for critical issues
   publish_hotfix:
     description: "Publish hotfix version to public NPM registry from hotfix branches"
     jobs:
@@ -203,3 +269,30 @@ workflows:
           filters:
             branches:
               only: /hotfix\/.*/
+
+# 📋 WORKFLOW SUMMARY
+# ===================
+# This configuration provides a complete GitFlow implementation:
+#
+# 1. FEATURE DEVELOPMENT:
+#    - Feature branches trigger test_only workflow
+#    - No publishing, just validation
+#
+# 2. DEVELOPMENT INTEGRATION:
+#    - Develop branch triggers build + deploy_snapshot
+#    - Publishes SNAPSHOT versions to public NPM
+#
+# 3. RELEASE PREPARATION:
+#    - Release branches trigger publish_rc
+#    - Publishes RC versions to public NPM
+#
+# 4. PRODUCTION RELEASE:
+#    - Main branch triggers publish_release
+#    - Publishes release versions to public NPM
+#
+# 5. EMERGENCY PATCHES:
+#    - Hotfix branches trigger publish_hotfix
+#    - Publishes patch versions to public NPM
+#
+# All packages are published to the public NPM registry (npmjs.org) with public access,
+# ensuring maximum visibility and accessibility for the QQQ frontend ecosystem.
