@@ -58,7 +58,7 @@ echo "Current NPM version: $NPM_VERSION"
 if [[ "$CURRENT_BRANCH" == "main" ]]; then
     # Main branch - check if we just merged a release branch
     # Look for recent release branch merges
-    RECENT_RELEASE_MERGE=$(git log --oneline -5 --grep="Merge.*release.*into.*main" --grep="Merge.*release.*into.*master" || true)
+    RECENT_RELEASE_MERGE=$(git log --oneline -5 --grep="Merge branch" | grep "release/" || true)
     
     if [[ -n "$RECENT_RELEASE_MERGE" ]]; then
         # We just merged a release branch, extract the version from the merge
@@ -67,15 +67,18 @@ if [[ "$CURRENT_BRANCH" == "main" ]]; then
             TARGET_VERSION="$RELEASE_VERSION"
             echo "Main branch detected - using release version from merge: $TARGET_VERSION"
         else
-            # Fallback to current version
-            TARGET_VERSION="$NPM_VERSION"
-            echo "Main branch detected - preserving current version: $TARGET_VERSION"
+            # Cannot parse release version - this is an error
+            echo "❌ ERROR: Detected release branch merge but cannot parse version from: $RECENT_RELEASE_MERGE"
+            echo "Expected format: 'Merge branch release/X.Y.Z'"
+            exit 1
         fi
     else
-        # No recent release merge, create new major/minor release
-        MAJOR_MINOR=$(echo "$NPM_VERSION" | sed 's/\.[0-9]*$//')
-        TARGET_VERSION="$MAJOR_MINOR.0"
-        echo "Main branch detected - creating new release version: $TARGET_VERSION"
+        # No recent release merge detected - this is an error on main
+        echo "❌ ERROR: No release branch merge detected on main branch"
+        echo "Main branch should only receive merges from release branches"
+        echo "Current git log (last 5 commits):"
+        git log --oneline -5
+        exit 1
     fi
 elif [[ "$CURRENT_BRANCH" == "develop" ]]; then
     # Develop branch - should be a snapshot version (e.g., 1.0.127-SNAPSHOT)
