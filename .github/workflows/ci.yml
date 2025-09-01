@@ -22,6 +22,11 @@ jobs:
       npm-args: '--legacy-peer-deps'
       npm-working-directory: '.'
     secrets:
+      GPG_PRIVATE_KEY_B64: ${{ secrets.GPG_PRIVATE_KEY_B64 }}
+      GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+      CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   test:
