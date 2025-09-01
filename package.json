@@ -12,7 +12,9 @@
       "prepublishOnly": "rm -rf lib/ && tsc -p ./ --outDir lib/",
       "test": "jest",
       "yalc-push": "yalc push --private",
-      "yalc-watch": "yalc-watch"
+      "yalc-watch": "yalc-watch",
+      "build": "npm run clean-and-install"
+
    },
    "dependencies": {
       "axios": "0.28.1",
