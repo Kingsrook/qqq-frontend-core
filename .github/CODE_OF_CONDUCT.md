@@ -123,6 +123,6 @@ https://www.contributor-covenant.org/translations.
 
 ---
 
-**Note**: This repository is a core library component of the QQQ framework. 
+**Note**: This repository is a frontend core library of the QQQ framework. 
 For the complete community guidelines and enforcement, see the main QQQ repository: 
 https://github.com/Kingsrook/qqq

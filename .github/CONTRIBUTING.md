@@ -1,36 +1,37 @@
 # Contributing to QQQ Frontend Core
 
-Thank you for your interest in contributing to the QQQ Frontend Core! This repository contains the **core frontend library** that provides the foundation for QQQ client applications.
+Thank you for your interest in contributing to the QQQ Frontend Core! This repository contains the **core frontend components and utilities** that form the foundation of the QQQ framework's user interface.
 
 ## 🎯 What This Repository Is
 
-This repository is a **core library component** of the QQQ framework that provides:
-- HTTP client functionality for QQQ backend communication
-- TypeScript data models and interfaces
-- Controllers for QQQ operations
-- Exception handling and error management
-- Core library utilities and helpers
+This repository is a **core frontend library** of the QQQ framework that provides:
+- Reusable React components and hooks
+- Core UI utilities and helpers
+- Shared TypeScript types and interfaces
+- Common styling and theming utilities
+- Frontend state management utilities
+- Authentication and routing utilities
 
 ## 🚫 What This Repository Is NOT
 
 This repository does NOT contain:
 - The QQQ server or backend
-- UI components or user interfaces
-- Application-specific business logic
-- Framework-specific implementations
+- Core framework functionality
+- Business logic or process engine
 - Database operations or API endpoints
 
 ## 🔄 Contribution Types
 
-### ✅ Core Library Changes (This Repository)
+### ✅ Frontend Core Changes (This Repository)
 
-- **HTTP client improvements** and optimizations
-- **Data model enhancements** and type definitions
-- **Controller functionality** updates
-- **Exception handling** improvements
-- **Performance optimizations** for library operations
-- **TypeScript type** improvements and fixes
-- **Documentation updates** for library APIs
+- **Core component library** improvements
+- **New reusable React components** and hooks
+- **TypeScript type definitions** and interfaces
+- **Utility functions** and helpers
+- **Core styling and theming** updates
+- **Frontend performance** optimizations
+- **Client-side bug fixes** in core utilities
+- **Documentation updates** for core frontend code
 
 ### ❌ Backend/Core Changes (Main QQQ Repository)
 
@@ -45,7 +46,7 @@ This repository does NOT contain:
 
 ### Prerequisites
 
-- **Node.js**: LTS version (16.x or higher)
+- **Node.js**: LTS version (18.x or higher)
 - **npm**: 8.x or higher
 - **Git**: For version control
 - **QQQ Server**: Running instance for testing
@@ -60,7 +61,7 @@ This repository does NOT contain:
    ```
 3. **Install dependencies**
    ```bash
-   npm install
+   npm install --legacy-peer-deps
    ```
 4. **Create a feature branch**
    ```bash
@@ -71,54 +72,58 @@ This repository does NOT contain:
 
 ### Code Style
 
-- **TypeScript**: Use strict typing and modern features
+- **TypeScript**: Use strict typing
 - **ESLint**: Follow the configured rules
-- **Naming**: Use descriptive names for functions and variables
-- **Documentation**: Add JSDoc comments for public APIs
-- **Testing**: Write comprehensive tests for new functionality
+- **Prettier**: Maintain consistent formatting
+- **React**: Use functional components with hooks
+- **Material-UI**: Follow MUI design patterns
 
-### Library Structure
+### Component Structure
 
 ```typescript
-// Example controller method
-export class QController {
-  /**
-   * Executes a QQQ process with the given parameters
-   * @param processName - The name of the process to execute
-   * @param parameters - The parameters to pass to the process
-   * @returns Promise containing the process result
-   */
-  public async executeProcess(processName: string, parameters: any): Promise<any> {
-    // Implementation
-  }
+// Example component structure
+import React from 'react';
+import { Box, Typography } from '@mui/material';
+
+interface Props {
+  title: string;
+  children: React.ReactNode;
+}
+
+export default function ExampleComponent({ title, children }: Props): JSX.Element {
+  return (
+    <Box>
+      <Typography variant="h6">{title}</Typography>
+      {children}
+    </Box>
+  );
 }
 ```
 
 ### Testing
 
-- **Unit Tests**: Test individual methods and classes
-- **Integration Tests**: Test controller interactions
-- **Type Tests**: Ensure TypeScript types are correct
-- **Mock Data**: Use comprehensive test fixtures
+- **Unit tests**: Test individual components
+- **Integration tests**: Test component interactions
+- **Browser testing**: Test in multiple browsers
+- **Responsive testing**: Test on different screen sizes
 
 ## 🔄 Pull Request Process
 
-1. **Ensure your changes are library-focused only**
+1. **Ensure your changes are frontend core library focused**
 2. **Follow the existing code patterns**
 3. **Add tests for new functionality**
 4. **Update documentation if needed**
-5. **Test thoroughly with QQQ backend**
+5. **Test thoroughly in the browser**
 6. **Submit a pull request**
 
 ### PR Checklist
 
-- [ ] Changes are core library-focused only
+- [ ] Changes are frontend core library focused
 - [ ] Code follows existing patterns
 - [ ] Tests are included and passing
 - [ ] Documentation is updated
 - [ ] No breaking changes introduced
-- [ ] TypeScript compilation succeeds
-- [ ] ESLint validation passes
+- [ ] Cross-browser compatibility verified
 
 ## 🚨 For Major Changes
 
@@ -127,7 +132,6 @@ If your contribution involves:
 - **Backend integration changes**
 - **Major architectural decisions**
 - **Breaking changes to the QQQ API**
-- **New QQQ features or capabilities**
 
 Please submit to the **main QQQ repository** instead:
 👉 **[https://github.com/Kingsrook/qqq](https://github.com/Kingsrook/qqq)**
@@ -137,13 +141,13 @@ Please submit to the **main QQQ repository** instead:
 **All issues should be reported to the main QQQ repository:**
 👉 **[https://github.com/Kingsrook/qqq/issues](https://github.com/Kingsrook/qqq/issues)**
 
-When reporting library-specific issues, include:
-- Node.js version
+When reporting frontend-specific issues, include:
+- Browser and version
 - Operating system
-- QQQ version
 - Steps to reproduce
-- Code examples
-- Error messages and stack traces
+- Screenshots if applicable
+- Console errors
+- QQQ server version
 
 ## 💬 Getting Help
 
@@ -157,8 +161,8 @@ By contributing to this project, you agree that your contributions will be licen
 
 ## 🙏 Thank You
 
-Thank you for contributing to the QQQ Frontend Core! Your contributions help make the QQQ framework's client library better for everyone.
+Thank you for contributing to the QQQ Frontend Core! Your contributions help make the QQQ framework's core frontend library better for everyone.
 
 ---
 
-**Remember**: This is a core library component. For core QQQ functionality, use the main repository: https://github.com/Kingsrook/qqq
+**Remember**: This is a frontend core library. For complete QQQ functionality, use the main repository: https://github.com/Kingsrook/qqq
