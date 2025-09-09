@@ -38,7 +38,6 @@ import {QueryJoin} from "../model/query/QueryJoin";
 const axios = require("axios").default;
 
 
-
 // Params object for the possibleValues method
 export type PossibleValueParams =
    {
@@ -50,7 +49,8 @@ export type PossibleValueParams =
       labels?: any[] | null;
       values?: Map<string, any> | null;
       useCase?: string | null;
-      possibleValueSourceFilter?: QQueryFilter | null
+      possibleValueSourceFilter?: QQueryFilter | null;
+      processUUID?: string | null;
    }
 
 /*******************************************************************************
@@ -983,13 +983,12 @@ export class QController
    }
 
 
-
    /***************************************************************************
     * overload 1 of possibleValues function - this is its "original" signature
     * that took several params, many optional, and kept evolving and getting
     * messier and messier.
     ***************************************************************************/
-   async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm?: string, ids?: any[], labels?: any[] , values?: Map<string, any>, useCase?: string): Promise<QPossibleValue[]>;
+   async possibleValues(tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm?: string, ids?: any[], labels?: any[], values?: Map<string, any>, useCase?: string, processUUID?: string): Promise<QPossibleValue[]>;
 
    /***************************************************************************
     * overload 2 of possibleValues function - this is a "new" signature
@@ -1010,7 +1009,7 @@ export class QController
     ** is being used (e.g,. it can't find it on a table or process), so, for that
     ** case, a possibleValueSourceFilter can be passed along to provide that function.
     *******************************************************************************/
-   async possibleValues(...args: [tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm?: string, ids?: any[], labels?: any[], values?: Map<string, any>, useCase?: string] | [PossibleValueParams]): Promise<QPossibleValue[]>
+   async possibleValues(...args: [tableName: string | null, processName: string | null, fieldNameOrPossibleValueSourceName: string, searchTerm?: string, ids?: any[], labels?: any[], values?: Map<string, any>, useCase?: string, processUUID?: string] | [PossibleValueParams]): Promise<QPossibleValue[]>
    {
       let tableName: string | null | undefined;
       let processName: string | null | undefined;
@@ -1021,35 +1020,40 @@ export class QController
       let values: Map<string, any> | null | undefined;
       let useCase: string | null | undefined;
       let possibleValueSourceFilter: QQueryFilter | null | undefined = null;
+      let processUUID: string | null | undefined;
 
       if (args[0] != null && typeof args[0] === "object")
       {
-         ({tableName, processName, fieldNameOrPossibleValueSourceName, searchTerm, ids, labels, values, useCase, possibleValueSourceFilter} = args[0]);
+         ({tableName, processName, fieldNameOrPossibleValueSourceName, searchTerm, ids, labels, values, useCase, possibleValueSourceFilter, processUUID} = args[0]);
       }
-      else 
+      else
       {
-         [tableName, processName, fieldNameOrPossibleValueSourceName, searchTerm, ids, labels, values, useCase] = args as [string | null, string | null, string, string, any[], any[], Map<string, any>, string];
+         [tableName, processName, fieldNameOrPossibleValueSourceName, searchTerm, ids, labels, values, useCase, processUUID] = args as [string | null, string | null, string, string, any[], any[], Map<string, any>, string, string];
       }
 
-      if(searchTerm == null)
+      if (searchTerm == null)
       {
          searchTerm = "";
       }
-      if(ids == null)
+      if (ids == null)
       {
          ids = [];
       }
-      if(labels == null)
+      if (labels == null)
       {
          labels = [];
       }
-      if(values == null)
+      if (values == null)
       {
          values = new Map();
       }
-      if(useCase == null)
+      if (useCase == null)
       {
          useCase = "";
+      }
+      if (processUUID == null)
+      {
+         processUUID = "";
       }
 
       let url;
@@ -1078,6 +1082,11 @@ export class QController
          queryComponents.push(`useCase=${encodeURIComponent(useCase)}`);
       }
 
+      if (searchTerm !== "")
+      {
+         queryComponents.push(`processUUID=${encodeURIComponent(processUUID)}`);
+      }
+
       if (ids && ids.length)
       {
          queryComponents.push(`ids=${encodeURIComponent(ids.join(","))}`);
@@ -1096,7 +1105,7 @@ export class QController
       const postBody = new FormData();
       postBody.append("values", JSON.stringify(Object.fromEntries(values)));
 
-      if(possibleValueSourceFilter)
+      if (possibleValueSourceFilter)
       {
          postBody.append("filter", JSON.stringify(possibleValueSourceFilter));
       }
