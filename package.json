@@ -1,6 +1,6 @@
 {
    "name": "@qrunio/qqq-frontend-core",
-   "version": "1.0.130",
+   "version": "1.0.130-SNAPSHOT",
    "description": "",
    "main": "qqq-frontend-core.js",
    "module": "lib/qqq-frontend-core.esm.js",
@@ -12,9 +12,7 @@
       "prepublishOnly": "rm -rf lib/ && tsc -p ./ --outDir lib/",
       "test": "jest",
       "yalc-push": "yalc push --private",
-      "yalc-watch": "yalc-watch",
-      "build": "npm run clean-and-install"
-
+      "yalc-watch": "yalc-watch"
    },
    "dependencies": {
       "axios": "0.28.1",
