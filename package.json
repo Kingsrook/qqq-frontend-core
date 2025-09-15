@@ -1,6 +1,6 @@
 {
    "name": "@qrunio/qqq-frontend-core",
-   "version": "1.0.133-RC.1",
+   "version": "1.0.133-RC.2",
    "description": "",
    "main": "qqq-frontend-core.js",
    "module": "lib/qqq-frontend-core.esm.js",
