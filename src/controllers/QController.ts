@@ -1082,7 +1082,7 @@ export class QController
          queryComponents.push(`useCase=${encodeURIComponent(useCase)}`);
       }
 
-      if (searchTerm !== "")
+      if (processUUID !== "")
       {
          queryComponents.push(`processUUID=${encodeURIComponent(processUUID)}`);
       }
