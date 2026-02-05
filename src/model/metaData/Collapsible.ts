@@ -30,8 +30,11 @@ export class Collapsible
 
    constructor(object: any)
    {
-      this.isCollapsible = object.isCollapsible;
-      this.initiallyOpen = object.initiallyOpen;
+      ////////////////////////////////////////////////////////////////////////////
+      // use value === true to let undefined (or any other) values become false //
+      ////////////////////////////////////////////////////////////////////////////
+      this.isCollapsible = object.isCollapsible === true;
+      this.initiallyOpen = object.initiallyOpen === true;
    }
 
 
