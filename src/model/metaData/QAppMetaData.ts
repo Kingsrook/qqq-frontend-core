@@ -37,7 +37,7 @@ export class QAppMetaData
    widgets?: string[];
    sections?: QAppSection[];
    supplementalAppMetaData: Map<String, any> = new Map();
-   helpContents?: QHelpContent[];
+   helpContent?: Map<string, QHelpContent[]>;
 
    constructor(object: any)
    {
@@ -74,6 +74,9 @@ export class QAppMetaData
          }
       }
 
-      this.helpContents = QHelpContent.buildArray(object.helpContents)
+      if (object.helpContents)
+      {
+         this.helpContent = QHelpContent.buildMap(object.helpContents);
+      }
    }
 }
