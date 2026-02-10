@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {Collapsible} from "./Collapsible";
 import {QHelpContent} from "./QHelpContent";
 
 /*******************************************************************************
@@ -37,6 +38,7 @@ export class QTableSection
    gridColumns?: number;
    helpContents?: QHelpContent[];
    alternatives?: Map<string, QTableSection>;
+   collapsible?: Collapsible;
 
 
    /*******************************************************************************
@@ -68,6 +70,11 @@ export class QTableSection
             this.alternatives.set(type, new QTableSection(object.alternatives[type]));
          }
       }
+
+      if (object.collapsible)
+      {
+         this.collapsible = new Collapsible(object.collapsible);
+      }
    }
 
    /***************************************************************************
@@ -97,11 +104,14 @@ export class QTableSection
             alternativesClone.set(key, value.clone()));
       }
 
+      const collapsibleClone: Collapsible | undefined = (this.collapsible ? this.collapsible.clone() : undefined);
+
       const clone = new QTableSection({...this});
 
       clone.fieldNames = fieldNamesClone;
       clone.helpContents = helpContentsClone;
       clone.alternatives = alternativesClone;
+      clone.collapsible = collapsibleClone;
 
       return (clone);
    }
