@@ -1,5 +1,7 @@
 *.iml
 .env
+.yalc
+yalc*
 
 node_modules
 coverage
@@ -14,3 +16,4 @@ lib
 
 # Claude Code local settings
 .claude/
+
