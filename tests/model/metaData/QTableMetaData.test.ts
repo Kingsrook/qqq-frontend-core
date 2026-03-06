@@ -1,6 +1,6 @@
 /*
  * QQQ - Low-code Application Framework for Engineers.
- * Copyright (C) 2021-2025.  Kingsrook, LLC
+ * Copyright (C) 2021-2026.  Kingsrook, LLC
  * 651 N Broad St Ste 205 # 6917 | Middletown DE 19709 | United States
  * contact@kingsrook.com
  * https://github.com/Kingsrook/
@@ -24,6 +24,7 @@ import {QHelpContent} from "../../../src/model/metaData/QHelpContent";
 import {QMenu} from "../../../src/model/metaData/QMenu";
 import {QMenuItem} from "../../../src/model/metaData/QMenuItem";
 import {QTableMetaData} from "../../../src/model/metaData/QTableMetaData";
+import {QVirtualFieldMetaData} from "../../../src/model/metaData/QVirtualFieldMetaData";
 
 describe("QTableMetaData tests", () =>
 {
@@ -171,6 +172,32 @@ describe("QTableMetaData tests", () =>
                   }
                },
             },
+            "virtualFields": {
+               "nameLength": {
+                  "name": "nameLength",
+                  "label": "Name Length",
+                  "type": "INTEGER",
+                  "isRequired": false,
+                  "isEditable": false,
+                  "isHeavy": false,
+                  "isHidden": false,
+                  "gridColumns": -1,
+                  "isQueryCriteria": true,
+                  "isQuerySelectable": false
+               },
+               "createDateWeekday": {
+                  "name": "createDateWeekday",
+                  "label": "Create Date Weekday",
+                  "type": "DATE",
+                  "isRequired": false,
+                  "isEditable": false,
+                  "isHeavy": false,
+                  "isHidden": false,
+                  "gridColumns": -1,
+                  "isQueryCriteria": false,
+                  "isQuerySelectable": true
+               },
+            },
             "sections": [
                {
                   "name": "identity",
@@ -251,6 +278,9 @@ describe("QTableMetaData tests", () =>
       const cloneTable = table.clone();
       expect(cloneTable.name).toEqual(table.name);
 
+      expect(cloneTable.virtualFields?.size).toEqual(2);
+      expect(cloneTable.virtualFields?.get("nameLength") instanceof QVirtualFieldMetaData).toBeTruthy();
+
       expect(cloneTable.sections?.length).toEqual(2);
       expect(cloneTable.sections?.length).toEqual(table.sections?.length);
       expect(cloneTable.sections?.[0].name).toEqual(table.sections?.[0].name);
@@ -288,11 +318,20 @@ describe("QTableMetaData tests", () =>
       ///////////////////////////////////////////////////////////////////////////////////////////
       cloneTable.name = "changed";
       expect(cloneTable.name).not.toEqual(table.name);
-      if (cloneTable.sections)
-      {
-         cloneTable.sections[0].name = "changed";
-         cloneTable.sections[0].isHidden = true;
-      }
+
+      cloneTable.virtualFields?.set("new", new QVirtualFieldMetaData({}));
+      expect(cloneTable.virtualFields?.size).toEqual(3);
+      expect(table.virtualFields?.size).toEqual(2);
+
+      cloneTable.virtualFields!.get("nameLength")!.gridColumns = 6;
+      cloneTable.virtualFields!.get("nameLength")!.isQuerySelectable = !cloneTable.virtualFields!.get("nameLength")!.isQuerySelectable;
+      cloneTable.virtualFields!.get("nameLength")!.isQueryCriteria = !cloneTable.virtualFields!.get("nameLength")!.isQueryCriteria;
+      expect(cloneTable.virtualFields?.get("nameLength")?.gridColumns).not.toEqual(table.virtualFields?.get("nameLength")?.gridColumns);
+      expect(cloneTable.virtualFields?.get("nameLength")?.isQuerySelectable).not.toEqual(table.virtualFields?.get("nameLength")?.isQuerySelectable);
+      expect(cloneTable.virtualFields?.get("nameLength")?.isQueryCriteria).not.toEqual(table.virtualFields?.get("nameLength")?.isQueryCriteria);
+
+      cloneTable.sections![0]!.name = "changed";
+      cloneTable.sections![0]!.isHidden = true;
 
       expect(cloneTable.sections?.[0].name).not.toEqual(table.sections?.[0].name);
       expect(cloneTable.sections?.[0].isHidden).not.toEqual(table.sections?.[0].isHidden);
@@ -300,21 +339,14 @@ describe("QTableMetaData tests", () =>
       cloneTable.capabilities.delete("TABLE_COUNT");
       expect(cloneTable.capabilities.size).not.toEqual(table.capabilities.size);
 
-      if (cloneTable.helpContent && table.helpContent) // avoid possibly-undef and ?. on left-hand sides below
-      {
-         cloneTable.helpContent.set("key2", []);
-         expect(cloneTable.helpContent.size).not.toEqual(table.helpContent.size);
+      cloneTable.helpContent?.set("key2", []);
+      expect(cloneTable.helpContent?.size).not.toEqual(table.helpContent?.size);
 
-         cloneTable.helpContent.get("key")?.push(new QHelpContent({}));
-         expect(cloneTable.helpContent.get("key")?.length).not.toEqual(table.helpContent.get("key")?.length);
+      cloneTable.helpContent?.get("key")?.push(new QHelpContent({}));
+      expect(cloneTable.helpContent?.get("key")?.length).not.toEqual(table.helpContent?.get("key")?.length);
 
-         cloneTable.helpContent.get("key")?.[0].roles.add("READ_SCREENS");
-         expect(cloneTable.helpContent.get("key")?.[0].roles.size).not.toEqual(table.helpContent.get("key")?.[0].roles.size);
-      }
-      else
-      {
-         fail("help content wasn't set in either table or cloneTable (or neither)");
-      }
+      cloneTable.helpContent?.get("key")?.[0].roles.add("READ_SCREENS");
+      expect(cloneTable.helpContent?.get("key")?.[0].roles.size).not.toEqual(table.helpContent?.get("key")?.[0].roles.size);
 
       cloneTable.sections?.[0]?.fieldNames?.push("foobar");
       expect(cloneTable.sections?.[0]?.fieldNames?.length).not.toEqual(table.sections?.[0]?.fieldNames?.length);

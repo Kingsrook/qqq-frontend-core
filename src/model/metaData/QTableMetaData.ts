@@ -24,6 +24,7 @@ import {QFieldMetaData} from "./QFieldMetaData";
 import {QHelpContent} from "./QHelpContent";
 import {QMenu} from "./QMenu";
 import {QTableSection} from "./QTableSection";
+import {QVirtualFieldMetaData} from "./QVirtualFieldMetaData";
 
 /*******************************************************************************
  ** Meta-Data to define a table in a QQQ instance.
@@ -36,7 +37,7 @@ export class QTableMetaData
    isHidden: boolean = false;
    primaryKeyField: string;
    fields?: Map<string, QFieldMetaData>;
-   virtualFields?: Map<string, QFieldMetaData>;
+   virtualFields?: Map<string, QVirtualFieldMetaData>;
    iconName?: string;
    sections?: QTableSection[];
    exposedJoins?: QExposedJoin[];
@@ -77,10 +78,10 @@ export class QTableMetaData
 
       if (object.virtualFields)
       {
-         this.virtualFields = new Map<string, QFieldMetaData>();
+         this.virtualFields = new Map<string, QVirtualFieldMetaData>();
          for (const key in object.virtualFields)
          {
-            this.virtualFields.set(key, new QFieldMetaData(object.virtualFields[key]));
+            this.virtualFields.set(key, new QVirtualFieldMetaData(object.virtualFields[key]));
          }
       }
 

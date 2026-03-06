@@ -19,47 +19,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {FieldFunction} from "./FieldFunction";
-import {QCriteriaOperator} from "./QCriteriaOperator";
-
 /*******************************************************************************
- ** Define a filter criteria in a QQQ instance.
+ ** Define a field function being used in a QQQ application
  **
  *******************************************************************************/
-export class QFilterCriteria
+export class FieldFunction
 {
    fieldName: string;
-   operator: QCriteriaOperator;
-   values!: any[];
-   otherFieldName?: string;
-   fieldFunction?: FieldFunction;
+   functionTypeIdentifierName: string;
+   arguments: Record<string, any>
 
-   constructor(fieldName: string, operator: QCriteriaOperator, values: any[])
+   constructor(fieldName: string, functionTypeIdentifierName: string, _arguments: Record<string, any>)
    {
       this.fieldName = fieldName;
-      this.operator = operator;
-      this.values = values;
+      this.functionTypeIdentifierName = functionTypeIdentifierName;
+      this.arguments = _arguments;
    }
 
    /***************************************************************************
     *
     ***************************************************************************/
-   public clone(): QFilterCriteria
+   public clone(): FieldFunction
    {
-      const cloneValues = (this.values === null ? null : this.values === undefined ? undefined : [...this.values]) as any[];
+      const cloneArguments = (this.arguments === null ? null : this.arguments === undefined ? undefined : {...this.arguments}) as Record<string, any>;
 
-      const clone = new QFilterCriteria(
+      const clone = new FieldFunction(
          this.fieldName,
-         this.operator,
-         cloneValues
+         this.functionTypeIdentifierName,
+         cloneArguments
       );
-
-      clone.otherFieldName = this.otherFieldName;
-
-      if(this.fieldFunction)
-      {
-         clone.fieldFunction = this.fieldFunction.clone();
-      }
 
       return (clone);
    }
