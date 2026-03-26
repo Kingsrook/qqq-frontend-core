@@ -28,6 +28,66 @@ import {QVirtualFieldMetaData} from "../../../src/model/metaData/QVirtualFieldMe
 
 describe("QTableMetaData tests", () =>
 {
+   it("it should read field supplementalFieldMetaData", () =>
+   {
+      const table = new QTableMetaData({
+         "name": "myTable",
+         "label": "My Table",
+         "primaryKeyField": "id",
+         "fields": {
+            "warehouseId": {
+               "name": "warehouseId",
+               "label": "Warehouse",
+               "type": "INTEGER",
+               "displayFormat": "%s",
+               "supplementalFieldMetaData": {
+                  "materialDashboard": {
+                     "formAdjusterIdentifier": "process:myProcess;field:warehouseId",
+                     "type": "materialDashboard"
+                  }
+               }
+            }
+         }
+      });
+
+      expect(table.fields?.get("warehouseId")?.supplementalFieldMetaData.get("materialDashboard")).toEqual(
+         expect.objectContaining({
+            formAdjusterIdentifier: "process:myProcess;field:warehouseId",
+            type: "materialDashboard"
+         })
+      );
+   });
+
+   it("it should read field supplementalMetaData", () =>
+   {
+      const table = new QTableMetaData({
+         "name": "myTable",
+         "label": "My Table",
+         "primaryKeyField": "id",
+         "fields": {
+            "warehouseId": {
+               "name": "warehouseId",
+               "label": "Warehouse",
+               "type": "INTEGER",
+               "displayFormat": "%s",
+               "supplementalMetaData": {
+                  "materialDashboard": {
+                     "formAdjusterIdentifier": "process:myProcess;field:warehouseId",
+                     "type": "materialDashboard"
+                  }
+               }
+            }
+         }
+      });
+
+      expect(table.fields?.get("warehouseId")?.supplementalFieldMetaData.get("materialDashboard")).toEqual(
+         expect.objectContaining({
+            formAdjusterIdentifier: "process:myProcess;field:warehouseId",
+            type: "materialDashboard"
+         })
+      );
+   });
+
    it("it should clone", () =>
    {
       /////////////////////////////////////
@@ -132,7 +192,7 @@ describe("QTableMetaData tests", () =>
                         "contentAsHtml": "Field Help"
                      }
                   ],
-                  "supplementalFieldMetaData": {
+                  "supplementalMetaData": {
                      "materialDashboard": {
                         "formAdjusterIdentifier": "table:connection;field:externalSystemId",
                         "onChangeFormAdjuster": {
@@ -160,7 +220,7 @@ describe("QTableMetaData tests", () =>
                   "gridColumns": -1,
                   "displayFormat": "%s",
                   "possibleValueSourceName": "type",
-                  "supplementalFieldMetaData": {
+                  "supplementalMetaData": {
                      "materialDashboard": {
                         "formAdjusterIdentifier": "table:myTable;field:type",
                         "onChangeFormAdjuster": {

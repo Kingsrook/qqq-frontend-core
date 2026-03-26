@@ -91,11 +91,12 @@ export class QFieldMetaData
       this.helpContents = QHelpContent.buildArray(object.helpContents);
       this.behaviors = object.behaviors;
 
-      if (object.supplementalFieldMetaData)
+      const supplementalFieldMetaData = object.supplementalFieldMetaData || object.supplementalMetaData;
+      if (supplementalFieldMetaData)
       {
-         for (const key in object.supplementalFieldMetaData)
+         for (const key in supplementalFieldMetaData)
          {
-            this.supplementalFieldMetaData.set(key, object.supplementalFieldMetaData[key]);
+            this.supplementalFieldMetaData.set(key, supplementalFieldMetaData[key]);
          }
       }
 
