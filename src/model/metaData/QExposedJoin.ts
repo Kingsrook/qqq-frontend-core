@@ -36,11 +36,11 @@ export class QExposedJoin
 
    constructor(object: any)
    {
-      this.label = object.label;
-      this.isMany = object.isMany;
-      this.joinTable = new QTableMetaData(object.joinTable);
+      this.label = object?.label;
+      this.isMany = object?.isMany;
+      this.joinTable = new QTableMetaData(object?.joinTable);
       this.joinPath = [];
-      for (let i = 0; i < object.joinPath.length; i++)
+      for (let i = 0; i < object?.joinPath?.length; i++)
       {
          this.joinPath.push(new QJoinMetaData(object.joinPath[i]));
       }
@@ -51,12 +51,12 @@ export class QExposedJoin
     ***************************************************************************/
    public clone(): QExposedJoin
    {
-      const joinTableClone = (this.joinTable as any).clone();
+      const joinTableClone = this.joinTable?.clone();
 
       const joinPathClone: QJoinMetaData[] = [];
-      for (let joinMetaData of this.joinPath)
+      for (let joinMetaData of this.joinPath ?? [])
       {
-         joinPathClone.push((joinMetaData as any).clone());
+         joinPathClone.push(joinMetaData.clone());
       }
 
       const clone = new QExposedJoin({
@@ -64,6 +64,9 @@ export class QExposedJoin
          joinTable: joinTableClone,
          joinPath: joinPathClone
       });
+      // overwrite joinTable — the constructor re-wraps it in new QTableMetaData(),
+      // which loses Map-based fields/virtualFields from the already-cloned object
+      clone.joinTable = joinTableClone;
       return (clone);
    }
 }

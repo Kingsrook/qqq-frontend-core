@@ -283,7 +283,27 @@ describe("QTableMetaData tests", () =>
                   "isHidden": false
                },
             ],
-            "exposedJoins": [],
+            "exposedJoins": [
+               {
+                  "label": "Parcel",
+                  "isMany": false,
+                  "joinTable": {
+                     "name": "parcel",
+                     "label": "Parcel",
+                     "primaryKeyField": "id",
+                     "fields": {
+                        "id": {"name": "id", "label": "Id", "type": "INTEGER", "isEditable": false, "isHidden": false},
+                        "trackingNumber": {"name": "trackingNumber", "label": "Tracking Number", "type": "STRING", "isEditable": true, "isHidden": false},
+                        "status": {"name": "status", "label": "Status", "type": "STRING", "isEditable": true, "isHidden": false}
+                     },
+                     "sections": [],
+                     "capabilities": []
+                  },
+                  "joinPath": [
+                     {"name": "orderShipmentJoinParcel", "leftTable": "orderShipment", "rightTable": "parcel", "type": "ONE_TO_ONE", "joinOns": []}
+                  ]
+               }
+            ],
             "supplementalTableMetaData": {
                "materialDashboard": {
                   "onLoadFormAdjuster": {
@@ -367,6 +387,11 @@ describe("QTableMetaData tests", () =>
 
       expect(cloneTable.menus?.length).toEqual(1);
       expect(cloneTable.menus?.[0].items?.length).toEqual(2);
+
+      expect(cloneTable.exposedJoins?.length).toEqual(1);
+      expect(cloneTable.exposedJoins?.[0].joinTable.name).toEqual("parcel");
+      expect(cloneTable.exposedJoins?.[0].joinTable.fields?.size).toEqual(3);
+      expect(cloneTable.exposedJoins?.[0].joinTable.fields?.get("trackingNumber")?.name).toEqual("trackingNumber");
 
       ////////////////////////////////////////////////////////////////////////////////////////////////
       // turns out toEqual will do a deep equality test, so, we could have just done this all along //
