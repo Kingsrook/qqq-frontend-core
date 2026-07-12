@@ -68,3 +68,18 @@ Main metaData container. Contains:
 ## Session Continuity
 Session state is stored in `.session-state.md` (local to this repo).
 To continue: say "continue from last session"
+
+## Knowledge base
+
+Durable knowledge about this repo lives in the second-brain vault
+(`$SECOND_BRAIN_VAULT`, i.e. `R:/Git.Local/KofTwentyTwo/second-brain`):
+
+- QQQ domain hub: `knowledge/qqq/qqq-hub.md`
+- This repo's dossier: `knowledge/qqq/repos/qqq-frontend-core.md`
+  (endpoint map legacy vs `/qqq/v1`, npm version history, division of labor
+  vs material-dashboard, known bugs/risks)
+
+Dossier reviewed at commit `e234e3028c8d` (branch `develop`,
+0.40.13-SNAPSHOT, 2026-07-04). Consult the dossier before re-deriving
+architecture from source; update it when controllers, endpoints, or
+publishing change.
